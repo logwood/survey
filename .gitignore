@@ -1,0 +1,32 @@
+# LaTeX build files
+latex_build/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Temporary files
+temp_*.py
+*.tmp
+*.bak
+
+# System files
+.DS_Store
+Thumbs.db
+
+*.blg 
+*.bbl
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.cls
+*.toc
+*.pdf
+*.fls
+*.fdb_latexmk
+*.lof
+*.svg
+.claude
+
