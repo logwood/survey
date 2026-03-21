@@ -1,0 +1,38 @@
+B1：Semantic Logic and Code Generation
+
+核心产物是：
+
+code
+reward function
+skill ranking
+behavior tree / script
+
+它的本质是把人类意图变成一种可执行的语义接口。
+重点是：
+
+instruction → executable representation
+language → code / reward / symbolic skill call
+
+所以 B1 更像：
+task specification layer
+
+B2：Long-Horizon Task Decomposition
+
+核心产物是：
+
+subtask sequence
+PDDL plan
+state-dependent plan
+replanning structure
+
+它的本质不是“把任务写出来”，而是：
+把长程目标分解成有顺序、有依赖的结构。
+
+所以 B2 更像：
+task structuring layer
+
+B3作为中间层，ReAct确实不是好例子，我认为是可以删去的。
+
+B4 B5 和 Type III 的重叠确实比较大，但我觉得它们的侧重点还是不太一样的，我认为可以压缩B4 B5，然后从Type III，拉取一些文献过来，这样可以压缩一些文献，同时还可以让B4 B5 的内容不在至于过少
+
+B5里面我认为偏小脑的偏模拟的可以删掉，影响叙事，如果你认为他们含金量比较高的话，可以把他们拿出来搞到自动生成里面。
