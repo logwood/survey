@@ -1755,12 +1755,22 @@
       url={https://arxiv.org/abs/2503.05316}, 
 }
 
-@article{zhou2024robodreamer,
-  title={RoboDreamer: Learning Compositional World Models for Robot Imagination},
-  author={Zhou, Siyuan and Du, Yilun and Chen, Jiaben and Li, Yandong and Yeung, Dit-Yan and Gan, Chuang},
-  journal={arXiv preprint arXiv:2404.12377},
-  year={2024}
+@InProceedings{zhou2024robodreamer,
+  title = 	 {{R}obo{D}reamer: Learning Compositional World Models for Robot Imagination},
+  author =       {Zhou, Siyuan and Du, Yilun and Chen, Jiaben and Li, Yandong and Yeung, Dit-Yan and Gan, Chuang},
+  booktitle = 	 {Proceedings of the 41st International Conference on Machine Learning},
+  pages = 	 {61885--61896},
+  year = 	 {2024},
+  editor = 	 {Salakhutdinov, Ruslan and Kolter, Zico and Heller, Katherine and Weller, Adrian and Oliver, Nuria and Scarlett, Jonathan and Berkenkamp, Felix},
+  volume = 	 {235},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {21--27 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {https://raw.githubusercontent.com/mlresearch/v235/main/assets/zhou24f/zhou24f.pdf},
+  url = 	 {https://proceedings.mlr.press/v235/zhou24f.html},
+  abstract = 	 {Text-to-video models have demonstrated substantial potential in robotic decision-making, enabling the imagination of realistic plans of future actions as well as accurate environment simulation. However, one major issue in such models is generalization – models are limited to synthesizing videos subject to language instructions similar to those seen at training time. This is heavily limiting in decision-making, where we seek a powerful world model to synthesize plans of unseen combinations of objects and actions in order to solve previously unseen tasks in new environments. To resolve this issue, we introduce RoboDreamer, an innovative approach for learning a compositional world model by factorizing the video generation. We leverage the natural compositionality of language to parse instructions into a set of lower-level primitives, which we condition a set of models on to generate videos. We illustrate how this factorization naturally enables compositional generalization, by allowing us to formulate a new natural language instruction as a combination of previously seen components. We further show how such a factorization enables us to add additional multimodal goals, allowing us to specify a video we wish to generate given both natural language instructions and a goal image. Our approach can successfully synthesize video plans on unseen goals in the RT-X, enables successful robot execution in simulation, and substantially outperforms monolithic baseline approaches to video generation.}
 }
+
 
 @misc{barcellona2025dream,
       title={Dream to Manipulate: Compositional World Models Empowering Robot Imitation Learning with Imagination}, 
@@ -2034,12 +2044,13 @@
   abstract = 	 {Recent works have shown how the reasoning capabilities of Large Language Models (LLMs) can be applied to domains beyond natural language processing, such as planning and interaction for robots. These embodied problems require an agent to understand many semantic aspects of the world: the repertoire of skills available, how these skills influence the world, and how changes to the world map back to the language. LLMs planning in embodied environments need to consider not just what skills to do, but also how and when to do them - answers that change over time in response to the agent’s own choices. In this work, we investigate to what extent LLMs used in such embodied contexts can reason over sources of feedback provided through natural language, without any additional training. We propose that by leveraging environment feedback, LLMs are able to form an inner monologue that allows them to more richly process and plan in robotic control scenarios. We investigate a variety of sources of feedback, such as success detection, scene description, and human interaction. We find that closed-loop language feedback significantly improves high level instruction completion on three domains, including simulated and real table top rearrangement tasks and long-horizon mobile manipulation tasks in a kitchen environment in the real world.}
 }
 
-@inproceedings{yoneda2024statler,
+@article{yoneda2024statler,
   title={Statler: State-Maintaining Language Models for Embodied Reasoning},
-  author={Takuma Yoneda and Jiading Fang and Peng Li and Huanyu Zhang and
-  Tianchong Jiang and Shengjie Lin and Ben Picker and David Yunis and Hongyuan Mei and Matthew R. Walter},
-  booktitle={Proceedings of the IEEE International Conference on Robotics and Automation (ICRA)},
+  author={Takuma Yoneda and Jiading Fang and Peng Li and Huanyu Zhang and Tianchong Jiang and Shengjie Lin and Ben Picker and David Yunis and Hongyuan Mei and Matthew R. Walter},
+  journal={2024 IEEE International Conference on Robotics and Automation (ICRA)},
   year={2024},
+  pages={15083-15091},
+  url={https://api.semanticscholar.org/CorpusID:259309028}
 }
 
 @inproceedings{driess2023palme,
@@ -2076,6 +2087,15 @@
   pages={287--318},
   year={2023},
   organization={PMLR}
+}
+
+@article{zhang2025llmgrop,
+  title={LLM-GROP: Visually Grounded Robot Task and Motion Planning with Large Language Models},
+  author={Xiaohan Zhang and Yan Ding and Yohei Hayamizu and Zainab Altaweel and Yifeng Zhu and Yuke Zhu and Peter Stone and Chris Paxton and Shiqi Zhang},
+  journal={The international journal of robotics research(IJRR)},
+  year={2025},
+  volume={abs/2511.07727},
+  url={https://api.semanticscholar.org/CorpusID:281800571}
 }
 
 @INPROCEEDINGS{agarwal2025l3mp,
@@ -2126,10 +2146,13 @@
   note         = {Placeholder entry. Replace with the correct BibTeX.},
 }
 
-@misc{ao2025llmbt,
-  title        = {TODO: ao2025llmbt},
-  year         = {2025},
-  note         = {Placeholder entry. Replace with the correct BibTeX.},
+@article{ao2025llmbt,
+  title={LLM-as-BT-Planner: Leveraging LLMs for Behavior Tree Generation in Robot Task Planning},
+  author={Jicong Ao and Fan Wu and Yansong Wu and Abdalla Swikir and Sami Haddadin},
+  journal={2025 IEEE International Conference on Robotics and Automation (ICRA)},
+  year={2025},
+  pages={1233-1239},
+  url={https://api.semanticscholar.org/CorpusID:272690069}
 }
 
 @misc{ma2023reward,
@@ -2138,22 +2161,47 @@
   note         = {Placeholder entry. Replace with the correct BibTeX.},
 }
 
+
+@InProceedings{tan2023l2r,
+  title = 	 {Language to Rewards for Robotic Skill Synthesis},
+  author =       {Yu, Wenhao and Gileadi, Nimrod and Fu, Chuyuan and Kirmani, Sean and Lee, Kuang-Huei and Arenas, Montserrat Gonzalez and Chiang, Hao-Tien Lewis and Erez, Tom and Hasenclever, Leonard and Humplik, Jan and Ichter, Brian and Xiao, Ted and Xu, Peng and Zeng, Andy and Zhang, Tingnan and Heess, Nicolas and Sadigh, Dorsa and Tan, Jie and Tassa, Yuval and Xia, Fei},
+  booktitle = 	 {Proceedings of The 7th Conference on Robot Learning},
+  pages = 	 {374--404},
+  year = 	 {2023},
+  editor = 	 {Tan, Jie and Toussaint, Marc and Darvish, Kourosh},
+  volume = 	 {229},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {06--09 Nov},
+  publisher =    {PMLR},
+  pdf = 	 {https://proceedings.mlr.press/v229/yu23a/yu23a.pdf},
+  url = 	 {https://proceedings.mlr.press/v229/yu23a.html},
+  abstract = 	 {Large language models (LLMs) have demonstrated exciting progress in acquiring diverse new capabilities through in-context learning, ranging from logical reasoning to code-writing. Robotics researchers have also explored using LLMs to advance the capabilities of robotic control. However, since low-level robot actions are hardware-dependent and underrepresented in LLM training corpora, existing efforts in applying LLMs to robotics have largely treated LLMs as semantic planners or relied on human-engineered control primitives to interface with the robot. On the other hand, reward functions are shown to be flexible representations that can be optimized for control policies to achieve diverse tasks, while their semantic richness makes them suitable to be specified by LLMs. In this work, we introduce a new paradigm that harnesses this realization by utilizing LLMs to define reward parameters that can be optimized and accomplish variety of robotic tasks. Using reward as the intermediate interface generated by LLMs, we can effectively bridge the gap between high-level language instructions or corrections to low-level robot actions. Meanwhile, combining this with a real-time optimizer, MuJoCo MPC, empowers an interactive behavior creation experience where users can immediately observe the results and provide feedback to the system. To systematically evaluate the performance of our proposed method, we designed a total of 17 tasks for a simulated quadruped robot and a dexterous manipulator robot. We demonstrate that our proposed method reliably tackles $90%$ of the designed tasks, while a baseline using primitive skills as the interface with Code-as-policies achieves $50%$ of the tasks. We further validated our method on a real robot arm where complex manipulation skills such as non-prehensile pushing emerge through our interactive system.}
+}
+
 @misc{liu2023llmp,
-  title        = {TODO: liu2023llmp},
-  year         = {2023},
-  note         = {Placeholder entry. Replace with the correct BibTeX.},
+      title={LLM+P: Empowering Large Language Models with Optimal Planning Proficiency}, 
+      author={Bo Liu and Yuqian Jiang and Xiaohan Zhang and Qiang Liu and Shiqi Zhang and Joydeep Biswas and Peter Stone},
+      year={2023},
+      eprint={2304.11477},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2304.11477}, 
 }
 
-@misc{sayplan2023,
-  title        = {TODO: sayplan2023},
-  year         = {2023},
-  note         = {Placeholder entry. Replace with the correct BibTeX.},
-}
-
-@misc{du2024vila,
-  title        = {TODO: du2024vila},
-  year         = {2024},
-  note         = {Placeholder entry. Replace with the correct BibTeX.},
+@InProceedings{rana2023sayplan,
+  title = 	 {SayPlan: Grounding Large Language Models using 3D Scene Graphs for Scalable Robot Task Planning},
+  author =       {Rana, Krishan and Haviland, Jesse and Garg, Sourav and Abou-Chakra, Jad and Reid, Ian and Suenderhauf, Niko},
+  booktitle = 	 {Proceedings of The 7th Conference on Robot Learning},
+  pages = 	 {23--72},
+  year = 	 {2023},
+  editor = 	 {Tan, Jie and Toussaint, Marc and Darvish, Kourosh},
+  volume = 	 {229},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {06--09 Nov},
+  publisher =    {PMLR},
+  pdf = 	 {https://proceedings.mlr.press/v229/rana23a/rana23a.pdf},
+  url = 	 {https://proceedings.mlr.press/v229/rana23a.html},
+  abstract = 	 {Large language models (LLMs) have demonstrated impressive results in developing generalist planning agents for diverse tasks. However, grounding these plans in expansive, multi-floor, and multi-room environments presents a significant challenge for robotics. We introduce SayPlan, a scalable approach to LLM-based, large-scale task planning for robotics using 3D scene graph (3DSG) representations. To ensure the scalability of our approach, we: (1) exploit the hierarchical nature of 3DSGs to allow LLMs to conduct a "semantic search" for task-relevant subgraphs from a smaller, collapsed representation of the full graph; (2) reduce the planning horizon for the LLM by integrating a classical path planner and (3) introduce an "iterative replanning" pipeline that refines the initial plan using feedback from a scene graph simulator, correcting infeasible actions and avoiding planning failures. We evaluate our approach on two large-scale environments spanning up to 3 floors and 36 rooms with 140 assets and objects and show that our approach is capable of grounding large-scale, long-horizon task plans from abstract, and natural language instruction for a mobile manipulator robot to execute. We provide real robot video demonstrations on our project page https://sayplan.github.io.}
 }
 
 @misc{gvm2024,
@@ -2162,10 +2210,16 @@
   note         = {Placeholder entry. Replace with the correct BibTeX.},
 }
 
-@misc{manipllm2024,
-  title        = {TODO: manipllm2024},
-  year         = {2024},
-  note         = {Placeholder entry. Replace with the correct BibTeX.},
+@INPROCEEDINGS{li2024manipllm,
+  author={Li, Xiaoqi and Zhang, Mingxu and Geng, Yiran and Geng, Haoran and Long, Yuxing and Shen, Yan and Zhang, Renrui and Liu, Jiaming and Dong, Hao},
+  booktitle={2024 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 
+  title={ManipLLM: Embodied Multimodal Large Language Model for Object-Centric Robotic Manipulation}, 
+  year={2024},
+  volume={},
+  number={},
+  pages={18061-18070},
+  keywords={Training;Adaptation models;Large language models;Transforms;Predictive models;Robot sensing systems;Cognition;Embodied AI;Robotic Manipulation;Multi-modal Large Language Model},
+  doi={10.1109/CVPR52733.2024.01710}
 }
 
 @misc{llmgrop2024,
@@ -2174,17 +2228,33 @@
   note         = {Placeholder entry. Replace with the correct BibTeX.},
 }
 
-@misc{huang2024a3vlm,
-  title        = {TODO: huang2024a3vlm},
-  year         = {2024},
-  note         = {Placeholder entry. Replace with the correct BibTeX.},
+@InProceedings{huang2024a3vlm,
+  title = 	 {A3VLM: Actionable Articulation-Aware Vision Language Model},
+  author =       {Huang, Siyuan and Chang, Haonan and Liu, Yuhan and Zhu, Yimeng and Dong, Hao and Boularias, Abdeslam and Gao, Peng and Li, Hongsheng},
+  booktitle = 	 {Proceedings of The 8th Conference on Robot Learning},
+  pages = 	 {1675--1690},
+  year = 	 {2025},
+  editor = 	 {Agrawal, Pulkit and Kroemer, Oliver and Burgard, Wolfram},
+  volume = 	 {270},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {06--09 Nov},
+  publisher =    {PMLR},
+  pdf = 	 {https://raw.githubusercontent.com/mlresearch/v270/main/assets/huang25b/huang25b.pdf},
+  url = 	 {https://proceedings.mlr.press/v270/huang25b.html},
+  abstract = 	 {Vision Language Models (VLMs) for robotics have received significant attention in recent years. As a VLM can understand robot observations and perform complex visual reasoning, it is regarded as a potential universal solution for general robotics challenges such as manipulation and navigation. However, previous robotics VLMs such as RT-1, RT-2, and ManipLLM have focused on directly learning robot actions. Such approaches require collecting a significant amount of robot interaction data, which is extremely costly in the real world. Thus, we propose A3VLM, an object-centric, actionable, articulation-aware vision language model. A3VLM focuses on the articulation structure and action affordances of objects. Its representation is robot-agnostic and can be translated into robot actions using simple action primitives. Extensive experiments in both simulation benchmarks and real-world settings demonstrate the effectiveness and stability of A3VLM.}
 }
 
-@misc{moka2024,
-  title        = {TODO: moka2024},
-  year         = {2024},
-  note         = {Placeholder entry. Replace with the correct BibTeX.},
-}
+
+@INPROCEEDINGS{fang2024moka, 
+    AUTHOR    = {Kuan Fang AND Fangchen Liu AND Pieter Abbeel AND Sergey Levine}, 
+    TITLE     = {{MOKA: Open-World Robotic Manipulation through Mark-Based Visual Prompting}}, 
+    BOOKTITLE = {Proceedings of Robotics: Science and Systems}, 
+    YEAR      = {2024}, 
+    ADDRESS   = {Delft, Netherlands}, 
+    MONTH     = {July}, 
+    DOI       = {10.15607/RSS.2024.XX.062} 
+} 
+
 
 @misc{ram2025,
   title        = {TODO: ram2025},
@@ -2216,35 +2286,84 @@
   note         = {Placeholder entry. Replace with the correct BibTeX.},
 }
 
-@misc{voxposer2023,
-  title        = {TODO: voxposer2023},
-  year         = {2023},
-  note         = {Placeholder entry. Replace with the correct BibTeX.},
+@InProceedings{huang2023voxposer,
+  title = 	 {VoxPoser: Composable 3D Value Maps for Robotic Manipulation with Language Models},
+  author =       {Huang, Wenlong and Wang, Chen and Zhang, Ruohan and Li, Yunzhu and Wu, Jiajun and Fei-Fei, Li},
+  booktitle = 	 {Proceedings of The 7th Conference on Robot Learning},
+  pages = 	 {540--562},
+  year = 	 {2023},
+  editor = 	 {Tan, Jie and Toussaint, Marc and Darvish, Kourosh},
+  volume = 	 {229},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {06--09 Nov},
+  publisher =    {PMLR},
+  pdf = 	 {https://proceedings.mlr.press/v229/huang23b/huang23b.pdf},
+  url = 	 {https://proceedings.mlr.press/v229/huang23b.html},
+  abstract = 	 {Large language models (LLMs) are shown to possess a wealth of actionable knowledge that can be extracted for robot manipulation in the form of reasoning and planning. Despite the progress, most still rely on pre-defined motion primitives to carry out the physical interactions with the environment, which remains a major bottleneck. In this work, we aim to synthesize robot trajectories, i.e., a dense sequence of 6-DoF end-effector waypoints, for a large variety of manipulation tasks given an open-set of instructions and an open-set of objects. We achieve this by first observing that LLMs excel at inferring affordances and constraints given a free-form language instruction. More importantly, by leveraging their code-writing capabilities, they can interact with a vision-language model (VLM) to compose 3D value maps to ground the knowledge into the observation space of the agent. The composed value maps are then used in a model-based planning framework to zero-shot synthesize closed-loop robot trajectories with robustness to dynamic perturbations. We further demonstrate how the proposed framework can benefit from online experiences by efficiently learning a dynamics model for scenes that involve contact-rich interactions. We present a large-scale study of the proposed method in both simulated and real-robot environments, showcasing the ability to perform a large variety of everyday manipulation tasks specified in free-form natural language.}
 }
 
-@misc{rekep2024,
-  title        = {TODO: rekep2024},
-  year         = {2024},
-  note         = {Placeholder entry. Replace with the correct BibTeX.},
+
+@inproceedings{
+      huang2024rekep,
+      title={ReKep: Spatio-Temporal Reasoning of Relational Keypoint Constraints for Robotic Manipulation},
+      author={Wenlong Huang and Chen Wang and Yunzhu Li and Ruohan Zhang and Li Fei-Fei},
+      booktitle={2nd CoRL Workshop on  Learning Effective Abstractions for Planning},
+      year={2024},
+      url={https://openreview.net/forum?id=ZGbWq3VqrO}
 }
 
-@misc{robosplat2025,
-  title        = {TODO: robosplat2025},
-  year         = {2025},
-  note         = {Placeholder entry. Replace with the correct BibTeX.},
+@article{yang2025novel,
+  title={Novel Demonstration Generation with Gaussian Splatting Enables Robust One-Shot Manipulation},
+  author={Sizhe Yang and Wenye Yu and Jia Zeng and Jun Lv and Kerui Ren and Cewu Lu and Dahua Lin and Jiangmiao Pang},
+  journal={ArXiv},
+  year={2025},
+  volume={abs/2504.13175},
+  url={https://api.semanticscholar.org/CorpusID:277857255}
 }
 
-@misc{graspsplats2025,
-  title        = {TODO: graspsplats2025},
-  year         = {2025},
-  note         = {Placeholder entry. Replace with the correct BibTeX.},
+@inproceedings{Ji2024GraspSplatsEM,
+  title={GraspSplats: Efficient Manipulation with 3D Feature Splatting},
+  author={Mazeyu Ji and Ri-Zhao Qiu and Xueyan Zou and Xiaolong Wang},
+  booktitle={Conference on Robot Learning},
+  year={2024},
+  url={https://api.semanticscholar.org/CorpusID:272366870}
 }
 
-@misc{copa2024,
-  title        = {TODO: copa2024},
-  year         = {2024},
-  note         = {Placeholder entry. Replace with the correct BibTeX.},
+@article{song2024robospatial,
+  title={RoboSpatial: Teaching Spatial Understanding to 2D and 3D Vision-Language Models for Robotics},
+  author={Chan Hee Song and Valts Blukis and Jonathan Tremblay and Stephen Tyree and Yu Su and Stanley T. Birchfield},
+  journal={2025 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year={2024},
+  pages={15768-15780},
+  url={https://api.semanticscholar.org/CorpusID:274233932}
 }
+
+@InProceedings{ji2025graspsplats,
+  title = 	 {GraspSplats: Efficient Manipulation with 3D Feature Splatting},
+  author =       {Ji, Mazeyu and Qiu, Ri-Zhao and Zou, Xueyan and Wang, Xiaolong},
+  booktitle = 	 {Proceedings of The 8th Conference on Robot Learning},
+  pages = 	 {1443--1460},
+  year = 	 {2025},
+  editor = 	 {Agrawal, Pulkit and Kroemer, Oliver and Burgard, Wolfram},
+  volume = 	 {270},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {06--09 Nov},
+  publisher =    {PMLR},
+  pdf = 	 {https://raw.githubusercontent.com/mlresearch/v270/main/assets/ji25a/ji25a.pdf},
+  url = 	 {https://proceedings.mlr.press/v270/ji25a.html},
+  abstract = 	 {The ability for robots to perform efficient and zero-shot grasping of object parts is crucial for practical applications and is becoming prevalent with recent advances in Vision-Language Models (VLMs). To bridge the 2D-to-3D gap for representations to support such a capability, existing methods rely on neural fields (NeRFs) via differentiable rendering or point-based projection methods. However, we demonstrate that NeRFs are inappropriate for scene changes due to its implicitness and point-based methods are inaccurate for part localization without rendering-based optimization. To amend these issues, we propose GraspSplats. Using depth supervision and a novel reference feature computation method, GraspSplats can generate high-quality scene representations under 60 seconds. We further validate the advantages of Gaussian-based representation by showing that the explicit and optimized geometry in GraspSplats is sufficient to natively support (1) real-time grasp sampling and (2) dynamic and articulated object manipulation with point trackers. With extensive experiments on a Franka robot, we demonstrate that GraspSplats significantly outperforms existing methods under diverse task settings. In particular, GraspSplats outperforms NeRF-based methods like F3RM and LERF-TOGO, and 2D detection methods. The code will be released.}
+}
+
+@INPROCEEDINGS{huang2024copa,
+  author={Huang, Haoxu and Lin, Fanqi and Hu, Yingdong and Wang, Shengjie and Gao, Yang},
+  booktitle={2024 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)}, 
+  title={CoPa: General Robotic Manipulation through Spatial Constraints of Parts with Foundation Models}, 
+  year={2024},
+  volume={},
+  number={},
+  pages={9488-9495},
+  keywords={Training;Learning systems;Knowledge engineering;Foundation models;Grasping;Robot sensing systems;Planning;Prompt engineering;Object recognition;Intelligent robots},
+  doi={10.1109/IROS58592.2024.10801352}}
 
 @misc{shridhar2021cliport,
       title={CLIPort: What and Where Pathways for Robotic Manipulation}, 
@@ -3226,11 +3345,13 @@
       url={https://arxiv.org/abs/2502.20391}, 
 }
 
-@inproceedings{zhang2026scizor,
-  title={SCIZOR: Self-Supervised Data Curation for Large-Scale Imitation Learning},
-  author={Zhang, Yu and Xie, Yuqi and Liu, Huihan and Shah, Rutav and Wan, Michael and Fan, Linxi and Zhu, Yuke},
-  booktitle={IEEE International Conference on Robotics and Automation},
-  year={2026}
+@inproceedings{
+      zhang2025scizor,
+      title={{SCIZOR}: A Self-Supervised Approach to Data Curation for Large-Scale Imitation Learning},
+      author={Yu Zhang and Yuqi Xie and Huihan Liu and Rutav Shah and Michael Wan and Linxi Fan and Yuke Zhu},
+      booktitle={Workshop on Making Sense of Data in Robotics: Composition, Curation, and Interpretability at Scale at CoRL 2025},
+      year={2025},
+      url={https://openreview.net/forum?id=Wo8eEdFUDF}
 }
 
 @article{ye2025anchordream,
