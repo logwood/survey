@@ -543,7 +543,7 @@
 @inproceedings{park2019deepsdf,
       title={DeepSDF: Learning Continuous Signed Distance Functions for Shape Representation},
       author={Jeong Joon Park and Peter Florence and Julian Straub and Richard Newcombe and Steven Lovegrove},
-      booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition },
+      booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
       year={2019},
       pages={165--174},
       url={https://openaccess.thecvf.com/content_CVPR_2019/html/Park_DeepSDF_Learning_Continuous_Signed_Distance_Functions_for_Shape_Representation_CVPR_2019_paper.html},
@@ -1346,7 +1346,7 @@
 @inproceedings{mu2025robotwin,
   title={RoboTwin: Dual-Arm Robot Benchmark with Generative Digital Twins},
   author={Mu, Yao and Chen, Tianxing and Chen, Zanxin and Peng, Shijia and Lan, Zhiqian and Gao, Zeyu and Liang, Zhixuan and Yu, Qiaojun and Zou, Yude and Xu, Mingkun and others},
-  booktitle={2025 IEEE/CVF Conference on Computer Vision and Pattern Recognition },
+  booktitle={2025 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
   pages={27649--27660},
   year={2025},
   organization={IEEE Computer Society}
@@ -1458,7 +1458,7 @@
 @article{zhang2019raven,
   title={RAVEN: A Dataset for Relational and Analogical Visual REasoNing},
   author={Chi Zhang and Feng Gao and Baoxiong Jia and Yixin Zhu and Song-Chun Zhu},
-  journal={2019 IEEE/CVF Conference on Computer Vision and Pattern Recognition },
+  journal={2019 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
   year={2019},
   pages={5312-5322},
   url={https://api.semanticscholar.org/CorpusID:71148268}
@@ -1696,7 +1696,7 @@
 @InProceedings{yang2024holodeck,
     author    = {Yang, Yue and others},
     title     = {Holodeck: Language Guided Generation of 3D Embodied AI Environments},
-    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition },
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
     month     = {June},
     year      = {2024},
     pages     = {16227-16237}
@@ -2108,14 +2108,15 @@
       url={https://arxiv.org/abs/2504.18904}, 
 }
 
-@inproceedings{lerobot2024,
+@misc{lerobot2024,
       title={LeRobot: An Open-Source Library for End-to-End Robot Learning}, 
       author={Remi Cadene and others},
       year={2026},
-      booktitle={The Fourteenth International Conference on Learning Representations},
+      eprint={2602.22818},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO},
       url={https://arxiv.org/abs/2602.22818}, 
 }
-
 
 @InProceedings{huang2023inner,
   title = 	 {Inner Monologue: Embodied Reasoning through Planning with Language Models},
@@ -2301,7 +2302,7 @@
 
 @INPROCEEDINGS{li2024manipllm,
   author={Li, Xiaoqi and others},
-  booktitle={2024 IEEE/CVF Conference on Computer Vision and Pattern Recognition }, 
+  booktitle={2024 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 
   title={ManipLLM: Embodied Multimodal Large Language Model for Object-Centric Robotic Manipulation}, 
   year={2024},
   volume={},
@@ -2413,7 +2414,7 @@
 @article{song2024robospatial,
   title={RoboSpatial: Teaching Spatial Understanding to 2D and 3D Vision-Language Models for Robotics},
   author={Chan Hee Song and others},
-  journal={2025 IEEE/CVF Conference on Computer Vision and Pattern Recognition },
+  journal={2025 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
   year={2024},
   pages={15768-15780},
   url={https://api.semanticscholar.org/CorpusID:274233932}
@@ -3109,14 +3110,14 @@
 @inproceedings{huang2026fastthinkact,
   title={Fast-ThinkAct: Efficient Vision-Language-Action Reasoning via Verbalizable Latent Planning},
   author={Huang, Chi-Pin and others},
-  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition },
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
   year={2026}
 }
 
 @inproceedings{li2025coavla,
   title={CoA-VLA: Improving Vision-Language-Action Models via Visual-Text Chain-of-Affordance},
   author={Li, Junjie and others},
-  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision},
+  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
   year={2025}
 }
 
@@ -3182,10 +3183,13 @@
   booktitle = 	 {Proceedings of the 41st International Conference on Machine Learning},
   pages = 	 {61229--61245},
   year = 	 {2024},
+  editor = 	 {Salakhutdinov, Ruslan and Kolter, Zico and Heller, Katherine and Weller, Adrian and Oliver, Nuria and Scarlett, Jonathan and Berkenkamp, Felix},
   volume = 	 {235},
   series = 	 {Proceedings of Machine Learning Research},
   month = 	 {21--27 Jul},
   publisher =    {PMLR},
+  pdf = 	 {https://raw.githubusercontent.com/mlresearch/v235/main/assets/zhen24a/zhen24a.pdf},
+  url = 	 {https://proceedings.mlr.press/v235/zhen24a.html},
   abstract = {Recent vision-language-action (VLA) models rely on 2D inputs, lacking integration with the broader realm of the 3D physical world. Furthermore, they perform action prediction by learning a direct mapping from perception to action, neglecting the vast dynamics of the world and the relations between actions and dynamics. In contrast, human beings are endowed with world models that depict imagination about future scenarios to plan action accordingly. To this end, we propose 3D-VLA by introducing a new family of embodied foundation models that seamlessly link 3D perception, reasoning, and action through a generative world model. Specifically, 3D-VLA is built on top of a 3D-based large language model (LLM) and a set of action tokens is introduced to engage with the embodied environment. Furthermore, to inject generation abilities into the model, we train the embodied diffusion models and align them into the LLM for predicting the goal image and point cloud. To train our 3D-VLA, we curate a large-scale 3D embodied instruction dataset by extracting vast 3D-related information from existing robotics datasets. Our experiments on held-in datasets demonstrate that 3D-VLA significantly improves the reasoning, multimodality generation and planning capabilities in embodied environments, showcasing its potential in real-world applications.}
 }
 
@@ -3219,7 +3223,7 @@
 @InProceedings{zhang2025robridge,
     author    = {Zhang, Kaidong and others},
     title     = {RoBridge: A Hierarchical Architecture Bridging Cognition and Execution for General Robotic Manipulation},
-    booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision},
+    booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
     month     = {October},
     year      = {2025},
     pages     = {14590-14601}
@@ -3268,7 +3272,7 @@
       title={Ego-Exo4D: Understanding Skilled Human Activity from First- and Third-Person Perspectives},
       author={Kristen Grauman and others},
       year={2024},
-      booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition },
+      booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
       url={https://arxiv.org/abs/2311.18259},
 }
 
@@ -4674,7 +4678,7 @@
 @InProceedings{qin2025robofactory,
     author    = {Qin, Yiran and others},
     title     = {RoboFactory: Exploring Embodied Agent Collaboration with Compositional Constraints},
-    booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision},
+    booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
     month     = {October},
     year      = {2025},
     pages     = {10075-10085}
@@ -5258,7 +5262,12 @@
 }
 
 @inproceedings{nematollahi2025lumos,
-  author       = {Iman Nematollahi and others},
+  author       = {Iman Nematollahi and
+                  Branton DeMoss and
+                  Akshay L. Chandra and
+                  Nick Hawes and
+                  Wolfram Burgard and
+                  Ingmar Posner},
   title        = {{LUMOS:} Language-Conditioned Imitation Learning with World Models},
   booktitle    = {{IEEE} International Conference on Robotics and Automation, {ICRA}
                   2025, Atlanta, GA, USA, May 19-23, 2025},
@@ -5419,10 +5428,3 @@
       year={2026},
       url={https://openreview.net/forum?id=kt51kZH4aG}
 }
-
-%% ctrl-world
-%% NS-VLA
-%% ACOT-VLA
-%% RoboAgent LeRobot
-%%%%%%%%%%%%%% ******对于mimicgen这篇文章所对应的内容要完全重新审视
-%% skilldiffuser Trust the PRoC3S: Solving Long-Horizon Robotics Problems with LLMs and Constraint Satisfaction BLADE
