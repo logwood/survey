@@ -1160,10 +1160,10 @@ cognitive planning must balance abstraction against executability,
 and integration design must balance semantic deliberation against control responsiveness. 
 The field therefore still lacks principled criteria for deciding which combinations are appropriate under different task and deployment conditions.
 
-Another unresolved issue is how to define the functional role of different models within an embodied system. 
-Current approaches are often discussed within a shared architectural landscape even though they operate at different levels, from perception and representation to world modeling, planning, and direct action generation. 
-These components are not directly comparable in role, timescale, or evaluation criteria. 
-What is still lacking is not only better individual models, but clearer functional decomposition and more principled ways of selecting and organizing them within a coherent embodied system.
+A separate unresolved issue is that functional level does not align cleanly with method category. 
+Even within a single class of approaches, cognitive planning, for instance, different variants may operate at different functional levels, ranging from perception and representation to world modeling, planning, and direct action generation.
+These methods therefore cannot be treated as directly comparable simply on the basis of category labels, because their functional role, temporal scope, and evaluation criteria often differ substantially. 
+What the field currently lacks is not only better-performing individual models, but also clearer principles for what different models should do and how they should be selected and organized within a coherent embodied system.
 
 \subsection{Deployment}\label{sec:challenge_deployment}
 
@@ -1221,7 +1221,8 @@ Always-on egocentric capture~\cite{yang2026aoe} explores how everyday human acti
 while correspondence-driven trajectory warping~\cite{liang2026tether} shows how single demonstrations can be adapted across novel scenes without relying on a physics engine. 
 Together, these developments point toward embodied systems that depend less on narrowly collected, platform-specific experience and more on representations and data pipelines that transfer across hardware, environments, and tasks.
 The relationship between learning and deployment is also changing. 
-Embodied-R1~\cite{liu2025embodiedr1} and VLANeXt~\cite{chen2026vlanext} show that progress in reasoning and action modeling can matter as much as scale, 
+Embodied-R1~\cite{liu2025embodiedr1} show that progress in reasoning and action modeling can matter as much as scale, 
+and VLANeXt~\cite{chen2026vlanext} shows that principled architectural design within a unified embodied framework can also lead to substantial performance gains.
 while WoVR~\cite{huang2026wovr} and ReinFlow~\cite{yuan2025reinflow} move beyond static pretraining through world-model-based post-training and online reinforcement learning. 
 These studies suggest that embodied agents can continue to adapt after deployment.
 As embodied systems move closer to real-world deployment, deployment-oriented evaluation and system trustworthiness are increasingly essential for reliable deployment.
