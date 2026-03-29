@@ -159,10 +159,10 @@
 \orcid{0009-0001-9496-0285}
 \email{xingzhizhou@std.uestc.edu.cn}
 \affiliation{%
- \institution{University of Electronic Science and Technology of China}
- \city{Chengdu}
- \state{Sichuan}
- \country{China}}
+  \institution{University of Electronic Science and Technology of China}
+  \city{Chengdu}
+  \state{Sichuan}
+  \country{China}}
 
 
 %%
@@ -608,7 +608,7 @@ Demonstration synthesis has likewise progressed from trajectory augmentation to 
 
 Generative world models extend automation by learning dynamics directly from data. Cosmos~\cite{nvidia2025cosmos} represents the internet-scale version of this idea, training video foundation models on web data to learn physical priors. IRASim~\cite{zhu2025irasim} grounds this in robot-specific interaction video, and DreamGen uses learned world models as both data generators and training environments~\cite{jang2025dreamge}. Their main limitation remains long-horizon physical consistency, which becomes critical once generated rollouts are used for planning or policy improvement.
 
-\subsection{Data Refinement}\label{sec:data_augmentation}
+\subsection{Data Refinement}\label{sec:data_refinement}
 
 Once data can be collected or synthesized at scale, the bottleneck shifts from availability to quality. We organize data refinement around four mechanisms: visual and viewpoint augmentation (\S\ref{sec:trajectory_redrawing}) expands the perceptual distribution, physically grounded augmentation (\S\ref{sec:dynamics_constraints}) preserves executability under kinematic and contact constraints, correction and recovery augmentation (\S\ref{sec:correction_recovery}) supplies the failure-recovery data absent from expert-only datasets, and data curation (\S\ref{sec:data_refinement}) filters and reweights heterogeneous datasets. 
 
@@ -624,7 +624,7 @@ Augmenting physical trajectories (e.g., shifting a grasp 5\,cm laterally) requir
 
 Expert-only datasets lack failure-recovery examples, leaving policies brittle at out-of-distribution states. DMD~\cite{zhang2024dmd} uses diffusion models to synthesize corrective observations from perturbed states, enabling DAgger-style recovery without physical collection. Complementing these offline methods, IntervenGen~\cite{pinto2024intervengen} and CR-DAgger~\cite{xu2025compliant} systematize online human intervention during autonomous rollouts, converting sparse operator corrections into dense recovery-aware training signal.
 
-\subsubsection{Data Curation and Verification}\label{sec:data_refinement}
+\subsubsection{Data Curation and Verification}\label{sec:data_cureation}
 
 As datasets scale to millions of heterogeneous trajectories, the bottleneck shifts from quantity to quality. Existing methods operate at three main granularities: dataset-level filtering or reweighting to suppress noisy and suboptimal demonstrations, as in Re-Mix~\cite{hejna2025remix}; segment- or transition-level pruning to remove redundancy and preserve informative or long-tail samples, as in SCIZOR~\cite{zhang2025scizor}; and policy-aware valuation methods that score data by downstream utility, as in CUPID~\cite{agia2025cupidcuratingdatarobot}. 
 
@@ -815,7 +815,7 @@ Integration architecture is also closely coupled with the available training dat
 
 \begin{table}[t]
 \centering
-\caption{Mapping from data regimes to integration architectures. Each row describes how a data tier (\S\ref{sec:eai_datasets}) shapes the coupling between cognitive planning (Brain, \S\ref{sec:embodied_brain}) and policy learning (Cerebellum, \S\ref{sec:policy_learning_low_level}). Paradigm codes follow Tables~\ref{tab:brain_paradigms}--\ref{tab:policy_paradigms}. Systems are discussed in \S\ref{sec:integration_models}.}\label{tab:data_learning_map}
+\caption{Illustrative correspondence between data regimes and integration architectures. Each row describes how a data tier (\S\ref{sec:eai_datasets}) shapes the coupling between cognitive planning (Brain, \S\ref{sec:embodied_brain}) and policy learning (Cerebellum, \S\ref{sec:policy_learning_low_level}). Paradigm codes follow Tables~\ref{tab:brain_paradigms}--\ref{tab:policy_paradigms}. Systems are discussed in \S\ref{sec:integration_models}.}\label{tab:data_learning_map}
 \renewcommand{\arraystretch}{1.3}
 \setlength{\tabcolsep}{3pt}
 \scriptsize
@@ -1111,90 +1111,124 @@ Transfer validity concerns whether conclusions drawn from proxies hold on physic
 
 Once a policy leaves the benchmark setting, the relevant question becomes operational cost. In principle this includes latency, compute, memory, and hardware load, but current evaluation remains dominated by energy-oriented measures: power decomposition~\cite{heredia2023ecdp}, normalized efficiency ratios and Cost of Transport~\cite{vidussi2021energy,heredia2025evaluating}, and multi-objective analyses trading off energy, execution time, and motion quality~\cite{rezali2025lstm}. Latency, runtime reliability, and compute footprint are still rarely reported in comparable ways, leaving deployment cost only partially quantified.
 
-Taken together, the four axes expose several structural gaps. Execution quality metrics have grown more fine-grained, but they still evaluate policies in isolation from the data that produced them and the hardware that runs them. Data-efficiency measures connect collection cost to learning outcomes, yet they do not predict whether that capability transfers. Generalization benchmarks and proxy evaluators are improving, but their validity under embodiment shift and contact-rich conditions remains weakly characterized. Deployment cost is the least developed axis overall. No unified framework currently integrates these dimensions, and more fundamentally, the interactions between them, such as how data quality affects generalization or how inference cost constrains execution quality, are rarely measured jointly.
+Taken together, the four axes expose several structural gaps. Execution quality metrics have grown more fine-grained, but they still evaluate policies in isolation from the data that produced them and the hardware that runs them. Data-efficiency measures connect collection cost to learning outcomes, yet they do not predict whether that capability transfers. Generalization benchmarks and proxy evaluators are improving, but their validity under embodiment shift and contact-rich conditions remains weakly characterized. 
+Deployment cost is the least developed axis overall. No unified framework currently integrates these dimensions, and more fundamentally, the interactions between them, such as how data quality affects generalization or how inference cost constrains execution quality, are rarely measured jointly.
+%%%要做修改
 
 \section{Open Challenges and Future Directions}\label{sec:challenges}
 
-The previous sections reviewed manipulation across hardware, data, learning, deployment, and evaluation. The remaining challenges arise both within these stages and at their interfaces. We group them into six categories: the first five follow the pipeline, and the sixth covers broader concerns across the stack.
+As discussed above, we find that the challenges in this field increasingly arise from the interactions among embodiment, data, model design, deployment constraints, and evaluation protocols.
+Hardware limits what can be sensed and collected; data regimes influence which learning strategies are viable; architectural choices affect deployability; and evaluation protocols shape which capabilities the field learns to prioritize. 
+We therefore group these challenges into six categories following the overall pipeline, while emphasizing the cross-stage dependencies that now dominate progress.
 
 \subsection{Embodiment}\label{sec:challenge_embodiment}
 
-Current manipulation systems still operate with limited sensing. Most rely on RGB or RGB-D input, while force-torque sensing is typically restricted to the wrist and tactile sensing remains uncommon. Yet insertion, deformable manipulation, and in-hand reorientation all require contact information that vision alone cannot provide reliably.
+Current robotic manipulation systems still operate within a narrow range of sensing and control capabilities. 
+Most existing work remains centered on RGB or RGB-D perception, while only a limited number of studies incorporate additional modalities such as tactile, force, or proprioceptive sensing. 
+As a result, current systems often struggle to fully capture the physical state of the world, especially in contact-rich, occluded, or rapidly changing environments.
 
-Addressing this gap requires fusing tactile, force-torque, and proprioceptive signals into unified observation encoders, though progress remains gated by sensor miniaturization and the lack of architectures that can align heterogeneous streams without manual calibration.
+Embodiment diversity introduces another major challenge. 
+Real robots differs a lot in end-effector morphology, kinematic structure, joint limits, sensing layout, compliance properties, and low-level control interfaces. 
+These differences propagate throughout the learning and deployment stack. Data collected on one robot often transfers poorly to another without embodiment-specific retargeting, while action spaces and control frequencies frequently require manual normalization. 
+As a result, seemingly similar policies can behave very differently when deployed on distinct hardware. 
+Existing cross-embodiment datasets and learning paradigms broaden platform coverage, but they do not eliminate the underlying mismatch across platforms.
 
-Hardware diversity further limits transfer. End-effectors, kinematics, control interfaces, and sensor layouts vary widely across platforms, and these differences propagate through the learning stack. Data collected on one robot often requires embodiment-specific retargeting before transfer to another. Cross-embodiment datasets such as OXE and DROID broaden platform coverage, but differences in action spaces, observation dimensions, and control frequencies still require substantial normalization. It therefore remains unclear whether progress will come from hardware standardization or from abstractions that decouple policy learning from platform details.
-
-An emerging alternative is to absorb morphological variation into the model itself. X-VLA~\cite{zheng2026xvla} shows that embodiment-specific soft prompts within a shared transformer backbone enable cross-platform generalization without per-robot fine-tuning. From the data side, IAIL~\cite{chen2026mint} aligns robot motions through high-level intentions annotated in natural language rather than direct motor copying, enabling behavior adaptation across seven distinct robots in multistep collaboration tasks.
-
-A similar mismatch appears at the control interface. Learned policies typically output end-effector targets or joint commands at a fixed rate, but the underlying servo loops, compliance controllers, and safety layers vary across robots and are rarely modeled explicitly. The relation between policy outputs and executed behavior therefore remains poorly understood.
-
-Closing this gap likely requires making the policy aware of the downstream control stack, for instance through learned compliance models or differentiable controller layers that expose servo-level dynamics to the policy optimizer.
+More fundamentally, the challenge is not only to support a broader range of embodiments, but to determine how embodiment itself should be incorporated into the learning problem. 
+This may require stronger abstraction layers, tighter integration with downstream control, or convergence toward more standardized platforms, but no dominant solution has yet emerged. 
+Embodiment should therefore be understood not as a solved substrate, but as an active source of uncertainty throughout the pipeline.
 
 \subsection{Data Acquisition and Reuse}\label{sec:challenge_data}
 
-Real-world manipulation data remains expensive to collect and difficult to reuse. Teleoperation requires skilled operators and careful calibration. Autonomous exploration can scale collection, but often with limited task diversity. Human demonstration capture provides another route, but introduces embodiment mismatch. As a result, existing datasets differ widely in embodiment, sensor configuration, action space, and annotation conventions, making cross-dataset reuse difficult without substantial alignment.
+The central data bottleneck remains the limited volume of usable real-world manipulation data.
+Teleoperation can provide high-quality and readily usable data, but it remains slow, expensive, and strongly operator-dependent. 
+More scalable forms of autonomous data collection alleviate this efficiency bottleneck, but often introduce a different one: data collected across robots, tasks, or operating conditions typically requires substantial alignment before it can be reused. 
+As a result, the field faces a persistent shortage not only because high-quality data is costly to acquire, but also because large volumes of heterogeneous data cannot be readily turned into usable supervision.
 
-An emerging direction is always-on egocentric capture~\cite{yang2026aoe}, which turns everyday human activity into a continuous data stream without dedicated recording sessions, potentially reducing collection cost by orders of magnitude.
-
-Simulation can reduce collection cost, but the sim-to-real gap remains substantial. Physics engines still approximate contact, friction, and deformable dynamics imperfectly, and policies trained in simulation often degrade after transfer. Procedural generation and learned world models can expand coverage, but ensuring that synthetic trajectories remain physically plausible is itself unresolved. The data regimes most valuable for robust manipulation---including failures, recoveries, contact-rich transitions, and cross-embodiment experience---are also the hardest to collect or synthesize.
-
-A promising direction is to bypass classical simulation entirely. Correspondence-driven trajectory warping~\cite{liang2026tether} adapts single demonstrations across novel scenes without a physics engine, and internet-scale video foundation models learn physical priors directly from web data. Whether such methods can maintain long-horizon physical consistency remains the central open question.
-
-It is also unclear whether manipulation data follows the same scaling behavior observed in language and vision. Because it is tied to specific physics, embodiments, and task structure, returns may saturate earlier or along different dimensions, and scaling dataset size alone may be less effective than improving diversity and quality.
-
-Data curation and mixture optimization may therefore matter more than raw scale: principled methods for selecting, weighting, and composing heterogeneous datasets could yield stronger policies from smaller but better-targeted collections.
+Simulation and synthetic generation can reduce collection cost, but they do not resolve the usable-data bottleneck cleanly. 
+Physics engines still struggle with contact, friction, compliance, and deformable dynamics, while procedurally generated environments and learned world models raise a broader concern: whether the data they produce is sufficiently realistic, physically grounded, and useful for downstream policy learning. 
+This limitation is especially severe for the data regimes that matter most in real deployment, including failures, recoveries, contact-rich transitions, and cross-embodiment adaptation.
 
 \subsection{Learning: Policy, Planning, and Integration}\label{sec:challenge_learning}
 
-Each policy family reflects a distinct trade-off. P1 (explicit continuous) policies are efficient but prone to mode averaging under multimodal demonstrations. P2 (discrete) policies capture multimodality more naturally, but sacrifice precision through quantization and incur sequential latency. P3 (iterative generative) policies provide the most expressive distributional modeling, yet diffusion- and flow-based methods remain computationally expensive and can be brittle under distribution shift.
+The learning stack still spans a broad and unsettled design space. 
+No single paradigm has yet emerged as a dominant solution, and more effective architectures may still remain undiscovered. 
+In the absence of such convergence, practical design choices continue to depend heavily on task structure, embodiment constraints, and deployment requirements.
 
-Planning remains similarly unsettled. Across the five cognitive planning categories (B1--B5), no dominant design has emerged. Semantic and logical planners (B1--B2) offer modularity, but depend heavily on their interfaces with motion planning. Grounded and geometric planners (B3--B4) tie reasoning more closely to physical structure, but still face a gap between intended and feasible behavior. Predictive planners (B5) learn forward dynamics, yet accumulated error limits long-horizon reliability.
+Even within the currently explored space, different learning components expose distinct trade-offs. 
+Policy learning must reconcile inference efficiency with expressive action modeling,
+cognitive planning must balance abstraction against executability, 
+and integration design must balance semantic deliberation against control responsiveness. 
+The field therefore still lacks principled criteria for deciding which combinations are appropriate under different task and deployment conditions.
 
-A key missing capability is closed-loop feasibility verification at planning time. Embodied-R1~\cite{liu2025embodiedr1} takes a step toward this by using reinforced fine-tuning to ground a compact VLM in spatial reasoning and pointing, achieving strong zero-shot generalization across manipulation tasks. Integrating such physically grounded reasoning into the planning loop would catch infeasible plans before they reach the controller, rather than letting failures surface only at execution.
-
-Integration across reasoning and control remains unresolved. Type I systems collapse the pipeline into a single forward pass, but struggle when semantic reasoning and motor control operate on different timescales. Type II systems separate deliberation from execution, but make the interface between them a central design problem. Type III systems maintain explicit world state, but must preserve geometric accuracy and temporal consistency under partial observability. No principled framework yet selects among B/P/Type combinations based on task, embodiment, and data regime.
-
-A promising future direction is to systematically explore the design space shared across model families. VLANeXt~\cite{chen2026vlanext} follows this direction by jointly optimizing foundational components, perception modules, and action modelling within a unified VLA framework, resulting in a compact and effective model shaped by principled design choices.
+Another unresolved issue is how to define the functional role of different models within an embodied system. 
+Current approaches are often discussed within a shared architectural landscape even though they operate at different levels, from perception and representation to world modeling, planning, and direct action generation. 
+These components are not directly comparable in role, timescale, or evaluation criteria. 
+What is still lacking is not only better individual models, but clearer functional decomposition and more principled ways of selecting and organizing them within a coherent embodied system.
 
 \subsection{Deployment}\label{sec:challenge_deployment}
 
-Deployment introduces a different set of bottlenecks. Before deployment, models must generalize across both simulation and embodiment; strong simulation performance often fails to transfer under real contact dynamics, sensing noise, or kinematic mismatch. During execution, models may need to adapt to friction changes, sensor drift, and out-of-distribution objects, yet aggressive adaptation can destabilize the base policy. At inference time, control must remain closed-loop and responsive on edge hardware with tight latency, memory, and power constraints, while quantization and compression can damage the action-sensitive dimensions most critical for manipulation.
+Deployment introduces a second layer of incompatibility across stages. 
+Pre-deployment preparation emphasizes transferability, compression, and sim-to-real alignment; 
+online alignment emphasizes adaptation under real friction, sensor noise, and out-of-distribution conditions; 
+inference-time execution emphasizes low latency, closed-loop responsiveness, and efficient edge deployment. 
+In practice, these objectives do not compose cleanly. 
+A model that is compression-friendly before deployment may be destabilized by aggressive adaptation; a model that adapts well online may become harder to quantize or serve efficiently; and a model that runs efficiently at inference time may sacrifice precisely those action-sensitive dimensions that matter most for manipulation quality.
 
-An emerging alternative is continuous autonomous self-improvement after deployment, where robots collect their own experience, detect failures, and refine policies through on-robot reinforcement learning, closing the loop between deployment and data acquisition. WoVR~\cite{huang2026wovr} takes a complementary approach by using learned world models as reliable simulators for RL post-training of VLA policies, reducing the need for costly physical interaction while explicitly regulating the reliability of model-based rollouts.
-
-Another important challenge is how adaptation during training can translate into efficient and reliable policy execution at deployment. Existing methods often improve specific components in isolation, without fully addressing the interface between online adaptation and deployable inference.
-
-A possible way forward is to co-design adaptation and compression from the outset. This will likely require architectures that expose modular adaptation interfaces while preserving compression-friendly structure, which remain largely unexplored.
-ReinFlow~\cite{yuan2025reinflow} illustrates one facet of this tension by enabling online RL fine-tuning of flow matching policies, but its adaptation loop does not yet account for downstream compression or serving constraints. Jointly optimizing adaptation and deployability within a single framework remains an open problem that is unlikely to admit a simple solution.
+This means that deployment cannot be understood as a simple final stage appended after training. 
+It is better viewed as a sequence of tightly coupled transformations in which earlier design decisions constrain later ones, and later deployment needs feed back into what should have been optimized upstream. 
+Current methods still tend to optimize these stages separately, even though the practical system must satisfy them jointly. 
+The broader challenge is therefore to make preparation, adaptation, and execution mutually compatible, which remains an open problem that is unlikely to admit a simple solution.
 
 \subsection{Evaluation}\label{sec:challenge_evaluation}
+ 
+Existing metrics have become more fine-grained for execution quality, data efficiency, and transfer validity, but they are still concentrated around a relatively narrow set of task formats and embodiments. 
+Execution metrics are still largely tailored to single-arm tabletop manipulation, sample-efficiency metrics often emphasize learning outcome over robustness, and sim-to-real proxies remain weakly calibrated under embodiment shift, contact-rich dynamics, and long-horizon execution.
+As a result, existing evaluation provides only a partial view of the capabilities that matter for real-world deployment.
 
-Current evaluation remains limited in both scope and standardization. Most execution metrics target relatively simple single-arm tabletop settings and do not transfer cleanly to bimanual, mobile, or contact-rich manipulation. Data-efficiency metrics relate collection cost to learning outcome, but say little about generalization. Sim-to-real proxy evaluators are improving, yet their validity under embodiment shift and novel contact conditions remains weakly understood.
 
-Multi-dimensional metrics that jointly capture execution quality, robustness, and data efficiency are needed. Systematic sim-to-real correlation studies that vary embodiment and contact conditions would also clarify when proxy evaluation is trustworthy.
+Existing benchmark environments remain largely task-specific and are often built around preferred task formats, observation settings, and evaluation criteria. 
+As a result, they tend to privilege capabilities that are easy to standardize and compare, while offering only limited visibility into the robustness, transferability, and long-horizon interaction skills required in real deployment. 
+Once a small set of such benchmark suites becomes dominant, these built-in preferences begin to shape the evaluation ecosystem more broadly. 
+Research then naturally adapts to their task distributions, observation formats, and success criteria, which leads model development to prioritize benchmark compatibility over the broader capabilities required for embodied manipulation.
 
-Benchmark design also shapes what the field learns to optimize. When a small number of suites such as CALVIN, LIBERO, and SimplerEnv dominate evaluation, research naturally gravitates toward their task distributions and success criteria. Architectures that do not fit those formats then become harder to compare fairly. Benchmarks therefore do not merely measure progress; they also steer model design.
+Real-world evaluation poses a separate reproducibility challenge. 
+Results collected in different laboratories are rarely directly comparable, even when task descriptions appear similar, because embodiment, calibration, sensor placement, scene layout, intervention policy, and environmental conditions often differ substantially. 
+Without stronger shared physical protocols and standardized real-world test procedures, validation on physical robots remains fragmented and difficult to reproduce across settings.
 
-Broadening the benchmark ecosystem to include contact-rich, deformable, and multi-agent tasks with reporting protocols beyond binary success is a necessary corrective.
+\subsection{Trustworthiness}\label{sec:challenge_safety}
 
-Real-world evaluation remains underdeveloped in two distinct senses. First, results are often difficult to reproduce across labs because embodiment, calibration, scene layout, sensing conditions, and operator intervention vary substantially. Second, even when real-world experiments are conducted, evaluation is still frequently reduced to binary task success, which obscures important differences in manipulation quality, robustness, recovery, and efficiency.
+Learned embodied systems remain vulnerable across multiple levels of the stack. 
+Higher-level perception and reasoning modules increasingly rely on large vision-language models, and therefore inherit similar attack surfaces, including backdoor attacks and other forms of semantic manipulation. 
+Lower-level policies and control interfaces, by contrast, often lack robustness to common perturbations, sensor noise, and physical disturbances. 
+As a result, embodied systems can be compromised both at the semantic level and at the execution level. 
+This leaves a gap between nominal policy competence and truly trustworthy deployment.
 
-Shared evaluation protocols that specify calibration procedures, scene configurations, and multi-dimensional success criteria are a prerequisite for cross-lab reproducibility. Online real-robot evaluation platforms such as RoboChallenge~\cite{wang2025robochallenge} take a step in this direction by enabling large-scale standardized testing of VLA models on physical hardware, decoupling evaluation from individual lab setups.
+Current embodied manipulation systems expose limited visibility into how perception is translated into action. 
+When failures arise, it is often unclear whether the problem lies in observation encoding, reasoning, action representation, or interface mismatch with downstream controllers. 
+Hierarchical and chain-of-thought-style systems provide more visible intermediates, but these intermediates are not guaranteed to faithfully reflect the true basis of the final decision. 
 
-\subsection{Safety, Interpretability, and Broader Concerns}\label{sec:challenge_safety}
+A further challenge concerns how embodied systems interact with humans in shared environments. 
+Trust depends not only on task success, but also on whether people can anticipate system behavior, interpret its intentions, and intervene safely when needed. 
+Current systems still offer limited support for such calibrated collaboration, raising questions about responsibility, liability, and acceptable deployment boundaries.
 
-Safety in embodied manipulation cuts across the full stack. At the model level, learned policies remain vulnerable to adversarial perturbations and backdoor attacks. At the inference level, action chunking in generative policies introduces systematic reaction delays when the environment changes mid-execution. At the control level, the interface between learned policies and low-level safety monitors is often implicit, with no formal guarantee that outputs respect joint, force, or collision constraints.
+\subsection{Emerging Directions}\label{sec:future_directions}
 
-Recent work has begun to characterize both the attack surface and the defense mechanisms. BadVLA~\cite{liang2025badvla} shows that objective-decoupled optimization can inject stealthy backdoors into VLA models, confirming that this threat is practical. On the defense side, SafeVLA~\cite{zhang2025safevla} integrates safety constraints directly into VLA training via constrained learning, achieving substantial safety improvement without degrading task performance. Differentiable safety layers that project policy outputs onto constraint-satisfying manifolds before execution are another route to formal guarantees. Adaptive chunk lengths that shorten under high uncertainty would further reduce the reaction delays inherent in fixed-length action chunking.
+Recent work suggests that the field is beginning to move beyond isolated module-level improvements toward broader system-level directions. 
+On the embodiment side, X-VLA~\cite{zheng2026xvla} addresses morphological variation through embodiment-specific soft prompts within a shared backbone, 
+while IAIL~\cite{chen2026mint} aligns behavior at the level of intention, allowing robots with different morphologies to learn from one another without requiring trajectory-level correspondence. 
+At the same time, data pipelines are becoming more reusable. 
+Always-on egocentric capture~\cite{yang2026aoe} explores how everyday human activity can be turned into a scalable data stream without dedicated recording sessions, 
+while correspondence-driven trajectory warping~\cite{liang2026tether} shows how single demonstrations can be adapted across novel scenes without relying on a physics engine. 
+Together, these developments point toward embodied systems that depend less on narrowly collected, platform-specific experience and more on representations and data pipelines that transfer across hardware, environments, and tasks.
+The relationship between learning and deployment is also changing. 
+Embodied-R1~\cite{liu2025embodiedr1} and VLANeXt~\cite{chen2026vlanext} show that progress in reasoning and action modeling can matter as much as scale, 
+while WoVR~\cite{huang2026wovr} and ReinFlow~\cite{yuan2025reinflow} move beyond static pretraining through world-model-based post-training and online reinforcement learning. 
+These studies suggest that embodied agents can continue to adapt after deployment.
+As embodied systems move closer to real-world deployment, deployment-oriented evaluation and system trustworthiness are increasingly essential for reliable deployment.
+RoboChallenge~\cite{wang2025robochallenge} advances standardized large-scale real-robot evaluation, while SafeVLA~\cite{zhang2025safevla} and recent work on mechanistic interpretability~\cite{haon2025mechinterp} emphasize reliability, robustness, and transparency under deployment conditions. 
 
-Interpretability remains equally limited. Current VLA and diffusion-based policies provide little visibility into how perception is translated into action, making failures difficult to predict, diagnose, or certify. Hierarchical and chain-of-thought-style systems (Type II) expose intermediate reasoning steps, but those steps are not guaranteed to reflect the true basis of the final decision.
-
-Mechanistic interpretability offers a more principled alternative. H\"aon et al.~\cite{haon2025mechinterp} show that semantically meaningful neurons within VLA models can be identified and directly activated to steer robot behavior in real time without fine-tuning, providing both interpretability and a new zero-shot control interface.
-
-Human oversight is also unresolved. Existing systems tend either toward full autonomy or fixed intervention triggers, with limited ability to determine when supervision is actually needed. Operator trust depends on interpretable behavior, predictable failure modes, and graceful degradation, yet current architectures provide limited support for all three. Broader concerns will also grow in importance, including the environmental cost of large-scale training, the labor implications of autonomous manipulation, and the governance of embodied AI in shared physical spaces.
-
-Calibrated uncertainty estimation that triggers human intervention only when confidence falls below a task-specific threshold is one path toward a middle ground. Governance frameworks covering liability, data ownership, and operational boundaries for embodied AI in shared physical spaces will also become increasingly necessary as deployment scales beyond controlled laboratories.
+Even with this progress, the field still lacks a clear end-to-end framework that connects embodiment, data, reasoning, control, deployment, evaluation, and safety. 
+Without such a framework, advances in individual components are unlikely to translate reliably into robust embodied systems.
 
 \section{Conclusion}
 
