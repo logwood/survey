@@ -1,0 +1,117 @@
+\documentclass{article}
+\usepackage[a4paper,margin=0.6in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage[edges]{forest}
+\usepackage{amsmath}
+\pagestyle{empty}
+
+\definecolor{hidden-blue}{RGB}{194,232,247}
+\definecolor{darkgray}{gray}{0.35}
+\newcommand{\eg}{e.g.,}
+
+\makeatletter
+\renewcommand{\ref}[1]{vla}
+\renewcommand{\cite}[1]{}
+\makeatother
+
+\tikzset{
+    my-box/.style={rectangle,draw=black,rounded corners,text opacity=1,minimum height=1.5em,minimum width=5em,inner sep=2pt,align=center,fill opacity=.5},
+    leaf-2d/.style={my-box,fill=yellow!32,text=black,font=\normalsize,inner xsep=5pt,inner ysep=4pt,align=left,text width=40em},
+    leaf-3d/.style={my-box,fill=hidden-blue!32,text=black,font=\normalsize,inner xsep=5pt,inner ysep=4pt,align=left,text width=40em},
+    leaf-summary/.style={my-box,fill=yellow!32,text=black,font=\normalsize,inner xsep=5pt,inner ysep=4pt,align=left,text width=45em},
+}
+
+\begin{document}
+\begin{center}
+\resizebox{\textwidth}{!}{%
+\begin{forest}
+    forked edges,
+    for tree={
+        grow=east,
+        reversed=true,
+        anchor=base west,
+        parent anchor=east,
+        child anchor=west,
+        base=left,
+        font=\large,
+        rectangle,
+        draw=black,
+        rounded corners,
+        align=center,
+        minimum width=4em,
+        edge+={darkgray, line width=1pt},
+        s sep=3pt,
+        inner xsep=2pt,
+        inner ysep=4pt,
+        line width=1.1pt,
+        ver/.style={rotate=90, child anchor=north, parent anchor=south, anchor=center, inner xsep=5pt},
+    },
+    where level=1{text width=10em, font=\normalsize, align=center, inner xsep=5pt, inner ysep=3pt}{},
+    where level=2{text width=7em, font=\normalsize, align=center, inner xsep=3pt}{},
+    where level=3{text width=10.5em, font=\normalsize, align=left, inner xsep=5pt}{},
+    where level=4{font=\normalsize, align=left}{},
+[{Vision-Language-Action\\ Models (\S~\ref{subsec:vla})}, ver
+    [{2D Vision as Input}, ver, text width=8em
+        [{Model-oriented}
+            [{Non-LLM-based VLA}
+                [{\eg RT-1, Octo, VIMA, HULC, HULC++, SEM, Bi-LAT, RoboBERT,\\ Dita, OTTER, RoboGround, BAKU, MDT, STEER, MRest, LISA, GR-1}, leaf-2d]
+            ]
+            [{LLM/VLM-based VLA}
+                [{\eg RT-2, OpenVLA, OpenVLA-OFT, $\pi$0, $\pi$0.5, RoboFlamingo, ObjectVLA, UniVLA,\\ ChatVLA, Interleave-VLA, HybridVLA, GR-3, DexVLA, CogACT, RoboVLMs,\\ Magma, Diffusion-VLA, RoboMamba}, leaf-2d]
+            ]
+            [{Latent Learning for VLA}
+                [{\eg MemoryVLA, UniVLA, Villa-x, VQ-VLA, QueST, DeeR-VLA}, leaf-2d]
+            ]
+            [{Hierarchical VLA}
+                [{\eg HiRobot, HiBerNAC, PIVOT-R, RT-H}, leaf-2d]
+            ]
+            [{Dual-/Multi-system VLA}
+                [{\eg DP-VLA, HiRT, RationalVLA, TriVLA, G0, Fast-in-Slow, Hume, OpenHelix,\\ RoboDual, LCB}, leaf-2d]
+            ]
+        ]
+        [{Model-agnostic}
+            [{Inference-time\\ Optimization}
+                [{\eg VOTE, RoboMonkey, CronusVLA, OC-VLA, AMS, AR-VRM, VLAPS,\\ MoIRA, RICL, PD-VLA, CEED-VLA}, leaf-2d]
+            ]
+            [{Reinforcement Learning\\ and Post-training}
+                [{\eg VLA-RL, RIPT-VLA, ConRFT, ThinkAct, TGRPO, ManipLVM-R1, CO-RFT, RLDG,\\ V-GPS, RLRC, VLA-RFT}, leaf-2d]
+            ]
+            [{Learning with Auxiliary\\ Tasks}
+                [{\eg ECoT, CoT-VLA, TraceVLA, Seer, DreamVLA, ReconVLA, FlowVLA, $\pi$0.5,\\ OneTwoVLA, GraspVLA, DIARC, RAD, UP-VLA, Emma-X, RT-H, VLA-OS,\\ ControlVLA, CrayonRobo, A0, Seer, LLARVA, MOO, GO-1}, leaf-2d]
+            ]
+            [{Efficiency}
+                [{\eg VLA-Adapter, CogVLA, TTF-VLA, Spec-VLA, EdgeVLA, BitVLA, SmolVLA,\\ FlashVLA, SQIL, NORA, TinyVLA, BEAST, EfficientVLA, MoLe-VLA, PD-VLA,\\ VLA-Cache, Flower, TAIL, CEED-VLA, SP-VLA}, leaf-2d]
+            ]
+            [{Robustness}
+                [{\eg SAFE, SwitchVLA, BadVLA, RACER, FAIL-Detect, BYOVLA}, leaf-2d]
+            ]
+            [{Long-horizon and\\ Complex Tasks}
+                [{\eg LongVLA, LoHoVLA, AgenticRobot}, leaf-2d]
+            ]
+        ]
+    ]
+    [{3D Vision as Input}, ver, text width=8em
+        [{Model-oriented}
+            [{3D Embedding and\\ Fusion}
+                [{\eg SpatialVLA, 3D-CAVLA, GeoVLA, FP3, VoxAct-B, VIHE, OG-VLA, RoboMM}, leaf-3d]
+            ]
+            [{Spatial Alignment and\\ Multi-view Guidance}
+                [{\eg BridgeVLA, Learning to See and Act}, leaf-3d]
+            ]
+            [{3D World Models and\\ Prediction}
+                [{\eg Evo-0, GraphCoT-VLA, ChainedDiffuser, SGR}, leaf-3d]
+            ]
+        ]
+        [{Model-agnostic}
+            [{Task-aware view planning (\eg TAVP)}, leaf-3d]
+        ]
+    ]
+]
+\end{forest}%
+}
+\end{center}
+\end{document}

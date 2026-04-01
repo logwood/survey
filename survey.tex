@@ -312,7 +312,7 @@ L0 denotes hard real-time kernels for microsecond-level motor-control determinis
 \scriptsize
 
 \begin{tabular}{
-  c
+  l
   p{0.10\linewidth}
   p{0.15\linewidth}
   p{0.34\linewidth}
@@ -375,7 +375,7 @@ Low-latency AI \\
 \midrule
 
 \textbf{Zenoh-Flow}~\cite{baldoni2023zenohflow} &
-DAG Orchestration &
+DAG &
 Zenoh Protocol &
 Communication and query protocol that unifies pub/sub, storage, and distributed computation across devices ranging from embedded nodes to edge and cloud systems. &
 Cloud &
@@ -679,14 +679,21 @@ Table~\ref{tab:brain_paradigms} summarizes the paradigm-level properties and rep
 B1 methods compile human intent into executable semantic specifications.
 Early work framed this as probabilistic alignment between language and affordance. 
 SayCan~\cite{brohan2023can} grounds abstract plans by scoring primitive skills against both semantic relevance and execution feasibility, but remains limited to atomic actions without compositional logic. 
-Program synthesis goes further. CaP~\cite{liang2022code} generates executable Python from natural language, and ProgPrompt~\cite{singh2022progprompt} embeds precondition assertions directly into the prompt structure to enforce logical constraints. A parallel line generates objective functions and leaves motor optimization to downstream solvers; Language to Reward~\cite{tan2023l2r} synthesizes programmatic reward functions that decouple semantic task specification from continuous trajectory optimization. For structured control flow, LLM-as-BT~\cite{ao2025llmbt} generates modular behavior trees that support reactive switching and error recovery. Demo2Code~\cite{wang2023demo2code} extends the input modality by translating visual demonstrations into symbolic code, grounding program synthesis in physical observation alongside language. A shared limitation of B1 methods is that their outputs remain in the semantic layer and do not engage with the geometric or dynamic structure of the physical world; execution quality depends entirely on the downstream skill API or solver.
+Program synthesis goes further. CaP~\cite{liang2022code} generates executable Python from natural language, and ProgPrompt~\cite{singh2022progprompt} embeds precondition assertions directly into the prompt structure to enforce logical constraints. 
+A parallel line generates objective functions and leaves motor optimization to downstream solvers; Language to Reward~\cite{tan2023l2r} synthesizes programmatic reward functions that decouple semantic task specification from continuous trajectory optimization. 
+Text2Touch~\cite{field2025text2touch} extends this reward-synthesis paradigm to tactile dexterous manipulation, using LLM-designed reward functions over tactile and proprioceptive signals for real-world in-hand control.
+For structured control flow, LLM-BT~\cite{zhou2024llmbt} generates behavior trees that can be dynamically updated under environmental changes, enabling adaptive execution and recovery. 
+LLM-as-BT~\cite{ao2025llmbt} generates modular behavior trees that support reactive switching and error recovery. 
+Demo2Code~\cite{wang2023demo2code} extends the input modality by translating visual demonstrations into symbolic code, grounding program synthesis in physical observation alongside language. 
+A shared limitation of B1 methods is that their outputs remain in the semantic layer and do not engage with the geometric or dynamic structure of the physical world; execution quality depends entirely on the downstream skill API or solver.
 
 \subsubsection{Long-Horizon Task Decomposition}\label{sec:task_decomp}
 
 B2 methods organize long-horizon goals into ordered, dependency-aware task structure. 
 LLM+P~\cite{liu2023llmp} addresses this by translating natural language into PDDL and delegating reasoning to classical solvers that guarantee feasibility. 
 L3M+P~\cite{agarwal2025l3mp} further enables the solver to learn domain transition models from experience, reducing reliance on pre-defined rules. 
-Classical solvers, however, face combinatorial explosions in large environments. SayPlan~\cite{rana2023sayplan} mitigates this by anchoring search in 3D scene graphs, hierarchically pruning irrelevant regions before planning. Robustness requires closing the loop: Inner Monologue~\cite{huang2023inner} injects environmental feedback into the LLM context window for in-context replanning after execution failure. Long horizons also require maintaining world state. Statler~\cite{yoneda2024statler} addresses this by coupling planning with explicit world-state memory, reducing errors caused by forgotten object states. B2 methods remain fundamentally symbolic: they depend on accurate world-state representations and degrade when perception is noisy or when physical effects are not captured by the symbolic model.
+To improve executability under embodied scene constraints, TAPA~\cite{wu2023tapa} aligns LLM planning with visual perception, grounding action sequences in the objects actually present in the environment. 
+Classical solvers, however, face combinatorial explosions in large environments. SayPlan~\cite{rana2023sayplan} mitigates this by anchoring search in 3D scene graphs, hierarchically pruning irrelevant regions before planning.
 
 \subsubsection{Grounded Multimodal Reasoning}\label{sec:multimodal_reasoning}
 
@@ -721,12 +728,12 @@ B5 methods evaluate candidate actions by predicting future states, observations,
 \setlength{\tabcolsep}{2.5pt}
 \scriptsize
 \begin{tabular}{
-  c
-  c
-  c
-  c
-  c
-  c
+  l
+  l
+  l
+  l
+  l
+  l
   p{0.22\linewidth}
 }
 \toprule
@@ -741,12 +748,12 @@ B5 methods evaluate candidate actions by predicting future states, observations,
 \multirow{4}{*}{\textbf{B1}}
  & \multirow{4}{*}{$\mathcal{K}_2$} & Probabilistic Alignment & Semantic & Skill ranking & Skill API & SayCan~\cite{brohan2023can} \\
  & & Program Synthesis & Semantic & Executable code & Runtime interp. & CaP~\cite{liang2022code}, ProgPrompt~\cite{singh2022progprompt}, Demo2Code~\cite{wang2023demo2code} \\
- & & Reward Synthesis & Semantic & Reward functions & RL optimizer & Lang.\ to Reward~\cite{tan2023l2r} \\
- & & Structured Control Flow & Logical & BT / XML & Reactive exec. & LLM-as-BT~\cite{ao2025llmbt} \\
+ & & Reward Synthesis & Semantic & Reward functions & RL optimizer & Language to Reward~\cite{tan2023l2r} \\
+ & & Structured Control Flow & Logical & BT / XML & Reactive exec. & LLM-BT~\cite{zhou2024llmbt}, LLM-as-BT~\cite{ao2025llmbt} \\
 \midrule
 \multirow{4}{*}{\textbf{B2}}
  & \multirow{4}{*}{$\mathcal{K}_2$} & Formal Solvers & Logical & Symbolic task plan & Classical planner & LLM+P~\cite{liu2023llmp}, L3M+P~\cite{agarwal2025l3mp} \\
- & & Semantic Search & Logical & Sub-task sequence & Motion planner & SayPlan~\cite{rana2023sayplan} \\
+ & & Semantic Search & Logical & Sub-task sequence & Motion planner & TAPA~\cite{wu2023tapa}, SayPlan~\cite{rana2023sayplan} \\
  & & Closed-Loop Feedback & Logical & Re-plan & Skill API & Inner Monologue~\cite{huang2023inner} \\
  & & State Maintenance & Logical & Maintained world state & Runtime interp. & Statler~\cite{yoneda2024statler} \\
 \midrule
@@ -760,9 +767,11 @@ B5 methods evaluate candidate actions by predicting future states, observations,
  & & 3D Neural Fields & Geometric & Neural field / 3D repr. & Motion planner & F3RM~\cite{shen2023distilled}, D3Fields~\cite{wang2025d3fields} \\
  & & Constraint Reasoning & Geometric & Value map / keypts & Trajectory opt. & VoxPoser~\cite{huang2023voxposer}, ReKep~\cite{huang2024rekep} \\
 \midrule
-\multirow{2}{*}{\textbf{B5}}
- & \multirow{2}{*}{$\mathcal{K}_2/\mathcal{K}_3$} & Video / World Simulation & Predictive & Future frames & Inverse dynamics & UniPi~\cite{du2023unipi}, UWM~\cite{zhu2025uwm}, RoboDreamer~\cite{zhou2024robodreamer}, V-JEPA2~\cite{assran2025vjepa} \\
- & & Physics-Constrained Prediction & Predictive & Trajectory / latent dyn. & MPC / planner & Deep Lagrangian~\cite{schulze2025lagrangian}, Zhang et al.~\cite{zhang2025particlegrid}, LUMOS~\cite{nematollahi2025lumos} \\
+\multirow{3}{*}{\textbf{B5}}
+ & \multirow{3}{*}{$\mathcal{K}_2/\mathcal{K}_3$}
+ & Future Video Prediction & Predictive & Future frames & Inverse dynamics & UniPi~\cite{du2023unipi}, RoboDreamer~\cite{zhou2024robodreamer} \\
+ & & Latent World Simulation & Predictive & Latent dynamics & Policy evaluation & UWM~\cite{zhu2025uwm}, V-JEPA2~\cite{assran2025vjepa} \\
+ & & Physics-Constrained Prediction & Predictive & Trajectory / latent dyn. & MPC / planner & Schulze et al.~\cite{schulze2025lagrangian},~\cite{zhang2025particlegrid},~\cite{nematollahi2025lumos} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -807,13 +816,13 @@ P3 policies can model complex action distributions, but the same generative flex
 \setlength{\tabcolsep}{2.5pt}
 \scriptsize
 \begin{tabular}{
-  c
-  c
-  c
-  c
-  c
-  c
-  c
+  l
+  l
+  l
+  l
+  l
+  l
+  l
   p{0.20\linewidth}
 }
 \toprule
@@ -832,16 +841,16 @@ P3 policies can model complex action distributions, but the same generative flex
  & & Recovery \& Transfer & Cont.\ / resid. & {100M--1B} & 2D / video & Goal-conditioned & MimicPlay~\cite{wang2023mimicplay},~\cite{ren2025motion_tracks} \\
 \midrule
 \multirow{4}{*}{\textbf{P2}}
- & \multirow{4}{*}{$\mathcal{K}_2/\mathcal{K}_3$} & Uniform \& Spatial Discr. & Fixed bins & {1B--55B} & 2D / voxel & Categorical modes & RT-1~\cite{brohan2023rt1}, Gato~\cite{reed2022generalistagent}, PerAct~\cite{shridhar2022peract} \\
+ & \multirow{4}{*}{$\mathcal{K}_2/\mathcal{K}_3$} & Uniform \& Spatial Discr. & Fixed bins & {1B--55B} & 2D / voxel & Categorical modes & RT-1~\cite{brohan2023rt1}, Gato~\cite{reed2022generalistagent},~\cite{shridhar2022peract} \\
  & & Learned Quantization & Codebook & {100M--1B} & 2D & Codebook modes & BeT~\cite{shafiullah2022bet}, VQ-BeT~\cite{lee2024vqbet},~\cite{gong2025carp} \\
  & & Prompted LM Tokens & LM tokens & {1B--10B+} & 2D / multi-modal & Prompt-conditioned & VIMA~\cite{jiang2023vima}, GR-1~\cite{wu2023gr1},~\cite{fu2025icil} \\
- & & Autoregr.\ Generalists & LM tokens / chunks & {1B--10B+} & 2D / multi-modal & Chunked categorical & Seer~\cite{tian2024seer}, ARP~\cite{zhang2025arp} \\
+ & & Autoregr.\ Generalists & LM tokens & {1B--10B+} & 2D / multi-modal & Chunked categorical & Seer~\cite{tian2024seer}, ARP~\cite{zhang2025arp} \\
 \midrule
 \multirow{4}{*}{\textbf{P3}}
  & \multirow{4}{*}{$\mathcal{K}_1/\mathcal{K}_3$} & Diffusion Foundations & Denoised cont. & {$<$500M} & 2D & Score-based refine. & Chi et al.~\cite{chi2023diffusion}, Diffuser~\cite{janner2022diffuser}, Liu et al.~\cite{liu2022structdiffusion} \\
  & & 3D Geometric Enhanc. & Denoised cont. & {$<$500M} & 3D / point cloud & Equivariant refine. & DP3~\cite{ze2024diffusion} \\
  & & Flow \& Acceleration & Flow cont. & {$<$500M} & 2D / 3D & OT flow & Prasad et al.~\cite{prasad2024consistency},~\cite{xue2025recflow} \\
- & & Generalist Scaling & Denoised cont. & {1B--8B} & 2D / multi-view & Score-based refine. & Octo~\cite{octomodelteam2024}, RDT-1B~\cite{liu2025rdtb}, FLOWER~\cite{reuss2025flower} \\
+ & & Generalist Scaling & Denoised cont. & {1B--8B} & 2D / multi-view & Score-based refine. & Octo~\cite{octomodelteam2024},~\cite{liu2025rdtb},~\cite{reuss2025flower} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1053,7 +1062,7 @@ Table~\ref{tab:deployment_lifecycle} summarizes the main bottlenecks and represe
 \setlength{\tabcolsep}{3pt}
 \scriptsize
 \begin{tabular}{
-  c
+  l
   p{0.24\linewidth}
   p{0.33\linewidth}
   p{0.30\linewidth}
@@ -1116,32 +1125,32 @@ Section~\ref{sec:embodiment_hardware}--Section~\ref{sec:embodiment_method} trace
 \setlength{\tabcolsep}{3pt}
 \scriptsize
 \begin{tabular}{
-  c
-  p{0.21\linewidth}
-  p{0.33\linewidth}
-  p{0.29\linewidth}
+  l
+  l
+  l
+  l
 }
 \toprule
 \textbf{Dimension} & \textbf{Metric Category} & \textbf{Representative Metrics} & \textbf{Representative Works} \\
 \midrule
-\multirow{3}{*}{\shortstack{\textbf{Execution}\\\textbf{Quality}\\(Section~\ref{sec:eval_task_execution})}}
- & Task Completion & Stage-wise Success, Task Progression & RoboEval~\cite{wang2025roboeval}, REALM~\cite{sedlacek2025realm} \\
- & Trajectory Smoothness & SPARC, LDLJ, Path Length, Jerk & SPARC~\cite{balasubramanian2015sparc}, LDLJ~\cite{antonelli2023movement}, RoboEval~\cite{wang2025roboeval} \\
+\multirow{3}{*}{\shortstack{\textbf{Execution Quality}}}
+ & Task Completion & Stage-wise Success, Task Progression & RoboEval~\cite{wang2025roboeval},~\cite{sedlacek2025realm} \\
+ & Trajectory Smoothness & SPARC, LDLJ, Path Length, Jerk & SPARC~\cite{balasubramanian2015sparc}, LDLJ~\cite{antonelli2023movement},~\cite{wang2025roboeval} \\
  & Dual-Arm Coordination & Velocity Divergence, Height Discrepancy & RoboEval~\cite{wang2025roboeval} \\
 \midrule
-\multirow{3}{*}{\shortstack{\textbf{Data}\\\textbf{Efficiency \& Quality}\\(Section~\ref{sec:eval_data_sample})}}
+\multirow{3}{*}{\shortstack{\textbf{Data Efficiency \& Quality}}}
  & Info-theoretic & Mutual Information, Demo Contribution & DemInf~\cite{hejna2025robot} \\
  & Gradient-based & Influence Scores, Hessian-based Valuation & CUPID~\cite{agia2025cupidcuratingdatarobot} \\
  & Sample Efficiency & AULC & General IL benchmarks \\
 \midrule
-\multirow{3}{*}{\shortstack{\textbf{Generalization}\\\textbf{\& Transfer}\\(Section~\ref{sec:eval_benchmarking})}}
- & Human Preference & Pairwise Comparison, VLM-based Eval & RoboArena~\cite{atreya2025roboarena}, AutoEval~\cite{zhou2025autoeval} \\
+\multirow{3}{*}{\shortstack{\textbf{Generalization \& Transfer}}}
+ & Human Preference & Pairwise Comparison, VLM-based Eval & RoboArena~\cite{atreya2025roboarena},~\cite{zhou2025autoeval} \\
  & OOD Generalization & $\Delta SR_{\text{OOD}}$, RMSD & REALM~\cite{sedlacek2025realm} \\
- & Sim-to-Real \& World Models & MMRV, VLM-as-Judge, $\Delta SR$ & SIMPLER~\cite{li2025simpler}, Ctrl-World~\cite{guo2026ctrlworld} \\
+ & Sim-to-Real \& World Models & MMRV, VLM-as-Judge, $\Delta SR$ & SIMPLER~\cite{li2025simpler},~\cite{guo2026ctrlworld} \\
 \midrule
-\multirow{3}{*}{\shortstack{\textbf{Deployment}\\\textbf{Cost}\\(Section~\ref{sec:eval_energy})}}
+\multirow{3}{*}{\shortstack{\textbf{Deployment Cost}}}
  & Energy Decomposition & $P_{\text{elec}}$, $P_{\text{friction}}$, $P_{\text{copper}}$, $P_{\text{mech}}$ & ECDP~\cite{heredia2023ecdp} \\
- & Normalized Efficiency & $\eta_E(\mathbf{q})$, $f_U/f_C/f_R$, CoT & Vidussi et al.~\cite{vidussi2021energy}, Heredia et al.~\cite{heredia2025evaluating} \\
+ & Normalized Efficiency & $\eta_E(\mathbf{q})$, $f_U/f_C/f_R$, CoT & Vidussi et al.~\cite{vidussi2021energy},~\cite{heredia2025evaluating} \\
  & Multi-objective Optimization & Pareto front via surrogate models & Rezali et al.~\cite{rezali2025lstm} \\
 \bottomrule
 \end{tabular}
@@ -1284,7 +1293,9 @@ Always-on egocentric capture~\cite{yang2026aoe} explores how everyday human acti
 while correspondence-driven trajectory warping~\cite{liang2026tether} shows how single demonstrations can be adapted across novel scenes without relying on a physics engine. 
 Together, these developments point toward embodied systems that depend less on narrowly collected, platform-specific experience and more on representations and data pipelines that transfer across hardware, environments, and tasks.
 The relationship between learning and deployment is also changing. 
-Embodied-R1~\cite{liu2025embodiedr1} shows that progress in reasoning and action modeling can matter as much as scale, while VLANeXt~\cite{chen2026vlanext} shows that principled architectural design within a unified embodied architecture can also lead to substantial performance gains.
+Embodied-R1~\cite{liu2025embodiedr1} shows that progress in reasoning and action modeling can matter as much as scale, 
+while VLANeXt~\cite{chen2026vlanext} shows that principled architectural design within a unified embodied architecture can also lead to substantial performance gains.
+PF-DAG~\cite{lei2026pfdag} shows that hybrid policy design is a promising direction, decoupling coarse mode selection from fine-grained continuous action generation.
 WoVR~\cite{huang2026wovr} and ReinFlow~\cite{yuan2025reinflow} move beyond static pretraining through world-model-based post-training and online reinforcement learning. 
 These studies suggest that embodied agents can continue to adapt after deployment.
 As embodied systems move closer to real-world use, evaluation rigor and deployment trustworthiness are increasingly important.
