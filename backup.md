@@ -1,7 +1,7 @@
-| Category               | Core idea                             | Interface / shared state                | Typical B              | Typical P |
-| ---------------------- | ------------------------------------- | --------------------------------------- | ---------------------- | --------- |
-| Explicit Hierarchy     | slow reasoning / fast execution 显式解耦  | symbolic / language / code / task trace | B1/B2                  | P1/P2     |
-| Unified End-to-End     | shared backbone 吸收 reasoning 和 action | minimal / implicit                      | B3                     | P2/P3     |
-| Implicit Hierarchy     | 有 practical split，但接口没完全形式化           | latent / token / soft split             | B3 (sometimes B2-like) | P2/P3     |
-| Spatial Grounding      | 共享显式几何状态                              | maintained spatial state                | B4                     | P1/P2/P3  |
-| Predictive World Model | 共享显式预测状态                              | maintained predictive state             | B5                     | P3        |
+\subsection{Data Efficiency and Quality Evaluation}\label{sec:eval_data_sample}
+
+Embodied manipulation is often constrained by the cost and uneven quality of collected data, so evaluation should measure not only final performance but also how effectively demonstrations translate into capability. A first concern is whether a dataset provides broad, non-redundant coverage of the state-action space. DemInf~\cite{hejna2025robot} addresses this by estimating the marginal information contribution of each demonstration, enabling the identification of unique versus redundant samples. A second concern is that demonstrations are not equally useful for downstream learning. Influence-based methods such as CUPID~\cite{agia2025cupidcuratingdatarobot} and QoQ~\cite{lee2026qoq} estimate which samples improve validation performance and which behave as harmful outliers, offering a more direct notion of data utility. Finally, sample efficiency is commonly summarized by the Area Under the Learning Curve (AULC),
+\begin{equation}
+  \text{AULC} = \int_0^{N_{\max}} SR(n)\, dn \approx \sum_{k} SR(n_k)\cdot \Delta n_k,
+\end{equation}
+where $SR(n)$ denotes the success rate after training on $n$ demonstrations. Compared with reporting final success under a fixed data budget, AULC better captures how quickly useful capability emerges. Together, these perspectives characterize data quality in terms of coverage, utility, and learning efficiency.

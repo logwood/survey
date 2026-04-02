@@ -228,14 +228,14 @@ From this perspective, the survey examines how embodiment shapes data and contro
 
 Embodied intelligence views cognition as arising from the dynamic coupling of brain, body, and environment, rather than as a purely disembodied computational process~\cite{clarkBeingTherePutting1998, brooksIntelligenceWithoutRepresentation1991}.
 Robotic manipulation provides a particularly challenging and revealing setting for examining this view, as it requires joint reasoning over contact dynamics, force exchange, high-DoF kinematics, and fine-grained object perception~\cite{khatibInertialPropertiesRobot1987}.
-These characteristics have made robotic manipulation a central focus of embodied intelligence research, a position further reinforced by the rise of deep learning and, more recently, the large-scale emergence of foundation models and LLMs. 
-Among all manipulation platforms, robotic arms remain the most mature and widely deployed, making them the primary subject of this survey.
+These characteristics have made robotic arms a particularly important platform for embodied intelligence research, a position further reinforced by the rise of deep learning and, more recently, the large-scale emergence of foundation models and LLMs. 
+Among manipulation platforms, robotic arms are among the most mature and widely deployed, making them the primary subject of this survey.
 
 Recent advances in vision-language-action models, world models, and diffusion-based policies have broadened the design space of robotic manipulation. 
-Several recent surveys cover adjacent parts of this landscape, including unified planning--control abstractions for manipulation~\cite{baiUnifiedUnderstandingRobot2025}, foundation-model components in real-world robotics~\cite{kawaharazukaVisionLanguageActionModelsRobotics2025}, object-centric embodied learning~\cite{survey2025objectcentric}, and broader embodied AI systems built on LLMs and world models~\cite{liuEmbodiedIntelligenceSynergy2025}. 
-These surveys provide valuable coverage, but they usually organize the area by model family or at a broader level of abstraction. 
-In manipulation, labels such as VLA and RL have become too coarse, because each now covers systems with very different planning artifacts, action representations, and integration designs. 
-Data also deserves a more central role, since collection regime, embodiment heterogeneity, and pipeline design directly affect what learning and integration choices are practical. 
+Several recent surveys cover adjacent parts of this landscape, including unified abstractions for robotic manipulation~\cite{baiUnifiedUnderstandingRobot2025}, foundation-model components in real-world robotics~\cite{kawaharazukaVisionLanguageActionModelsRobotics2025}, object-centric embodied learning~\cite{survey2025objectcentric}, and broader embodied AI systems built on LLMs and world models~\cite{liuEmbodiedIntelligenceSynergy2025}. 
+These surveys provide valuable coverage, but many of them organize the area primarily by model family or at a relatively broad level of abstraction.
+For manipulation, categories such as VLA and RL can sometimes obscure substantial differences in planning artifacts, action representations, and system integration. 
+Data should be treated more centrally in manipulation research, since collection regime, embodiment heterogeneity, and pipeline design directly affect what learning and integration choices are practical. 
 This survey therefore organizes the field around data regimes, cognitive planning, policy learning, and integration architectures.
 
 \textbf{Objectives and Scope of This Survey:}
@@ -244,8 +244,8 @@ This survey examines learned manipulation intelligence across robotic arm platfo
 \textbf{Contributions:}
 This survey makes three contributions.
 First, it introduces a layered taxonomy of embodied datasets and analyzes the current data production ecosystem, showing how acquisition settings, simulation environments, and large-scale data pipelines collectively generate and sustain the datasets and benchmarks used in modern robotic manipulation.
-Second, it separates cognitive planning from policy learning, and analyzes how different learning paradigms fit into this decomposition, how they are integrated into complete manipulation systems, and what deployment trade-offs they entail.
-Third, it treats embodied manipulation as a coupled design problem, analyzing how embodiment constraints, data regimes, learning architectures, deployment requirements, and evaluation protocols interact, and how these components jointly shape system design, deployment behavior, and real-world performance.
+Second, it distinguishes cognitive planning from policy learning, and analyzes how different learning paradigms fit into this decomposition, how they are integrated into complete manipulation systems, and what deployment trade-offs they entail.
+Third, it examines embodied manipulation as a coupled design problem, analyzing how embodiment constraints, data regimes, learning architectures, deployment requirements, and evaluation protocols interact, and how these components jointly shape system design, deployment behavior, and real-world performance.
 
 \textbf{Structure of the Paper:}
 Section~\ref{sec:embodiment_hardware} reviews physical embodiment and software infrastructure. Section~\ref{sec:embodiment_dataset} examines the data ecosystem from datasets through acquisition, synthesis, refinement, and pipelines. Section~\ref{sec:embodiment_method} analyzes cognitive planning, policy learning, integration models, and deployment. Section~\ref{sec:evaluation} synthesizes evaluation methodologies, and Section~\ref{sec:challenges} concludes with open challenges and future directions. Figure~\ref{fig:survey_structure} summarizes this organization.
@@ -422,9 +422,22 @@ Accordingly, this chapter moves from embodied datasets to the infrastructures th
 
 \subsection{Embodied Datasets}\label{sec:eai_datasets}
 
-Embodied datasets provide the foundation for manipulation learning. Their key differences lie in the type of supervision and knowledge they contribute to downstream systems. We therefore organize existing datasets into three tiers according to the dominant knowledge regime they expose (Tables~\ref{tab:grasping_datasets}--\ref{tab:foundation_datasets}). Skill-level datasets ($\mathcal{K}_1$) densely sample local interaction phenomena such as grasp geometry, contact patterns, and material response. Supervision targets single atomic actions: whether a grasp succeeds, how a push affects object motion, or which contact forces arise during insertion. Evaluation is therefore tied to individual actions. Task-level datasets ($\mathcal{K}_2$) shift supervision to multi-step sequences indexed by natural language instructions. Here the relevant outcome is overall instruction completion across the trajectory. This requires learning how individual skills work, when they should be invoked, and in what order they should be composed. Foundation-level datasets ($\mathcal{K}_3$) shift supervision again, now targeting transfer across heterogeneous robot platforms. The primary objective becomes whether a policy generalizes across multi-robot settings under heterogeneous sensors and action spaces. 
-These tiers span different scales of learning, from local interaction grounding to task composition and then to multi-robot generalization.
-We use the shorthand $\mathcal{K}_i \approx \mathcal{K}_{i-1} \oplus \mathcal{D}_i$ to denote that each tier augments the previous one with new supervision, diversity, and transfer demands.
+Embodied datasets encode different kinds of information about the physical world, and these informational differences define their roles in manipulation learning.
+Through a systematic review of the literature, we identify three progressively expanding tiers of embodied manipulation datasets (Tables~\ref{tab:grasping_datasets}--\ref{tab:foundation_datasets}). 
+This progression is shaped by the kind of information each dataset contributes and the corresponding knowledge it makes available for manipulation learning. 
+As the informational scope of embodied datasets broadens, the field correspondingly moves from modeling local physical interactions, to learning task-level composition, and ultimately to generalization across heterogeneous embodiments. 
+We summarize this hierarchical evolution as
+\[
+\mathcal{K}_i \approx \mathcal{K}_{i-1} \oplus \mathcal{D}_i,
+\]
+where each tier extends the previous one by introducing new data support and enlarging the effective knowledge state available to the system.
+Skill-level datasets ($\mathcal{K}_1$) encode fine-grained information about local physical interactions, including grasp geometry, contact patterns, and material response. 
+This information grounds the learning of atomic manipulation primitives by specifying where and how an individual action succeeds or fails. 
+Typical supervision is defined at the level of single interactions, such as grasp success, object motion induced by a push, or contact forces observed during insertion, and evaluation is correspondingly tied to individual action outcomes.
+Task-level datasets ($\mathcal{K}_2$) encode compositional information over temporally extended behaviors, typically represented as multi-step trajectories paired with natural language instructions. 
+Rather than describing isolated interactions, they capture how individual skills are selected, ordered, and combined to achieve a goal. The relevant learning problem therefore shifts from mastering single primitives to modeling their coordination over an entire trajectory, and evaluation centers on overall instruction completion.
+Foundation-level datasets ($\mathcal{K}_3$) encode transfer-relevant information across heterogeneous robot platforms, sensing modalities, and action spaces. Their central contribution lies in exposing the cross-embodiment regularities needed for manipulation policies to generalize beyond a single robot setup. 
+At this stage, the key question is no longer only whether a task can be completed, but whether the learned competence transfers across diverse embodiments and environments.
 
 \subsubsection{Skill-level Datasets}\label{sec:skill_datasets_narrative}
 
@@ -432,7 +445,7 @@ We use the shorthand $\mathcal{K}_i \approx \mathcal{K}_{i-1} \oplus \mathcal{D}
 \centering
 \caption{\textbf{Chronological Overview of Skill-level Datasets.} Evolution reflects the shift from planar grasping rectangles to dense 6-DoF poses, dexterous hands, language-grounded reasoning, and diverse motor primitives (pushing, articulation, deformable manipulation, assembly). Note the scarcity of real-world data for non-grasping primitives.}\label{tab:grasping_datasets}
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{l c c c c c c c c}
+\begin{tabular}{l l l l l l l l l}
 \toprule
 \textbf{Dataset} & \textbf{Year} & \textbf{Skill Type} & \textbf{Scene Complexity} & \textbf{Objects} & \textbf{Domain} & \textbf{Scale} & \textbf{Modality} & \textbf{Lang.} \\
 \midrule
@@ -476,7 +489,7 @@ Beyond grasping, Omnipush~\cite{bauza2021omnipush} records planar pushing dynami
 
 \subsubsection{Task-level Datasets}\label{sec:task_datasets_narrative}
 
-Building on skill-level primitives, task-level datasets record complete multi-step manipulation trajectories which are often paired with natural language instructions. Table~\ref{tab:real_world_tasks} lists representative datasets along this tier.
+Task-level datasets bind atomic motor primitives into temporally extended, instruction-aligned trajectories. Table~\ref{tab:real_world_tasks} lists representative datasets along this tier.
 
 MT-Opt~\cite{kalashnikov2021mt} collected 800k trajectories through autonomous exploration but used task IDs to index actions, without language supervision. 
 BC-Z~\cite{jang2022bc} introduced language-conditioned supervision by pairing 26k trajectories with 100 semantic verbs, and RT-1 Dataset~\cite{brohan2023rt1} extended this to 130k trajectories spanning 700+ instructions. 
@@ -486,30 +499,38 @@ FMB~\cite{fu2025fmb} added force-torque calibration across 22k contact-rich asse
 
 \begin{table}[t] 
 \centering
-\caption{\textbf{Representative task-level embodied datasets collected from real-world physical trajectories.} \# Traj.\ denotes the number of recorded demonstrations or episodes; Tasks denotes the number of distinct task types; Scenes denotes the number of distinct environments or scene settings; Lang.\ indicates whether language annotations or task instructions are provided; Calib.\ indicates whether calibrated camera--robot alignment or equivalent calibration metadata is available; Platform denotes the robot platform used for data collection; Collection Mode summarizes the acquisition protocol; and Format denotes the primary release format. In the table, Teleop. = teleoperation, and H/S Hybrid = a combination of human demonstrations and scripted data collection.}\label{tab:real_world_tasks}
-\footnotesize
+\caption{\textbf{Representative task-level embodied datasets collected from real-world physical trajectories.} 
+\# Traj.\ denotes the number of recorded demonstrations or episodes; 
+\# View.\ denotes the number of camera views available; 
+Tasks denotes the number of distinct task types; Scenes denotes the number of distinct environments or scene settings; 
+Lang.\ indicates whether language annotations or task instructions are provided; 
+Depth indicates whether depth observations are provided;
+Calib.\ indicates whether calibrated camera--robot alignment or equivalent calibration metadata is available; 
+Platform denotes the robot platform used for data collection; 
+Collection Mode summarizes the acquisition protocol; and Format denotes the primary release format. 
+In the table, Teleop. = teleoperation, and H/S Hybrid = a combination of human demonstrations and scripted data collection.}\label{tab:real_world_tasks}
+\scriptsize
 \setlength{\tabcolsep}{2.5pt}
-\begin{tabular}{lccccccccc}
+\begin{tabular}{lccccccccccc}
 \toprule
-\textbf{Dataset} & \textbf{Year} & \textbf{\# Traj.} & \textbf{Tasks} & \textbf{Scenes} & \textbf{Lang.} & \textbf{Calib.} & \textbf{Platform} & \textbf{Collection} & \textbf{Format} \\
+\textbf{Dataset} & \textbf{Year} & \textbf{\# Traj.} & \textbf{\# View.} & \textbf{Tasks} & \textbf{Scenes} & \textbf{Lang.} & \textbf{Depth} & \textbf{Calib.} & \textbf{Platform} & \textbf{Collection} & \textbf{Format} \\
 \midrule
-MIME~\cite{sharma2018mime} & 2018 & 8.3k & 20 & 1 & $\times$ & $\times$ & Baxter & Teleop. & Raw \\
-RoboTurk~\cite{mandlekar2018roboturk} & 2018 & 2.1k & 3 & 1 & $\times$ & $\times$ & Panda & Teleop. & HDF5 \\
-MT-Opt~\cite{kalashnikov2021mt} & 2021 & 800k & 12 & 1 & $\times$ & $\times$ & Google Arm & Mixed & TFDS \\
-BC-Z~\cite{jang2022bc} & 2021 & 26k & 100 & 1 & $\checkmark$ & $\times$ & EDR & Teleop. & TFDS \\
-RT-1 Dataset~\cite{brohan2023rt1} & 2022 & 130k & 700+ & 2 & $\checkmark$ & $\times$ & EDR & Teleop. & TFDS \\
-Dobb-E~\cite{shafiullah2023bringing} & 2023 & 1.5k & 109 & 22 & $\times$ & $\times$ & Stretch & iPhone & TFDS \\
-BridgeData V2~\cite{walke2024bridgedatav2} & 2024 & 60k & 13 & 24 & $\checkmark$ & $\times$ & WidowX & H/S Hybrid & Raw \\
-DROID~\cite{khazatsky2024droid} & 2024 & 76k & 84 & 564 & $\checkmark$ & $\checkmark$ & Panda & Teleop. & RLDS \\
-FMB~\cite{fu2025fmb} & 2025 & 22k & 2 & 1 & $\checkmark$ & $\checkmark$ & Panda & Mixed & Raw \\
+MIME~\cite{sharma2018mime} & 2018 & 8.3k & 3 & 20 & 1 & $\times$ & $\checkmark$ & $\times$ & Baxter & Teleop. & Raw \\
+RoboTurk~\cite{mandlekar2018roboturk} & 2018 & 2.1k & 2 & 3 & 1 & $\times$ & $\checkmark$ & $\times$ & Panda & Teleop. & HDF5 \\
+MT-Opt~\cite{kalashnikov2021mt} & 2021 & 800k & 1 & 12 & 1 & $\times$ & $\times$ & $\times$ & Google Arm & Mixed & TFDS \\
+BC-Z~\cite{jang2022bc} & 2021 & 26k & 1 & 100 & 1 & $\checkmark$ & $\times$ & $\times$ & EDR & Teleop. & TFDS \\
+RT-1 Dataset~\cite{brohan2023rt1} & 2022 & 130k & 1 & 700+ & 2 & $\checkmark$ & $\times$ & $\times$ & EDR & Teleop. & TFDS \\
+Dobb-E~\cite{shafiullah2023bringing} & 2023 & 1.5k & 1 & 109 & 22 & $\times$ & $\checkmark$ & $\times$ & Stretch & iPhone & TFDS \\
+BridgeData V2~\cite{walke2024bridgedatav2} & 2024 & 60k & 4 & 13 & 24 & $\checkmark$ & $\checkmark$ & $\times$ & WidowX & H/S Hybrid & Raw \\
+DROID~\cite{khazatsky2024droid} & 2024 & 76k & 3 & 84 & 564 & $\checkmark$ & $\checkmark$ & $\checkmark$ & Panda & Teleop. & RLDS \\
+FMB~\cite{fu2025fmb} & 2025 & 22k & 4 & 2 & 1 & $\checkmark$ & $\checkmark$ & $\checkmark$ & Panda & Mixed & Raw \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \subsubsection{Foundation-level Datasets}\label{sec:foundation_datasets}
 
-Foundation-level datasets support shared learning and transfer across multiple heterogeneous robot platforms.
-They aggregate robot trajectories across multiple platforms and require sufficient alignment in observations, actions, and control interfaces to make transfer across platforms feasible.
+Foundation-level datasets aggregate robot trajectories across multiple platforms and require sufficient alignment in observations, actions, and control interfaces to make transfer across platforms feasible.
 Table~\ref{tab:foundation_datasets} summarizes representative datasets in this tier.
 RoboNet~\cite{dasari2020robonet} established an early multi-robot dataset with 15 million video frames collected across seven robot platforms.
 OXE~\cite{padalkar2023open} scaled this direction by unifying over one million trajectories from 22 robot platforms through the RLDS protocol.
@@ -533,10 +554,9 @@ Embod.\ Types: S\,=\,single-arm, B\,=\,bimanual, M\,=\,mobile manipulator, H\,=\
 Lang.\,=\,language supervision;
 Action: EE\,=\,end-effector, Emb.\,=\,embodiment-specific, WB\,=\,whole-body;
 Alignment: how multi-robot differences are reconciled.}\label{tab:foundation_datasets}
-\renewcommand{\arraystretch}{1.15}
 \setlength{\tabcolsep}{2.5pt}
 \scriptsize
-\begin{tabular}{lccclclccll}
+\begin{tabular}{lcccccccccc}
 \toprule
 \textbf{Dataset} & \textbf{Year} & \textbf{\# Traj.} & \textbf{\# Embod.} & \textbf{Types} & \textbf{Source} & \textbf{Modalities} & \textbf{Lang.} & \textbf{Action} & \textbf{Alignment} & \textbf{Format} \\
 \midrule
@@ -551,13 +571,16 @@ AgiBot World~\cite{agibot2025} & 2025 & 1M+ & 100+ & B, H & Teleop & RGB, D, F &
 
 \subsubsection{Real-world Data Gathering}\label{sec:real_acquisition}
 
-Real-world data gathering shows a broad tendency toward lower collection cost and fewer physical constraints, while expanding the environments and embodiments covered. In current practice, this development can be sketched through three shifts in how human effort is coupled to the robot.
+Recent work has expanded the ways manipulation data can be collected in the real world. 
+Some approaches make teleoperation easier to scale, some collect data without requiring the deployment robot to be present, and others use human activity itself as a source of supervision.
 
-The first shift was from co-located single-operator setups to distributed teleoperation. MIME~\cite{sharma2018mime} provided paired human-robot demonstrations in a single workspace, and RoboTurk~\cite{mandlekar2018roboturk} showed that remote operators connected over the internet could collect comparable-quality trajectories at lower marginal cost. ALOHA~\cite{zhao2023learning, fu2024mobile} reduced the hardware barrier for bimanual and mobile whole-body teleoperation, making it practical for smaller labs to collect contact-rich data. DROID~\cite{khazatsky2024droid} pushed this further by coordinating 18 institutions to gather 76k trajectories across 564 scenes with standardized protocols, demonstrating that distributed collection can produce datasets with both scale and environmental diversity.
-
-The second shift decoupled the collection device from the deployment robot. UMI~\cite{chi2024umi} replaced the robot entirely during collection, using handheld grippers and consumer cameras for in-the-wild capture; the resulting trajectories are retargeted to the deployment platform offline. This removes the requirement that a robot be physically present during data gathering, which substantially lowers the cost of accessing diverse real-world environments.
-
-The third shift moves the data source from robot manipulation to human activity. Egocentric human video (EgoMimic~\cite{kareer2025egomimic}) provides large-scale demonstrations without any robot hardware, though it introduces a retargeting gap between human hand morphology and robot end-effectors. The correction mechanisms that support autonomous collection loops are discussed in Section~\ref{sec:correction_recovery}, and their pipeline-level instantiations in Section~\ref{sec:data_factories_robotic_arms}.
+RoboTurk~\cite{mandlekar2018roboturk} showed that teleoperated demonstrations could be collected from geographically distributed operators over the internet, relaxing the requirement that data gathering happen in a single shared lab. 
+ALOHA~\cite{zhao2023learning, fu2024mobile} made this direction easier to adopt in practice by lowering the hardware barrier for bimanual and mobile whole-body teleoperation, especially for contact-rich tasks. 
+A related line of work weakened the dependence of collection on the deployment robot itself. 
+UMI~\cite{chi2024umi} used handheld grippers and consumer cameras to capture demonstrations in everyday environments and then retargeted them offline to the robot platform, 
+while DexCap~\cite{wang2024dexcap} pushed this approach toward dexterous manipulation by recording high-dimensional human hand motion for transfer to multi-fingered robot hands. 
+The source of supervision has also broadened beyond robot-mediated demonstrations. EgoMimic~\cite{kareer2025egomimic} used egocentric human video to enable large-scale data capture without requiring robot hardware during collection, 
+and AV-ALOHA~\cite{chuang2025avaloha} showed that such data become more useful when the demonstrator's viewpoint remains perceptually aligned with the robot's onboard observations. 
 
 \subsubsection{Simulation Data Ecosystems}\label{sec:simulation_infrastructure}
 
@@ -616,7 +639,8 @@ Beyond these three ecosystems, specialized platforms remain necessary. PyBullet 
 
 \subsubsection{Automatic Data Generation}\label{sec:auto_data_gen}
 
-Automatic data generation builds on simulation ecosystems to produce scenes, demonstrations, and rollouts without manual effort. We organize this along three axes: environment construction, demonstration synthesis, and world-model rollouts.
+Automatic data generation builds on simulation ecosystems to produce scenes, demonstrations, and rollouts without manual effort. 
+We organize this along three axes: environment construction, demonstration synthesis, and world-model rollouts.
 
 Scene generation has moved from procedural randomization to semantically grounded synthesis. ProcTHOR~\cite{deitke2022procthor} generated large-scale procedural indoor environments, Holodeck~\cite{yang2024holodeck} added language-conditioned semantic control, and RoboGen~\cite{wang2024robogen} connected asset retrieval, scene construction, and policy training within one automated pipeline.
 
@@ -670,7 +694,7 @@ From there, four major grounding routes appear. B2 converts intent into logical 
 B3 covers intermediate representations that integrate visual observations, robot state, and language into grounded but still underspecified task representations.
 B4 outputs spatial representations, including contact regions, SE(3) poses, affordance maps, and neural fields, that planners and controllers can consume directly. 
 B5 outputs predicted future states, evaluating candidate actions by simulating their physical consequences before execution. 
-Taken together, these paradigms trace several routes by which high-level semantic competence can be transformed into more explicit, physically grounded structures for execution.
+Taken together, these paradigms trace several routes by which high-level semantic competence can be transformed into more physically grounded structures for execution.
 They should not be read as a strict pipeline, since many systems combine artifacts from adjacent paradigms, and integrated architectures (Section~\ref{sec:integration_models}) often invoke several within the same stack. 
 Table~\ref{tab:brain_paradigms} summarizes the paradigm-level properties and representative methods.
 
@@ -713,7 +737,7 @@ Taken together, these cases show why B3 remains closely connected to neighboring
 
 \subsubsection{Geometric Grounding and Spatial Intelligence}\label{sec:affordance_mapping}
 
-B4 methods convert semantic intent into explicit spatial objects that planners and controllers can consume directly. ManipLLM~\cite{li2024manipllm} predicts pixel-wise contact masks from language, and A3VLM~\cite{huang2024a3vlm} extends this grounding to articulated objects by inferring joint axes and motion types. In image space, CLIPort~\cite{shridhar2022cliport} establishes the two-stream formulation separating semantic understanding from spatial precision, while PASG~\cite{zhu2025pasg} strengthens the mapping with functional keypoints. In 3D, F3RM~\cite{shen2023distilled} injects open-vocabulary semantics into neural feature fields, while D3Fields~\cite{wang2025d3fields} extends this line with dynamic 3D descriptor fields that encode semantic features and instance masks and support goal specification from 2D images. VoxPoser~\cite{huang2023voxposer} and ReKep~\cite{huang2024rekep} push this line further by turning language or task descriptions into explicit value maps and time-varying keypoint constraints for downstream optimization. 
+B4 methods convert semantic intent into spatial objects that planners and controllers can consume directly. ManipLLM~\cite{li2024manipllm} predicts pixel-wise contact masks from language, and A3VLM~\cite{huang2024a3vlm} extends this grounding to articulated objects by inferring joint axes and motion types. In image space, CLIPort~\cite{shridhar2022cliport} establishes the two-stream formulation separating semantic understanding from spatial precision, while PASG~\cite{zhu2025pasg} strengthens the mapping with functional keypoints. In 3D, F3RM~\cite{shen2023distilled} injects open-vocabulary semantics into neural feature fields, while D3Fields~\cite{wang2025d3fields} extends this line with dynamic 3D descriptor fields that encode semantic features and instance masks and support goal specification from 2D images. VoxPoser~\cite{huang2023voxposer} and ReKep~\cite{huang2024rekep} push this line further by turning language or task descriptions into explicit value maps and time-varying keypoint constraints for downstream optimization. 
 Across these methods, the common objective is to expose enough spatial structure for manipulation to query and optimize at execution time. 
 A recurring limitation across many of these methods is that they emphasize the current geometric state more than post-contact evolution, leaving dynamic interaction and longer-horizon consequences to other modules.
 
@@ -723,55 +747,53 @@ B5 methods evaluate candidate actions by predicting future states, observations,
 
 \begin{table}[t!]
 \centering
-\caption{\textbf{Taxonomy of Cognitive Planning Paradigms.} \textbf{B1}\,=\,Semantic Logic \& Code Generation; \textbf{B2}\,=\,Long-Horizon Task Decomposition; \textbf{B3}\,=\,Grounded Multimodal Reasoning; \textbf{B4}\,=\,Geometric Grounding \& Spatial Intelligence; \textbf{B5}\,=\,Generative Dynamics \& Physical Imagination. Reasoning Level indicates the cognitive abstraction; Output Abstraction denotes the generated artifact; Execution Gap specifies what additional computation converts the output into motor commands; Data Tier indicates the dataset level (Section~\ref{sec:eai_datasets}) that primarily supports each paradigm ($\mathcal{K}_1$\,=\,Skill, $\mathcal{K}_2$\,=\,Task, $\mathcal{K}_3$\,=\,Foundation).}\label{tab:brain_paradigms}
+\caption{\textbf{Taxonomy of Cognitive Planning Paradigms.} \textbf{B1}\,=\,Semantic Logic \& Code Generation; \textbf{B2}\,=\,Long-Horizon Task Decomposition; \textbf{B3}\,=\,Grounded Multimodal Reasoning; \textbf{B4}\,=\,Geometric Grounding \& Spatial Intelligence; \textbf{B5}\,=\,Generative Dynamics \& Physical Imagination. Output Abstraction denotes the generated artifact; Execution Gap specifies what additional computation converts the output into motor commands; Data Tier indicates the dataset level (Section~\ref{sec:eai_datasets}) that primarily supports each paradigm ($\mathcal{K}_1$\,=\,Skill, $\mathcal{K}_2$\,=\,Task, $\mathcal{K}_3$\,=\,Foundation).}\label{tab:brain_paradigms}
 \renewcommand{\arraystretch}{1.15}
 \setlength{\tabcolsep}{2.5pt}
 \scriptsize
 \begin{tabular}{
   l
-  l
-  l
-  l
-  l
-  l
+  c
+  c
+  c
+  c
   p{0.22\linewidth}
 }
 \toprule
 \textbf{ID} &
 \textbf{Data Tier} &
 \textbf{Sub-direction} &
-\textbf{Reasoning Level} &
 \textbf{Output Abstraction} &
 \textbf{Execution Gap} &
 \textbf{Representative Methods} \\
 \midrule
 \multirow{4}{*}{\textbf{B1}}
- & \multirow{4}{*}{$\mathcal{K}_2$} & Probabilistic Alignment & Semantic & Skill ranking & Skill API & SayCan~\cite{brohan2023can} \\
- & & Program Synthesis & Semantic & Executable code & Runtime interp. & CaP~\cite{liang2022code}, ProgPrompt~\cite{singh2022progprompt}, Demo2Code~\cite{wang2023demo2code} \\
- & & Reward Synthesis & Semantic & Reward functions & RL optimizer & Language to Reward~\cite{tan2023l2r} \\
- & & Structured Control Flow & Logical & BT / XML & Reactive exec. & LLM-BT~\cite{zhou2024llmbt}, LLM-as-BT~\cite{ao2025llmbt} \\
+ & \multirow{4}{*}{$\mathcal{K}_2$} & Probabilistic Alignment & Skill ranking & Skill API & SayCan~\cite{brohan2023can} \\
+ & & Program Synthesis & Executable code & Runtime interp. & CaP~\cite{liang2022code}, ProgPrompt~\cite{singh2022progprompt}, Demo2Code~\cite{wang2023demo2code} \\
+ & & Reward Synthesis & Reward functions & RL optimizer & Language to Reward~\cite{tan2023l2r} \\
+ & & Structured Control Flow & BT / XML & Reactive exec. & LLM-BT~\cite{zhou2024llmbt}, LLM-as-BT~\cite{ao2025llmbt} \\
 \midrule
 \multirow{4}{*}{\textbf{B2}}
- & \multirow{4}{*}{$\mathcal{K}_2$} & Formal Solvers & Logical & Symbolic task plan & Classical planner & LLM+P~\cite{liu2023llmp}, L3M+P~\cite{agarwal2025l3mp} \\
- & & Semantic Search & Logical & Sub-task sequence & Motion planner & TAPA~\cite{wu2023tapa}, SayPlan~\cite{rana2023sayplan} \\
- & & Closed-Loop Feedback & Logical & Re-plan & Skill API & Inner Monologue~\cite{huang2023inner} \\
- & & State Maintenance & Logical & Maintained world state & Runtime interp. & Statler~\cite{yoneda2024statler} \\
+ & \multirow{4}{*}{$\mathcal{K}_2$} & Formal Solvers & Symbolic task plan & Classical planner & LLM+P~\cite{liu2023llmp}, L3M+P~\cite{agarwal2025l3mp} \\
+ & & Semantic Search & Sub-task sequence & Motion planner & TAPA~\cite{wu2023tapa}, SayPlan~\cite{rana2023sayplan} \\
+ & & Closed-Loop Feedback & Re-plan & Skill API & Inner Monologue~\cite{huang2023inner} \\
+ & & State Maintenance & Maintained world state & Runtime interp. & Statler~\cite{yoneda2024statler} \\
 \midrule
 \multirow{2}{*}{\textbf{B3}}
- & \multirow{2}{*}{$\mathcal{K}_2/\mathcal{K}_3$} & Multimodal Grounding & Grounded & Text / action & Skill API & PaLM-E~\cite{driess2023palme}, RoboBrain~\cite{ji2025robobrain} \\
- & & Embodied CoT & Grounded & CoT trace & Skill API & EmbodiedGPT~\cite{mu2023embodiedgpt} \\
+ & \multirow{2}{*}{$\mathcal{K}_2/\mathcal{K}_3$} & Multimodal Grounding & Text / action & Skill API & PaLM-E~\cite{driess2023palme}, RoboBrain~\cite{ji2025robobrain} \\
+ & & Embodied CoT & CoT trace & Skill API & EmbodiedGPT~\cite{mu2023embodiedgpt} \\
 \midrule
 \multirow{4}{*}{\textbf{B4}}
- & \multirow{4}{*}{$\mathcal{K}_1/\mathcal{K}_2$} & Physical Constraint & Geometric & Contact / SE(3) pose & Motion planner & ManipLLM~\cite{li2024manipllm}, A3VLM~\cite{huang2024a3vlm} \\
- & & 2D Affordance & Geometric & Heatmap / mask & Grasp planner & CLIPort~\cite{shridhar2022cliport}, PASG~\cite{zhu2025pasg} \\
- & & 3D Neural Fields & Geometric & Neural field / 3D repr. & Motion planner & F3RM~\cite{shen2023distilled}, D3Fields~\cite{wang2025d3fields} \\
- & & Constraint Reasoning & Geometric & Value map / keypts & Trajectory opt. & VoxPoser~\cite{huang2023voxposer}, ReKep~\cite{huang2024rekep} \\
+ & \multirow{4}{*}{$\mathcal{K}_1/\mathcal{K}_2$} & Physical Constraint & Contact / SE(3) pose & Motion planner & ManipLLM~\cite{li2024manipllm}, A3VLM~\cite{huang2024a3vlm} \\
+ & & 2D Affordance & Heatmap / mask & Grasp planner & CLIPort~\cite{shridhar2022cliport}, PASG~\cite{zhu2025pasg} \\
+ & & 3D Neural Fields & Neural field / 3D repr. & Motion planner & F3RM~\cite{shen2023distilled}, D3Fields~\cite{wang2025d3fields} \\
+ & & Constraint Reasoning & Value map / keypts & Trajectory opt. & VoxPoser~\cite{huang2023voxposer}, ReKep~\cite{huang2024rekep} \\
 \midrule
 \multirow{3}{*}{\textbf{B5}}
  & \multirow{3}{*}{$\mathcal{K}_2/\mathcal{K}_3$}
- & Future Video Prediction & Predictive & Future frames & Inverse dynamics & UniPi~\cite{du2023unipi}, RoboDreamer~\cite{zhou2024robodreamer} \\
- & & Latent World Simulation & Predictive & Latent dynamics & Policy evaluation & UWM~\cite{zhu2025uwm}, V-JEPA2~\cite{assran2025vjepa} \\
- & & Physics-Constrained Prediction & Predictive & Trajectory / latent dyn. & MPC / planner & Schulze et al.~\cite{schulze2025lagrangian},~\cite{zhang2025particlegrid},~\cite{nematollahi2025lumos} \\
+ & Future Video Prediction & Future frames & Inverse dynamics & UniPi~\cite{du2023unipi}, RoboDreamer~\cite{zhou2024robodreamer} \\
+ & & Latent World Simulation & Latent dynamics & Policy evaluation & UWM~\cite{zhu2025uwm}, V-JEPA2~\cite{assran2025vjepa} \\
+ & & Physics-Constrained Prediction & Trajectory / latent dyn. & MPC / planner & Schulze et al.~\cite{schulze2025lagrangian},~\cite{zhang2025particlegrid},~\cite{nematollahi2025lumos} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -817,13 +839,13 @@ P3 policies can model complex action distributions, but the same generative flex
 \scriptsize
 \begin{tabular}{
   l
-  l
-  l
-  l
-  l
-  l
-  l
-  p{0.20\linewidth}
+  c
+  c
+  c
+  c
+  c
+  c
+  c
 }
 \toprule
 \textbf{ID} &
@@ -833,21 +855,21 @@ P3 policies can model complex action distributions, but the same generative flex
 \textbf{Scale} &
 \textbf{Input} &
 \textbf{Multimodality} &
-\textbf{Representative Methods} \\
+\textbf{Methods} \\
 \midrule
 \multirow{3}{*}{\textbf{P1}}
- & \multirow{3}{*}{$\mathcal{K}_1/\mathcal{K}_2$} & Percept.-Action Regr. & Cont. & {$<$100M} & 2D / 3D & Mode-averaging & BC-Z~\cite{jang2022bc}, MVP~\cite{xiao2022mvp}, PointPolicy~\cite{haldar2025pointpolicy} \\
+ & \multirow{3}{*}{$\mathcal{K}_1/\mathcal{K}_2$} & Percept.-Action Regr. & Cont. & {$<$100M} & 2D / 3D & Mode-averaging & BC-Z~\cite{jang2022bc},~\cite{xiao2022mvp},~\cite{haldar2025pointpolicy} \\
  & & Temporal Chunking & Cont.\ chunk & {100M--1B} & 2D / multi-view & Mode-averaging & ACT~\cite{zhao2023learning}, BAKU~\cite{haldar2024baku} \\
  & & Recovery \& Transfer & Cont.\ / resid. & {100M--1B} & 2D / video & Goal-conditioned & MimicPlay~\cite{wang2023mimicplay},~\cite{ren2025motion_tracks} \\
 \midrule
 \multirow{4}{*}{\textbf{P2}}
- & \multirow{4}{*}{$\mathcal{K}_2/\mathcal{K}_3$} & Uniform \& Spatial Discr. & Fixed bins & {1B--55B} & 2D / voxel & Categorical modes & RT-1~\cite{brohan2023rt1}, Gato~\cite{reed2022generalistagent},~\cite{shridhar2022peract} \\
- & & Learned Quantization & Codebook & {100M--1B} & 2D & Codebook modes & BeT~\cite{shafiullah2022bet}, VQ-BeT~\cite{lee2024vqbet},~\cite{gong2025carp} \\
- & & Prompted LM Tokens & LM tokens & {1B--10B+} & 2D / multi-modal & Prompt-conditioned & VIMA~\cite{jiang2023vima}, GR-1~\cite{wu2023gr1},~\cite{fu2025icil} \\
+ & \multirow{4}{*}{$\mathcal{K}_2/\mathcal{K}_3$} & Uniform \& Spatial Discr. & Fixed bins & {1B--55B} & 2D / voxel & Categorical modes & RT-1~\cite{brohan2023rt1},~\cite{reed2022generalistagent},~\cite{shridhar2022peract} \\
+ & & Learned Quantization & Codebook & {100M--1B} & 2D & Codebook modes & BeT~\cite{shafiullah2022bet},~\cite{lee2024vqbet},~\cite{gong2025carp} \\
+ & & Prompted LM Tokens & LM tokens & {1B--10B+} & 2D / multi-modal & Prompt-conditioned & VIMA~\cite{jiang2023vima},~\cite{wu2023gr1},~\cite{fu2025icil} \\
  & & Autoregr.\ Generalists & LM tokens & {1B--10B+} & 2D / multi-modal & Chunked categorical & Seer~\cite{tian2024seer}, ARP~\cite{zhang2025arp} \\
 \midrule
 \multirow{4}{*}{\textbf{P3}}
- & \multirow{4}{*}{$\mathcal{K}_1/\mathcal{K}_3$} & Diffusion Foundations & Denoised cont. & {$<$500M} & 2D & Score-based refine. & Chi et al.~\cite{chi2023diffusion}, Diffuser~\cite{janner2022diffuser}, Liu et al.~\cite{liu2022structdiffusion} \\
+ & \multirow{4}{*}{$\mathcal{K}_1/\mathcal{K}_3$} & Diffusion Foundations & Denoised cont. & {$<$500M} & 2D & Score-based refine. & Diffuser~\cite{janner2022diffuser},~\cite{chi2023diffusion},~\cite{liu2022structdiffusion} \\
  & & 3D Geometric Enhanc. & Denoised cont. & {$<$500M} & 3D / point cloud & Equivariant refine. & DP3~\cite{ze2024diffusion} \\
  & & Flow \& Acceleration & Flow cont. & {$<$500M} & 2D / 3D & OT flow & Prasad et al.~\cite{prasad2024consistency},~\cite{xue2025recflow} \\
  & & Generalist Scaling & Denoised cont. & {1B--8B} & 2D / multi-view & Score-based refine. & Octo~\cite{octomodelteam2024},~\cite{liu2025rdtb},~\cite{reuss2025flower} \\
@@ -859,9 +881,9 @@ P3 policies can model complex action distributions, but the same generative flex
 
 After discussing cognitive planning and policy learning separately, we now consider how cognitive planning and policy learning are integrated into complete manipulation systems. RT-2~\cite{brohan2023rt2} showed that semantic understanding, reasoning, and action generation can be combined within a single model, opening a design space that has since developed along three architectural directions.
 
-We classify integration architectures by their primary structural commitment, systems with mixed characteristics are assigned to the type that best reflects their dominant design choice. Type~I emphasizes end-to-end unification within a shared backbone. Type~II covers hierarchical designs that separate slower reasoning from faster execution. Type~III maintains an explicit world state---spatial, predictive, or both---that is shared by planning and policy.
+We classify integration architectures by their primary structural commitment, systems with mixed characteristics are assigned to the type that best reflects their dominant design choice. Type~I emphasizes end-to-end unification within a shared backbone. Type~II covers hierarchical designs that separate slower reasoning from faster execution. Type III maintains a shared world representation—spatial, predictive, or both—that mediates between planning and policy.
 
-Within this three-type taxonomy, several recurrent patterns appear repeatedly in practice. Type~II includes both explicit hierarchy, where reasoning and control are linked through language, symbolic structure, or task traces, and implicit hierarchy, where the practical split is clear but the interface remains latent or only lightly structured. Type~III likewise includes both spatial grounding and predictive world models, depending on whether the maintained state is geometric or forward-looking. Available data regimes do not determine these patterns uniquely, but they do make some of them easier to support than others. Table~\ref{tab:data_learning_map} summarizes these recurrent patterns, and Table~\ref{tab:embodied_models_2026_v4} surveys representative systems across the three main types.
+Within this three-type taxonomy, several recurrent patterns appear repeatedly in practice. Type~II includes both explicit hierarchy, where reasoning and control are linked through language, symbolic structure, or task traces, and implicit hierarchy, where the practical split is clear but the interface remains latent or only lightly structured. Type III likewise includes both spatial grounding and predictive world models, depending on whether the maintained representation is primarily geometric, predictive, or both. Available data regimes do not determine these patterns uniquely, but they do make some of them easier to support than others. Table~\ref{tab:data_learning_map} summarizes these recurrent patterns, and Table~\ref{tab:embodied_models_2026_v4} surveys representative systems across the three main types.
 
 \begin{table}[t]
 \centering
@@ -870,7 +892,7 @@ Within this three-type taxonomy, several recurrent patterns appear repeatedly in
 \setlength{\tabcolsep}{3pt}
 \scriptsize
 \begin{tabular}{
-  p{0.16\linewidth}
+  l
   c
   c
   p{0.20\linewidth}
@@ -943,7 +965,7 @@ The pressure point for Type~I is therefore not only action representation, but h
 \caption{\textbf{Comprehensive Taxonomy of Embodied Integration Models.}
 \textbf{Brain (B):} B1: Semantic Logic, B2: L-H Decomp, B3: Grounded MM Reas., B4: Geo.\ Grounding, B5: Generative Dynamics.
 \textbf{Policy (P):} P1: Expl.\ Continuous, P2: Discrete Action, P3: Iter.\ Generative.
-\textbf{Ctrl.~Hz}: Low~$<$10\,Hz; High~20--100\,Hz; RT~$\geq$100\,Hz; (Step)~=~reasoning-loop; (Hier.)~=~hierarchical slow/fast.
+\textbf{Mode}: Dirc.\ = Direct Control; Reas.\ = Reasoned Control; Hier.\ = Hierarchical Control; Genr.\ = Generative Control.
 \textbf{Hardware}: Div.\ = Diverse multi-robot; Prop.\ = Proprietary.
 \textbf{Data Form}: Real Traj.\ = real robot trajectories; Web Vid.\ = internet video; Syn.\ = synthetic.}\label{tab:embodied_models_2026_v4}
 \renewcommand{\arraystretch}{1.2}
@@ -951,11 +973,11 @@ The pressure point for Type~I is therefore not only action representation, but h
 \scriptsize
 
 \begin{tabular}{
-  p{0.14\linewidth}
-  p{0.08\linewidth}
-  p{0.17\linewidth}
-  p{0.08\linewidth}
-  p{0.13\linewidth}
+  l
+  c
+  c
+  c
+  c
   p{0.168\linewidth}
   p{0.205\linewidth}
 }
@@ -963,7 +985,7 @@ The pressure point for Type~I is therefore not only action representation, but h
 \textbf{Model} &
 \textbf{B \& P} &
 \textbf{Backbone \& Params} &
-\textbf{Ctrl.\ Hz} &
+\textbf{Mode} &
 \textbf{Hardware} &
 \textbf{Primary Data Scale} &
 \textbf{Eval: Sim \& Real} \\
@@ -973,21 +995,19 @@ The pressure point for Type~I is therefore not only action representation, but h
 \multicolumn{7}{c}{\textbf{Type I\@: Unified End-to-End Foundation Models}} \\
 \midrule
 
-\textbf{RT-2}~\cite{brohan2023rt2} & B1, P2 & PaLI-X (55B) & Low & Google Robot & 130K Real Traj. & Real: 700 manipulation tasks \\
+\textbf{RT-2}~\cite{brohan2023rt2} & B1, P2 & PaLI-X (55B) & Dirc. & Google Robot & 130K Real Traj. & Real: 700 manipulation tasks \\
 
-\textbf{OpenVLA}~\cite{kim2024openvla} & B3, P2 & Llama-2 + SigLIP (7B) & Low & Franka+WidowX & 970K Real Traj.\ (OXE) & Real: 29 manipulation tasks \\
+\textbf{OpenVLA}~\cite{kim2024openvla} & B3, P2 & Llama-2 + SigLIP (7B) & Dirc. & Franka+WidowX & 970K Real Traj.\ (OXE) & Real: 29 manipulation tasks \\
 
-\textbf{$\pi$0}~\cite{black2024pi0} & B4, P3 & PaliGemma (3B) & High & Div.\ (6 types) & $\sim$10K Real Traj.\ (OXE) & Real: 7 dexterous tasks \\
+\textbf{$\pi$0}~\cite{black2024pi0} & B4, P3 & PaliGemma (3B) & Genr. & Div.\ (6 types) & $\sim$10K Real Traj.\ (OXE) & Real: 7 dexterous tasks \\
 
-\textbf{RoboMamba}~\cite{liu2024robomamba} & B4, P2 & Mamba SSM (7B) & Low & Franka & OXE Real Traj. & Sim: CALVIN | Real: manipulation tasks \\
+\textbf{RoboMamba}~\cite{liu2024robomamba} & B4, P2 & Mamba SSM (7B) & Dirc. & Franka & OXE Real Traj. & Sim: CALVIN | Real: manipulation tasks \\
 
-\textbf{UniVLA}~\cite{bu2025univla} & B5, P2 & Emu3 (8.5B) & Low & Div. & OXE Real Traj. & Sim: LIBERO (95.5\%) | Real: 10 multi-robot tasks \\
+\textbf{UniVLA}~\cite{bu2025univla} & B5, P2 & Emu3 (8.5B) & Dirc. & Div. & OXE Real Traj. & Sim: LIBERO (95.5\%) | Real: 10 multi-robot tasks \\
 
 \textbf{ReconVLA}~\cite{song2025reconvla} & B3, P2 & LLaVA-7B (Qwen2--7B) & Low & AgileX PiPer & 2M samples (100K+ traj., BridgeV2/LIBERO) & Sim: CALVIN (ABCD$\rightarrow$D) | Real: 5 manipulation tasks \\
 
-\textbf{X-VLA}~\cite{zheng2026xvla} & B3, P3 & Transformer (0.9B) & Low & Div. & 290K episodes & Sim: LIBERO 93\%, Simpler-WidowX | Real: 3 robots \\
-
-\textbf{RDT-2}~\cite{liu2026rdt2} & B4, P3 & Qwen2.5-VL (7B) & High & ALOHA & 10K h Real Traj.\ (UMI) & Real: 10+ bimanual tasks \\
+\textbf{X-VLA}~\cite{zheng2026xvla} & B3, P3 & Transformer (0.9B) & Genr. & Div. & 290K episodes & Sim: LIBERO 93\%, Simpler-WidowX | Real: 3 robots \\
 
 \midrule
 
@@ -995,21 +1015,19 @@ The pressure point for Type~I is therefore not only action representation, but h
 \multicolumn{7}{c}{\textbf{Type II\@: Hierarchical \& Modular Reasoning Models}} \\
 \midrule
 
-\textbf{RT-H}~\cite{belkhale2024rth} & B2, P2 & PaLI-X (7B+) & Low & Google Robot & Kitchen Real Traj. & Real: 8 manipulation tasks \\
+\textbf{RT-H}~\cite{belkhale2024rth} & B2, P2 & PaLI-X (7B+) & Hier. & Google Robot & Kitchen Real Traj. & Real: 8 manipulation tasks \\
 
-\textbf{CoT-VLA}~\cite{zhao2025cotvla} & B2, P2 & VILA-U (7B) & Low (Step) & Div. & OXE Real Traj.\ + EPIC & Real: 10 long-horizon tasks \\
+\textbf{CoT-VLA}~\cite{zhao2025cotvla} & B2, P2 & VILA-U (7B) & Reas. & Div. & OXE Real Traj.\ + EPIC & Real: 10 long-horizon tasks \\
 
-\textbf{ThinkAct}~\cite{huang2025thinkact} & B1, P2 & Qwen2.5-VL (7B) & Low (Step) & Franka & OXE + RoboVQA Real Traj. & Sim: CALVIN | Real: 10 long-horizon tasks \\
+\textbf{ThinkAct}~\cite{huang2025thinkact} & B1, P2 & Qwen2.5-VL (7B) & Hier. & Franka & OXE + RoboVQA Real Traj. & Sim: CALVIN | Real: 10 long-horizon tasks \\
 
-\textbf{FiS-VLA}~\cite{chen2025fis} & B2, P1 & Llama-2 (7B) & RT (Hier.) & Franka & OXE Real Traj. & Real: 6 reactive tasks \\
+\textbf{FiS-VLA}~\cite{chen2025fis} & B2, P1 & Llama-2 (7B) & Hier. & Franka & OXE Real Traj. & Real: 6 reactive tasks \\
 
-\textbf{HAMSTER}~\cite{li2025hamster} & B5, P1 & VLM + 3D Policy & Low & Div. & Off-domain Web Vid. & Real: 8 multi-robot tasks \\
+\textbf{HAMSTER}~\cite{li2025hamster} & B5, P1 & VILA-1.5 (13B) & Hier. & Franka & Off-domain Web Vid. & Sim: Colosseum | Real: 74 tasks / 222 evals \\
 
-\textbf{Hi Robot}~\cite{shi2025hirobot} & B2, P3 & VLM + $\pi$0 & Low (Hier.) & Div. & Syn.\ data & Real: 10 manipulation tasks \\
+\textbf{Hi Robot}~\cite{shi2025hirobot} & B2, P3 & PaliGemma (3B) & Hier. & Div. & Syn.\ data & Real: 10 manipulation tasks \\
 
-\textbf{GO-1}~\cite{agibot2025} & B2, P3 & ViLLA (7B) & Low & Prop.\ (AgiBot) & 1M Real Traj.\ (AgiBot) & Real: 217 bimanual tasks \\
-
-\textbf{RoBridge}~\cite{zhang2025robridge} & B2, P1 & VLM Planner & Low & WidowX & Syn.\ + Real Traj. & Real: 12 manipulation tasks \\
+\textbf{RoBridge}~\cite{zhang2025robridge} & B2, P1 & VLM Planner & Hier. & Gen3 & Syn.\ + Real Traj. & Real: 12 manipulation tasks \\
 
 \midrule
 
@@ -1017,19 +1035,19 @@ The pressure point for Type~I is therefore not only action representation, but h
 \multicolumn{7}{c}{\textbf{Type III\@: Spatial Grounding \& Predictive World Models}} \\
 \midrule
 
-\textbf{3D-VLA}~\cite{zhen20243dvla} & B4, P3 & Flan-T5-XL (3B) & Low & Franka & 2M samples OXE(3D) & Sim: RLBench | Real: 10 3D tasks \\
+\textbf{3D-VLA}~\cite{zhen20243dvla} & B4, P3 & Flan-T5-XL (3B) & Genr. & Franka & 2M samples OXE(3D) & Sim: RLBench | Real: 10 3D tasks \\
 
-\textbf{GR-2}~\cite{cheang2024gr2} & B5, P3 & GPT-Style CVAE & Low & Franka & 38M Web Vid. & Sim: CALVIN | Real: 100+ manipulation tasks \\
+\textbf{GR-2}~\cite{cheang2024gr2} & B5, P3 & CVAE (230M) & Genr. & Franka & 38M Web Vid. & Sim: CALVIN | Real: 100+ manipulation tasks \\
 
-\textbf{SpatialVLA}~\cite{qu2025spatialvla} & B4, P2 & PaLiGemma 2 (4B) & Low & Franka+WidowX & OXE + RH20T Real Traj. & Sim: RLBench | Real: 10+ spatial tasks \\
+\textbf{SpatialVLA}~\cite{qu2025spatialvla} & B4, P2 & PaLiGemma 2 (4B) & Dirc. & Franka+WidowX & OXE + RH20T Real Traj. & Sim: RLBench | Real: 10+ spatial tasks \\
 
-\textbf{TraceVLA}~\cite{zheng2025tracevla} & B4, P3 & Llama-2 + SigLIP (7B) & Low & WidowX & OXE + 150K Real Traj. & Sim: SimplerEnv (137 configs) | Real: 4 WidowX tasks \\
+\textbf{TraceVLA}~\cite{zheng2025tracevla} & B4, P3 & Llama-2 + SigLIP (7B) & Dirc. & WidowX & OXE + 150K Real Traj. & Sim: SimplerEnv (137 configs) | Real: 4 WidowX tasks \\
 
-\textbf{DreamVLA}~\cite{zhang2025dreamvla} & B5, P3 & Diffusion WM (7B) & Low & Franka & CALVIN Real Traj. & Sim: CALVIN | Real: 10 manipulation tasks \\
+\textbf{DreamVLA}~\cite{zhang2025dreamvla} & B5, P3 & Diffusion WM (7B) & Genr. & Franka & CALVIN Real Traj. & Sim: CALVIN | Real: 10 manipulation tasks \\
 
-\textbf{BridgeVLA}~\cite{li2025bridgevla} & B4, P2 & PaliGemma (3B) & Low & Franka & Bridge / OXE Real Traj. & Real: 10 3D tasks \\
+\textbf{BridgeVLA}~\cite{li2025bridgevla} & B4, P2 & PaliGemma (3B) & Dirc. & Franka & Bridge / OXE Real Traj. & Real: 10 3D tasks \\
 
-\textbf{DreamZero}~\cite{ye2026dreamzero} & B5, P3 & Wan2.1 (14B) & Low & Div. & Web Vid.\ + Robot Traj. & Real: 2$\times$ generalization \\
+\textbf{DreamZero}~\cite{ye2026dreamzero} & B5, P3 & Wan2.1 (14B) & Genr. & Div. & Web Vid.\ + Robot Traj. & Real: 2$\times$ generalization \\
 
 \bottomrule
 \end{tabular}
@@ -1037,13 +1055,16 @@ The pressure point for Type~I is therefore not only action representation, but h
 
 \subsubsection{Type II\@: Hierarchical \& Modular Reasoning Models}
 
-Type II models decouple slow cognitive planning from fast policy execution. One branch uses explicit hierarchy. RT-H~\cite{belkhale2024rth} introduced language motions as an intermediate layer between high-level instructions and low-level actions, CoT-VLA~\cite{zhao2025cotvla} and ThinkAct~\cite{huang2025thinkact} expose intermediate reasoning steps, and RoBridge~\cite{zhang2025robridge} places a symbolic bridge between a high-level planner and an embodied agent. A second branch uses implicit hierarchy, where the practical split is clear but the interface remains latent or only lightly structured. FiS-VLA~\cite{chen2025fis} couples a slower semantic branch with a real-time execution branch, Hi Robot~\cite{shi2025hirobot} employs a System 1/System 2 hierarchy for open-ended instructions and real-time human feedback, HAMSTER~\cite{li2025hamster} mixes semantic guidance with control transfer across morphologies, and GO-1~\cite{agibot2025} scales the same design to industrial bimanual control.
+Type II models decouple slow cognitive planning from fast policy execution. One branch uses explicit hierarchy. RT-H~\cite{belkhale2024rth} introduced language motions as an intermediate layer between high-level instructions and low-level actions, CoT-VLA~\cite{zhao2025cotvla} and ThinkAct~\cite{huang2025thinkact} expose intermediate reasoning steps, and RoBridge~\cite{zhang2025robridge} places a symbolic bridge between a high-level planner and an embodied agent. Another branch uses implicit hierarchy, where the practical split is clear but the interface remains latent or only lightly structured. FiS-VLA~\cite{chen2025fis} couples a slower semantic branch with a real-time execution branch, Hi Robot~\cite{shi2025hirobot} employs a System 1/System 2 hierarchy for open-ended instructions and real-time human feedback, HAMSTER~\cite{li2025hamster} mixes semantic guidance with control transfer across morphologies, and GO-1~\cite{agibot2025} scales the same design to industrial bimanual control.
 
 The key design question in Type~II is how explicit the planner-control interface should be. Explicit interfaces remain interpretable but can be too coarse for reactive manipulation; softer interfaces reduce hand-engineering but make it harder to verify what information is actually passed to the control branch. Type~II therefore succeeds only when the split between reasoning and execution is not merely present, but operationally useful.
 
 \subsubsection{Type III\@: Spatial Grounding \& Predictive World Models}
 
-Type III models maintain a world state that planning and policy jointly consume. This world state takes two forms. Spatial grounding systems build a persistent geometric representation: 3D-VLA~\cite{zhen20243dvla} embeds 3D perception into the LLM for spatial reasoning, SpatialVLA~\cite{qu2025spatialvla} grounds actions in metric 3D structure via Ego3D Position Encoding, TraceVLA~\cite{zheng2025tracevla} conditions generation on visual trajectory traces, and BridgeVLA~\cite{li2025bridgevla} aligns spatial and predictive representations to ensure kinematic feasibility. Predictive world models instead learn forward dynamics from data: GR-2~\cite{cheang2024gr2} trains action-conditioned video prediction at web scale, DreamZero~\cite{ye2026dreamzero} jointly models video and action as a World Action Model, and DreamVLA~\cite{zhang2025dreamvla} integrates a diffusion-based world model into the manipulation pipeline for planning via imagined trajectories.
+Type III maintains a shared world representation that planning and policy jointly consume. 
+This world state takes two forms. 
+Spatial grounding systems build a persistent geometric representation: 3D-VLA~\cite{zhen20243dvla} embeds 3D perception into the LLM for spatial reasoning, SpatialVLA~\cite{qu2025spatialvla} grounds actions in metric 3D structure via Ego3D Position Encoding, TraceVLA~\cite{zheng2025tracevla} conditions generation on visual trajectory traces, and BridgeVLA~\cite{li2025bridgevla} aligns spatial and predictive representations to ensure kinematic feasibility. 
+Predictive world models instead learn forward dynamics from data: GR-2~\cite{cheang2024gr2} trains action-conditioned video prediction at web scale, DreamZero~\cite{ye2026dreamzero} jointly models video and action as a World Action Model, and DreamVLA~\cite{zhang2025dreamvla} integrates a diffusion-based world model into the manipulation pipeline for planning via imagined trajectories.
 
 The key design question in Type~III is the form of the maintained world state. Spatial grounding provides precise geometric structure and supports verification, but degrades under occlusion, calibration error, and rapid scene changes. Predictive world models better capture temporal evolution, yet accumulate error over long horizons, so that trajectories that appear valid in rollout may become infeasible by execution time. The challenge for Type~III is therefore not simply to maintain world state, but to keep that state both physically faithful and execution-valid as the world evolves.
 
@@ -1126,9 +1147,9 @@ Section~\ref{sec:embodiment_hardware}--Section~\ref{sec:embodiment_method} trace
 \scriptsize
 \begin{tabular}{
   l
-  l
-  l
-  l
+  c
+  c
+  c
 }
 \toprule
 \textbf{Dimension} & \textbf{Metric Category} & \textbf{Representative Metrics} & \textbf{Representative Works} \\
@@ -1140,13 +1161,13 @@ Section~\ref{sec:embodiment_hardware}--Section~\ref{sec:embodiment_method} trace
 \midrule
 \multirow{3}{*}{\shortstack{\textbf{Data Efficiency \& Quality}}}
  & Info-theoretic & Mutual Information, Demo Contribution & DemInf~\cite{hejna2025robot} \\
- & Gradient-based & Influence Scores, Hessian-based Valuation & CUPID~\cite{agia2025cupidcuratingdatarobot} \\
+ & Gradient-based & Influence Scores, Hessian-based Valuation & CUPID~\cite{agia2025cupidcuratingdatarobot}, QoQ~\cite{lee2026qoq} \\
  & Sample Efficiency & AULC & General IL benchmarks \\
 \midrule
 \multirow{3}{*}{\shortstack{\textbf{Generalization \& Transfer}}}
  & Human Preference & Pairwise Comparison, VLM-based Eval & RoboArena~\cite{atreya2025roboarena},~\cite{zhou2025autoeval} \\
  & OOD Generalization & $\Delta SR_{\text{OOD}}$, RMSD & REALM~\cite{sedlacek2025realm} \\
- & Sim-to-Real \& World Models & MMRV, VLM-as-Judge, $\Delta SR$ & SIMPLER~\cite{li2025simpler},~\cite{guo2026ctrlworld} \\
+ & Sim-to-Real \& World Models & MMRV, VLM-as-Judge, $\Delta SR$ & SIMPLER~\cite{li2025simpler},~\cite{guo2026ctrlworld},~\cite{shang2026worldarena} \\
 \midrule
 \multirow{3}{*}{\shortstack{\textbf{Deployment Cost}}}
  & Energy Decomposition & $P_{\text{elec}}$, $P_{\text{friction}}$, $P_{\text{copper}}$, $P_{\text{mech}}$ & ECDP~\cite{heredia2023ecdp} \\
@@ -1156,49 +1177,65 @@ Section~\ref{sec:embodiment_hardware}--Section~\ref{sec:embodiment_method} trace
 \end{tabular}
 \end{table}
 
-\subsection{Task Execution Quality}\label{sec:eval_task_execution}
+\subsection{Task Execution Quality Evaluation}\label{sec:eval_task_execution}
 
-Binary success rates cannot distinguish early catastrophic failure from near-complete but unstable execution, especially in long-horizon and bimanual settings. Finer-grained metrics address this along three families.
-For task completion, RoboEval~\cite{wang2025roboeval} decomposes manipulation into sequential stages and measures progress as the fraction completed, while REALM~\cite{sedlacek2025realm} adds importance-weighted Task Progression:
+Task execution is still most commonly evaluated by whether the policy completes the task successfully. 
+However, binary success rates are easy to interpret, but they cannot distinguish early failure from near-complete but unstable execution, especially in long-horizon or bimanual settings. 
+Finer-grained metrics address this along three families.
+For task completion, RoboEval~\cite{wang2025roboeval} decomposes manipulation into sequential stages and measures progress as the fraction completed, 
+while REALM~\cite{sedlacek2025realm} refines this idea by weighting stages according to their importance.
 \begin{equation}
 TP = \sum_{k=1}^K w_k s_k, \qquad \sum_{k=1}^K w_k = 1
 \end{equation}
-where $s_k \in \{0,1\}$ indicates success at stage $k$ and $w_k$ reflects its relative importance. REALM further quantifies robustness under perturbations through Root Mean Square Deviation.
-For trajectory quality, smoothness metrics such as SPARC~\cite{balasubramanian2015sparc} and LDLJ~\cite{antonelli2023movement} quantify jerk and motion regularity, while Dynamic Time Warping measures alignment with expert demonstrations under temporal misalignment. For bimanual manipulation, RoboEval further measures coordination through velocity divergence and height discrepancy between end-effectors.
+where $s_k \in {0,1}$ indicates whether stage $k$ succeeds, and $w_k$ captures its relative importance. REALM also evaluates robustness under perturbations through Root Mean Square Deviation.
+For trajectory quality, smoothness metrics such as SPARC~\cite{balasubramanian2015sparc} and LDLJ~\cite{antonelli2023movement} quantify jerk and motion regularity, while Dynamic Time Warping measures alignment with expert demonstrations under temporal misalignment. 
+For bimanual manipulation, RoboEval also measures coordination through velocity divergence and height discrepancy between end-effectors.
 
-\subsection{Data Efficiency and Data Quality}\label{sec:eval_data_sample}
+\subsection{Data Efficiency and Quality Evaluation}\label{sec:eval_data_sample}
 
 Embodied manipulation is often constrained by the cost and uneven quality of collected data, so evaluation must also measure how effectively demonstrations convert into capability.
-Sample efficiency is commonly summarized by the Area Under the Learning Curve:
+One dimension is whether a dataset provides broad and non-redundant coverage. 
+DemInf~\cite{hejna2025robot} approaches this question by measuring the marginal contribution of each demonstration to state-action coverage. 
+Another dimension is whether demonstrations still useful for downstream learning. 
+CUPID~\cite{agia2025cupidcuratingdatarobot} estimates how individual demonstrations affect downstream policy performance, providing a way to rank training data by utility. 
+QoQ~\cite{lee2026qoq} instead evaluates samples by their contribution to validation improvement, helping identify low-quality or detrimental demonstrations.
+Data efficiency is commonly summarized by the Area Under the Learning Curve:
 \begin{equation}
   \text{AULC} = \int_0^{N_{\max}} SR(n)\, dn \approx \sum_{k} SR(n_k) \cdot \Delta n_k
 \end{equation}
 where $SR(n)$ is the success rate after training on $n$ demonstrations. AULC is more informative than reporting final success after a fixed data budget, since it captures how quickly useful capability emerges.
-Dataset quality can be measured through coverage-based criteria: DemInf~\cite{hejna2025robot} quantifies the marginal contribution of each demonstration to state-action coverage. Per-sample utility takes a complementary view; CUPID~\cite{agia2025cupidcuratingdatarobot} uses influence-based valuation to identify which demonstrations improve downstream behavior and which act as harmful outliers.
-\subsection{Generalization and Transfer Validity}\label{sec:eval_benchmarking}
 
-A strong benchmark score does not guarantee robust deployment. This subsection examines three aspects: robustness under distribution shift, evaluation protocol design, and whether scalable proxies predict real-world behavior.
-REALM~\cite{sedlacek2025realm} organizes perturbations into visual, semantic, and physical categories and reports degradation through the OOD success-rate gap ($\Delta SR_{\text{OOD}} = SR_{\text{in-dist}} - SR_{\text{out-dist}}$) and Root Mean Square Deviation. On the protocol side, RoboArena~\cite{atreya2025roboarena} uses pairwise human comparison to infer global skill ratings across a distributed real-world benchmark, while AutoEval~\cite{zhou2025autoeval} replaces manual annotation with VLM-based success assessment.
-Transfer validity concerns whether conclusions drawn from proxies hold on physical hardware. SIMPLER~\cite{li2025simpler} quantifies this for hand-crafted simulators through Mismatched Ranking Violations:
+\subsection{Generalization and Transfer Evaluation}\label{sec:eval_benchmarking}
+
+Evaluation needs to account for human judgment, robustness under distribution shift, and whether scalable proxies preserve conclusions that hold on physical hardware.
+Human judgment captures aspects of manipulation quality that automated success metrics may miss. RoboArena~\cite{atreya2025roboarena} uses pairwise human comparison to infer global policy rankings across distributed real-world evaluations, while AutoEval~\cite{zhou2025autoeval} reduces annotation cost by replacing manual trial-by-trial labeling with vision-language-model-based success assessment.
+Robustness under distribution shift measures whether performance remains stable outside the training distribution. 
+REALM~\cite{sedlacek2025realm} evaluates this under visual, semantic, and physical perturbations, reporting both the OOD success-rate gap, $\Delta SR_{\text{OOD}} = SR_{\text{in-dist}} - SR_{\text{out-dist}}$, and Root Mean Square Deviation to characterize degradation under shift.
+Proxy validity concerns whether scalable evaluation environments preserve the same conclusions as real-world execution. SIMPLER~\cite{li2025simpler} measures this through Mismatched Ranking Violations,
 \begin{equation}
 \mathrm{MMRV} = \frac{1}{\binom{N}{2}} \sum_{i<j} \mathbb{1}\!\left[\mathrm{rank}_{\mathrm{sim}}(i,j) \neq \mathrm{rank}_{\mathrm{real}}(i,j)\right]
 \end{equation}
-which flags the fraction of policy pairs whose relative ranking disagrees between simulation and reality. Ctrl-World~\cite{guo2026ctrlworld} takes this further by using a controllable generative world model for policy-in-the-loop rollouts, showing that learned world models can rank policy performance without real-world execution.
+which quantifies how often policy rankings disagree between simulation and physical deployment. 
+WorldArena~\cite{shang2026worldarena} extends this idea to learned world models by asking whether they can serve as reliable evaluators in addition to simulators. 
+Together, these methods define a hierarchy of increasingly scalable but increasingly approximate proxies, from the real world to simulators to learned world models.
 
-\subsection{Deployment Efficiency and Resource Cost}\label{sec:eval_energy}
+\subsection{Energy and Efficiency Evaluation}\label{sec:eval_energy}
 
-Once a policy leaves the benchmark setting, the relevant question becomes operational cost. In principle this includes latency, compute, memory, and hardware load, but current evaluation remains dominated by energy-oriented measures. ECDP~\cite{heredia2023ecdp} decomposes total joint power as:
+Deployment efficiency focus on the resources required to run a policy on physical hardware. 
+Relevant costs include latency, compute, memory, hardware load, and energy consumption. 
+Existing energy-oriented evaluations usually begin with simplified power models or their proxies before moving to more structured decompositions.
+Another structured view is provided by ECDP~\cite{heredia2023ecdp}, which decomposes total power into electronics, friction, copper loss, and useful mechanical work:
 \begin{equation}
 P_{\text{total}}(t) = P_{\text{elec}} + P_{\text{friction}}(t) + P_{\text{copper}}(t) + P_{\text{mech}}(t)
 \end{equation}
-where $P_{\text{elec}}$ is the constant electrical overhead, $P_{\text{friction}}(t)$ and $P_{\text{copper}}(t)$ are joint friction and winding losses, and $P_{\text{mech}}(t)$ is the mechanical output. This decomposition enables per-component attribution of energy cost. Normalized efficiency ratios and Cost of Transport~\cite{vidussi2021energy,heredia2025evaluating} extend this to locomotion-style comparisons, and multi-objective analyses trade off energy, execution time, and motion quality~\cite{rezali2025lstm}. Latency, runtime reliability, and compute footprint are still rarely reported in comparable ways, leaving deployment cost only partially quantified.
+This decomposition is useful because it attributes where energy is spent rather than reporting only a single aggregate number. It also shows that control electronics can dominate total consumption, which implies that trajectory optimization alone may have limited impact on deployment efficiency.
+For comparison across robots, recent work introduces normalized efficiency metrics~\cite{vidussi2021energy,heredia2025evaluating} and measures such as Cost of Transport, while multi-objective analyses make explicit the trade-offs among energy, execution time, and motion quality~\cite{rezali2025lstm}. Even so, deployment cost remains only partially quantified in current embodied manipulation benchmarks, since latency, runtime reliability, compute footprint, and hardware load are still rarely reported in comparable ways.
 
 However, each of these four dimensions still has its own limitations.
 Execution quality metrics have grown more fine-grained, but they still evaluate policies in isolation from the data that produced them and the hardware that runs them. 
 Data-efficiency measures connect collection cost to learning outcomes, yet they do not predict whether the learned capability transfers. 
 Generalization benchmarks and proxy evaluators are improving, but their validity under embodiment shift and contact-rich conditions remains weakly characterized. 
 Deployment cost appears the least developed dimension, since latency, compute, and hardware load still rarely reported in comparable ways. 
-In practice, these dimensions are rarely co-optimized or measured jointly.
 
 \section{Open Challenges and Future Directions}\label{sec:challenges}
 
