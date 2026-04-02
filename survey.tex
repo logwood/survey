@@ -422,22 +422,15 @@ Accordingly, this chapter moves from embodied datasets to the infrastructures th
 
 \subsection{Embodied Datasets}\label{sec:eai_datasets}
 
-Embodied datasets encode different kinds of information about the physical world, and these informational differences define their roles in manipulation learning.
+Embodied datasets encode different kinds of information about the physical world, and these informational differences define their roles in manipulation learning. 
 Through a systematic review of the literature, we identify three progressively expanding tiers of embodied manipulation datasets (Tables~\ref{tab:grasping_datasets}--\ref{tab:foundation_datasets}). 
-This progression is shaped by the kind of information each dataset contributes and the corresponding knowledge it makes available for manipulation learning. 
-As the informational scope of embodied datasets broadens, the field correspondingly moves from modeling local physical interactions, to learning task-level composition, and ultimately to generalization across heterogeneous embodiments. 
+This progression follows the broadening scope of the supervisions in manipulation learning, from local physical interaction modeling, to task-level composition, and ultimately to generalization across heterogeneous embodiments.
 We summarize this hierarchical evolution as
 \[
 \mathcal{K}_i \approx \mathcal{K}_{i-1} \oplus \mathcal{D}_i,
 \]
 where each tier extends the previous one by introducing new data support and enlarging the effective knowledge state available to the system.
-Skill-level datasets ($\mathcal{K}_1$) encode fine-grained information about local physical interactions, including grasp geometry, contact patterns, and material response. 
-This information grounds the learning of atomic manipulation primitives by specifying where and how an individual action succeeds or fails. 
-Typical supervision is defined at the level of single interactions, such as grasp success, object motion induced by a push, or contact forces observed during insertion, and evaluation is correspondingly tied to individual action outcomes.
-Task-level datasets ($\mathcal{K}_2$) encode compositional information over temporally extended behaviors, typically represented as multi-step trajectories paired with natural language instructions. 
-Rather than describing isolated interactions, they capture how individual skills are selected, ordered, and combined to achieve a goal. The relevant learning problem therefore shifts from mastering single primitives to modeling their coordination over an entire trajectory, and evaluation centers on overall instruction completion.
-Foundation-level datasets ($\mathcal{K}_3$) encode transfer-relevant information across heterogeneous robot platforms, sensing modalities, and action spaces. Their central contribution lies in exposing the cross-embodiment regularities needed for manipulation policies to generalize beyond a single robot setup. 
-At this stage, the key question is no longer only whether a task can be completed, but whether the learned competence transfers across diverse embodiments and environments.
+Concretely, skill-level datasets ($\mathcal{K}_1$) encode information about local interaction dynamics, task-level datasets ($\mathcal{K}_2$) encode information about the composition of skills into temporally extended behaviors, and foundation-level datasets ($\mathcal{K}_3$) encode the cross-embodiment variation needed for transfer at scale.
 
 \subsubsection{Skill-level Datasets}\label{sec:skill_datasets_narrative}
 
@@ -479,7 +472,8 @@ At this stage, the key question is no longer only whether a task can be complete
 }
 \end{table}
 
-Skill-level datasets record atomic motor primitives and their local interaction dynamics. Table~\ref{tab:grasping_datasets} lists representative datasets along this tier.
+The development of skill-level datasets reflects a steady broadening of what counts as a manipulable primitive: from planar grasp annotations, to dense 6-DoF grasp synthesis, to dexterous hand configurations and non-grasping interactions such as pushing, articulation, and assembly. 
+Table~\ref{tab:grasping_datasets} lists representative datasets along this tier.
 Early grasping benchmarks such as Cornell~\cite{lenz2014deep} labeled graspable regions as 2D oriented rectangles, covering only top-down parallel-jaw approaches.
 Dex-Net 2.0~\cite{mahler2017dex} used analytical force-closure synthesis to generate millions of grasp labels without physical trials.
 GraspNet-1B~\cite{fang2020graspnet} annotated 1.2 billion 6-DoF grasps across cluttered real-world scenes, and GraspClutter6D~\cite{back2025graspclutter6d} extended this to denser clutter configurations.
@@ -489,8 +483,7 @@ Beyond grasping, Omnipush~\cite{bauza2021omnipush} records planar pushing dynami
 
 \subsubsection{Task-level Datasets}\label{sec:task_datasets_narrative}
 
-Task-level datasets bind atomic motor primitives into temporally extended, instruction-aligned trajectories. Table~\ref{tab:real_world_tasks} lists representative datasets along this tier.
-
+Task-level datasets evolved by extending isolated motor primitives into instruction-aligned trajectories, gradually increasing semantic coverage, environmental diversity, and calibration quality across collection sites. Table~\ref{tab:real_world_tasks} lists representative datasets along this tier.
 MT-Opt~\cite{kalashnikov2021mt} collected 800k trajectories through autonomous exploration but used task IDs to index actions, without language supervision. 
 BC-Z~\cite{jang2022bc} introduced language-conditioned supervision by pairing 26k trajectories with 100 semantic verbs, and RT-1 Dataset~\cite{brohan2023rt1} extended this to 130k trajectories spanning 700+ instructions. 
 These early datasets were collected in one or two institutional kitchens, limiting environmental diversity. 
@@ -530,7 +523,7 @@ FMB~\cite{fu2025fmb} & 2025 & 22k & 4 & 2 & 1 & $\checkmark$ & $\checkmark$ & $\
 
 \subsubsection{Foundation-level Datasets}\label{sec:foundation_datasets}
 
-Foundation-level datasets aggregate robot trajectories across multiple platforms and require sufficient alignment in observations, actions, and control interfaces to make transfer across platforms feasible.
+Foundation-level datasets emerged from the need to aggregate robot experience across platforms, and their evolution is marked by increasing emphasis on cross-robot alignment, standardization, and multimodal consistency.
 Table~\ref{tab:foundation_datasets} summarizes representative datasets in this tier.
 RoboNet~\cite{dasari2020robonet} established an early multi-robot dataset with 15 million video frames collected across seven robot platforms.
 OXE~\cite{padalkar2023open} scaled this direction by unifying over one million trajectories from 22 robot platforms through the RLDS protocol.
