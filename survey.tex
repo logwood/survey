@@ -228,18 +228,13 @@ From this perspective, the survey examines how embodiment shapes data and contro
 
 Embodied intelligence views cognition as arising from the dynamic coupling of brain, body, and environment, rather than as a purely disembodied computational process~\cite{clarkBeingTherePutting1998, brooksIntelligenceWithoutRepresentation1991}.
 Robotic manipulation provides a particularly challenging and revealing setting for examining this view, as it requires joint reasoning over contact dynamics, force exchange, high-DoF kinematics, and fine-grained object perception~\cite{khatibInertialPropertiesRobot1987}.
-These characteristics have made robotic arms a particularly important platform for embodied intelligence research, a position further reinforced by the rise of deep learning and, more recently, the large-scale emergence of foundation models and LLMs. 
-Among manipulation platforms, robotic arms are among the most mature and widely deployed, making them the primary subject of this survey.
-
-Recent advances in vision-language-action models, world models, and diffusion-based policies have broadened the design space of robotic manipulation. 
+These characteristics have established robotic arms as a key platform for embodied intelligence research, whose importance has grown further with advances in deep learning and, more recently, foundation models and LLMs. 
+Recent progress in vision-language-action models, world models, and diffusion-based policies has significantly enriched the range of approaches for robotic manipulation. 
 Several recent surveys cover adjacent parts of this landscape, including unified abstractions for robotic manipulation~\cite{baiUnifiedUnderstandingRobot2025}, foundation-model components in real-world robotics~\cite{kawaharazukaVisionLanguageActionModelsRobotics2025}, object-centric embodied learning~\cite{survey2025objectcentric}, and broader embodied AI systems built on LLMs and world models~\cite{liuEmbodiedIntelligenceSynergy2025}. 
 These surveys provide valuable coverage, but many of them organize the area primarily by model family or at a relatively broad level of abstraction.
 For manipulation, categories such as VLA and RL can sometimes obscure substantial differences in planning artifacts, action representations, and system integration. 
 Data should be treated more centrally in manipulation research, since collection regime, embodiment heterogeneity, and pipeline design directly affect what learning and integration choices are practical. 
-This survey therefore organizes the field around data regimes, cognitive planning, policy learning, and integration architectures.
-
-\textbf{Objectives and Scope of This Survey:}
-This survey examines learned manipulation intelligence across robotic arm platforms, including stationary, bimanual, mobile, and humanoid configurations, with emphasis on how embodiment, data, learning, and evaluation jointly shape manipulation capability.
+This survey therefore organizes the field around data regimes, cognitive planning, policy learning, and integration architectures and examines learned manipulation intelligence across robotic arm platforms, including stationary, bimanual, mobile, and humanoid configurations, with emphasis on how embodiment, data, learning, and evaluation jointly shape manipulation capability.
 
 \textbf{Contributions:}
 This survey makes three contributions.
@@ -252,18 +247,23 @@ Section~\ref{sec:embodiment_hardware} reviews physical embodiment and software i
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\textwidth,trim=0cm 3cm 0cm 1cm,clip]{assets/taxonomy.pdf}
+  \includegraphics[width=\textwidth,trim=0.8cm 3.8cm 0.8cm 3cm,clip]{assets/taxonomy.pdf}
   \caption{Taxonomy of manipulation intelligence for robotic arms, structured around system architecture, data ecosystem, architectural paradigms, and evaluation metrics, tracing connections from embodiment and data pipelines to cognitive planning, policy learning, integration models, deployment, and evaluation.}
   \Description{A hierarchical diagram showing the organization of the survey on embodied AI for robotic arms. The top node branches into four main pillars: system architecture, data ecosystem, architectural paradigms, and evaluation metrics. These pillars further expand into subtopics including embodied systems, dataset categories, data refinement, cognitive planning, policy learning, integration models, deployment lifecycle, and evaluation criteria. Arrows indicate conceptual dependencies across the survey structure.}\label{fig:survey_structure}
 \end{figure}
 
 \section{System Architecture of Robotic Arms}\label{sec:embodiment_hardware}
 
-The action space of a robotic system is constrained by its hardware embodiment. End-effector geometry, manipulator kinematics, and base mobility together determine what tasks a policy can physically execute. This section reviews the hardware landscape through end effectors, stationary platforms, and mobile platforms, and then examines the software stack that closes the loop from perception to actuation.
+The action space of a robotic system is constrained by its hardware embodiment. 
+End-effector geometry, manipulator kinematics, and base mobility together determine what tasks a policy can physically execute. 
+This section reviews the hardware landscape through end effectors, stationary platforms, and mobile platforms, and then examines the software stack that closes the loop from perception to actuation.
 
 \subsection{Physical Embodiment}
 
-The physical embodiment of a manipulation system spans three levels of abstraction (Fig.~\ref{fig:embodiment_taxonomy}): the \emph{end effector} that mediates contact, the \emph{stationary platform} that provides kinematic reach and torque bandwidth, and the \emph{mobile platform} that extends the workspace to unstructured environments.
+Physical embodiment strongly shapes what a manipulation system can sense, control, and execute. 
+In robotic arm systems, this influence can be analyzed at three levels, as shown in Figure~\ref{fig:embodiment_taxonomy}. 
+The end effector defines the contact interface. The fixed-base platform determines reach and control conditions. 
+The mobile or whole-body platform extends the workspace while increasing the coupling between manipulation and overall body motion.
 
 \subsubsection{End Effectors and Contact Sensing}\label{subsec:end_effectors}
 
@@ -285,7 +285,7 @@ Humanoids such as Atlas, Figure~02, Optimus, and Unitree G1 combine bipedal bala
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\linewidth,trim=0cm 5.3cm 0cm 4.5cm,clip]{assets/embodiment.pdf}
+    \includegraphics[width=\linewidth,trim=0cm 4.1cm 0cm 5.9cm,clip]{assets/embodiment.pdf}
     \caption{Taxonomy of physical embodiments for robotic manipulation. End effectors are classified by contact modality (jaw gripper, dexterous hand, soft hand) and sensing (vision, tactile); platforms are divided into stationary (single-arm, bimanual) and mobile (wheeled, quadrupedal, humanoid).}
     \Description{A hierarchical diagram showing the taxonomy of physical embodiments for robotic manipulation. End effectors are classified by contact modality (jaw gripper, dexterous hand, soft hand) and sensing (vision, tactile); platforms are divided into stationary (single-arm, bimanual) and mobile (wheeled, quadrupedal, humanoid).}\label{fig:embodiment_taxonomy}
 \end{figure}
@@ -294,19 +294,18 @@ Humanoids such as Atlas, Figure~02, Optimus, and Unitree G1 combine bipedal bala
 
 \subsubsection{Modern Robotics Middleware and Operating Systems}\label{subsec:control_middleware}
 
-We structure the software stack into three tiers (Table~\ref{tab:framework_comparison}): the Kernel Layer (L0) for hard real-time motor control, the Transport Layer (L1) for inter-process data flow, and the System Layer (L2) for distributed orchestration.
+The software stack of embodied manipulation systems must support real-time control, efficient data transport, and system-level orchestration across heterogeneous compute and hardware. 
+We organize this stack into three tiers, as summarized in Table~\ref{tab:framework_comparison}. 
 
-The kernel layer (L0) centers on temporal determinism. Industrial stacks rely on kernels such as VxWorks\footnote{\url{https://www.windriver.com/products/vxworks}} and QNX\footnote{\url{https://blackberry.qnx.com}} for bounded interrupt latency and fault isolation, while Zephyr\footnote{\url{https://zephyrproject.org/}} extends the same guarantees to resource-constrained edge devices.
-
-The transport layer (L1) now relies heavily on ROS~2, with decentralized DDS replacing earlier centralized designs~\cite{macenski2022robot}. 
+The Kernel Layer (L0) centers on temporal determinism and low-latency control execution. Industrial stacks rely on kernels such as VxWorks\footnote{\url{https://www.windriver.com/products/vxworks}} and QNX\footnote{\url{https://blackberry.qnx.com}} for bounded interrupt latency and fault isolation, while Zephyr\footnote{\url{https://zephyrproject.org/}} extends the same guarantees to resource-constrained edge devices.
+The Transport Layer (L1) is responsible for moving data between processes, devices, and model components, and today relies heavily on ROS~2, with decentralized DDS replacing earlier centralized designs~\cite{macenski2022robot}. 
 For embodied models, the pressure now comes less from basic connectivity than from the cost of moving multimodal data, which has driven zero-copy dataflow designs such as Dora-rs~\cite{zhang2026dora}.
-
-The system layer (L2) shifts the emphasis from message passing to orchestration across robots, edge devices, clouds, and fleets. Systems such as Zenoh-Flow and FogROS2 treat deployment, routing, and compute offloading as first-class concerns, while RoboOS represents a more recent AI-native direction in which high-level multimodal planning is coupled to reusable skill libraries across heterogeneous embodiments~\cite{baldoni2023zenohflow, ichnowski2022fogros2, wang2025roboos}.
+The System Layer (L2) shifts the emphasis from local message passing to orchestration across robots, edge devices, cloud services, and fleets. Systems such as Zenoh-Flow and FogROS2 treat deployment, routing, and compute offloading as first-class concerns, while RoboOS represents a more recent AI-native direction in which high-level multimodal planning is coupled to reusable skill libraries across heterogeneous embodiments~\cite{baldoni2023zenohflow, ichnowski2022fogros2, wang2025roboos}.
 
 \begin{table}[t]
 \centering
 \caption{\textbf{Three-tier software architecture for embodied intelligence.}
-L0 denotes hard real-time kernels for microsecond-level motor-control determinism. L1 denotes middleware for high-throughput, low-latency inter-process communication. L2 denotes orchestration frameworks for distributed deployment, fleet management, and AI-native coordination. Performance refers to interrupt or IPC latency for L0/L1 systems, and to deployment granularity or orchestration level for L2 systems.}\label{tab:framework_comparison}
+The software stack is organized into three layers. L0 is the Kernel Layer for hard real-time motor control with microsecond-level determinism. L1 is the Transport Layer for high-throughput, low-latency inter-process and inter-device communication. L2 is the System Layer for distributed orchestration across robots, edge devices, cloud resources, and fleets. The Profile column reports interrupt or IPC latency for L0 and L1 systems, and deployment or orchestration characteristics for L2 systems.}\label{tab:framework_comparison}
 \renewcommand{\arraystretch}{1.2}
 \setlength{\tabcolsep}{3pt}
 \scriptsize
@@ -414,13 +413,14 @@ These constraints shape system execution and define the data requirements for le
 
 \section{Data Ecosystem of Robotic Arms}\label{sec:embodiment_dataset}
 
-Data is central to embodied manipulation, but its role extends beyond the datasets used for training. In practice, progress depends equally on how manipulation data is collected, refined, and scaled across tasks, scenes, and embodiments. Figure~\ref{fig:data_support} summarizes this broader data support structure.
-
-Accordingly, this chapter moves from embodied datasets to the infrastructures that produce and improve them. We begin with dataset regimes in Section~\ref{sec:eai_datasets}, then examine data acquisition in Section~\ref{sec:data_acquisition}, data refinement in Section~\ref{sec:data_refinement}, and finally the large-scale pipelines that integrate these processes in Section~\ref{sec:data_factories_robotic_arms}.
+Having examined the physical and software architecture of robotic arms, we now turn to the data ecosystem that supports learning, adaptation, and scaling in embodied manipulation beyond the datasets used for training.
+In practice, progress depends equally on how manipulation data is collected, refined, and scaled across tasks, scenes, and embodiments. 
+This chapter therefore moves beyond embodied datasets to examine the broader data support structure, beginning with dataset regimes in Section~\ref{sec:eai_datasets}, followed by data acquisition in Section~\ref{sec:data_acquisition}, data refinement in Section~\ref{sec:data_refinement}, and finally the large-scale pipelines that integrate these processes in Section~\ref{sec:data_factories_robotic_arms}.
+Together, these elements provide a structured view of the support system summarized in Fig.~\ref{fig:data_support}.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\textwidth,trim=0cm 0cm 0.5cm 0cm,clip]{assets/datasupport.pdf}
+  \includegraphics[width=\textwidth,trim=0cm 0.9cm 1.5cm 0.5cm,clip]{assets/datasupport.pdf}
   \caption{The taxonomy organizes Section 3 around embodied datasets, data acquisition, data refinement, and data pipelines, showing how data is collected, synthesized, improved, and scaled to support downstream learning and deployment.}
   \Description{A hierarchical diagram showing the organization of the survey on embodied AI for robotic arms. The top node branches into four main pillars: system architecture, data ecosystem, architectural paradigms, and evaluation metrics. These pillars further expand into subtopics including embodied systems, dataset categories, data refinement, cognitive planning, policy learning, integration models, deployment lifecycle, and evaluation criteria. Arrows indicate conceptual dependencies across the survey structure.}\label{fig:data_support}
 \end{figure}
@@ -674,13 +674,18 @@ RoboTwin~\cite{mu2025robotwin} and RoboTwin v2~\cite{chen2025robotwin2} keep syn
 
 \section{Learning Paradigms of Robotic Arms}\label{sec:embodiment_method}
 
-The data ecosystem of Section~\ref{sec:embodiment_dataset} provides the raw material, the learning paradigms determine how that material is converted into manipulation capability. We decompose the learning stack into \emph{cognitive planning} (Section~\ref{sec:embodied_brain}, the ``embodied brain''), which converts semantic intent into structured plans classified by output artifact (B1--B5), and \emph{policy learning} (Section~\ref{sec:policy_learning_low_level}, the ``embodied cerebellum''), which maps observations to motor commands via three action-representation families (P1--P3). Section~\ref{sec:integration_models} then examines how these pathways are coupled into unified (Type~I), hierarchical (Type~II), or world-state-maintaining (Type~III) architectures; Table~\ref{tab:data_learning_map} highlights patterns commonly observed between data tiers and B/P/Type combinations. Finally, Section~\ref{sec:deployment_pipeline} traces the deployment pipeline as an engineering concern that cuts across all three patterns. Figure~\ref{fig:learning_paradigms} illustrates the overall organization of learning paradigms.
+The data ecosystem discussed in Section~\ref{sec:embodiment_dataset} provides the raw material for learning, while the learning paradigms discussed here determine how that material is converted into manipulation capability.
+We divide the learning stack into two components. Cognitive planning, which we refer to as the embodied brain and discuss in Section~\ref{sec:embodied_brain}, converts semantic intent into structured planning artifacts. 
+Policy learning, which we refer to as the embodied cerebellum and discuss in Section~\ref{sec:policy_learning_low_level}, maps observations to motor commands through different action representations.
+Section~\ref{sec:integration_models} then examines how planning and policy learning are coupled in unified, hierarchical, and world-state-maintaining architectures, and how these design patterns relate to different data tiers.
+Finally, Section~\ref{sec:deployment_pipeline} traces the deployment pipeline as an engineering concern that cuts across all three patterns. 
+Figure~\ref{fig:learning_paradigms} illustrates the overall organization of learning paradigms.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth,trim=2.7cm 1.5cm 2.2cm 1.5cm,clip]{assets/learningparadigms.pdf}
-  \caption{Organization of learning paradigms for embodied manipulation. The taxonomy decomposes into cognitive planning (B1--B5), policy learning (P1--P3), and integration architectures (Type I--III), with connections to data tiers and deployment stages.}
-  \Description{A diagram showing the organization of learning paradigms for robotic manipulation. The top level shows cognitive planning methods (B1 through B5) ranging from semantic logic to generative dynamics. The middle level shows policy learning approaches (P1 through P3) covering explicit continuous, discrete action, and iterative generative methods. The bottom level shows integration architectures (Type I, II, III) that couple planning and policy. Arrows indicate connections between data tiers, learning paradigms, and deployment stages.}\label{fig:learning_paradigms}
+  \includegraphics[width=\linewidth,trim=2.7cm 4.3cm 2.2cm 1cm,clip]{assets/learningparadigms.pdf}
+  \caption{Overview of learning paradigms for robotic-arm manipulation. The figure organizes the pipeline into cognitive planning, policy learning, integration models, and deployment stages, linked by multimodal inputs and downstream control across robotic-arm embodiments.}
+  \Description{A diagram showing the organization of learning paradigms for robotic manipulation. The top level shows cognitive planning methods ranging from semantic logic to generative dynamics. The middle level shows policy learning approaches (P1 through P3) covering explicit continuous, discrete action, and iterative generative methods. The bottom level shows integration architectures (Type I, II, III) that couple planning and policy. Arrows indicate connections between data tiers, learning paradigms, and deployment stages.}\label{fig:learning_paradigms}
 \end{figure}
 
 \subsection{Cognitive Planning: The Embodied Brain}\label{sec:embodied_brain}
@@ -807,27 +812,34 @@ Efficiency-oriented acceleration and compression are treated as a cross-cutting 
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth,trim=3cm 0cm 3.5cm 0cm,clip]{assets/celeberrum.pdf}
+  \includegraphics[width=\linewidth,trim=3cm 0.5cm 3.5cm 0.3cm,clip]{assets/celeberrum.pdf}
   \caption{Comparison of policy learning paradigms for robotic manipulation. The figure contrasts explicit continuous policies, discrete-action policies, and iterative generative policies in terms of distributional expressivity and computational complexity.}\label{fig:policy_paradigms}
   \Description{A comparison diagram of three policy learning paradigms for robotic manipulation. The figure is arranged along two axes: computational complexity increases from left to right, and distribution expressivity increases from top to bottom. The top row compares explicit continuous policies and discrete-action policies, while the bottom row illustrates iterative generative policies based on diffusion and flow matching.}
 \end{figure}
 
 \subsubsection{Explicit Continuous Policies}\label{sec:explicit_continuous_policies}
 
-P1 policies map observations to continuous action vectors in a single forward pass, trading distributional expressiveness for inference speed. The basic design separates a pre-trained visual encoder from a lightweight action head. BC-Z~\cite{jang2022bc} uses this pattern for multi-task zero-shot generalization, MVP~\cite{xiao2022mvp} shows that masked visual pre-training yields representations robust enough to reduce the policy to a simple MLP, and PointPolicy~\cite{haldar2025pointpolicy} extends explicit regression to 3D point clouds. Single-step prediction, however, ignores trajectory context; Decision Transformer~\cite{chen2021decisiontransformer} reframes control as autoregressive sequence modeling with regression objectives, and the ACT line~\cite{zhao2023learning, fu2024mobile} uses action chunking and CVAE-based modeling to predict short-horizon sequences and reduce jitter in bimanual and mobile manipulation. BAKU~\cite{haldar2024baku} combines CNN-based feature extraction with a transformer policy for multi-task settings. To handle distribution shift, MimicPlay~\cite{wang2023mimicplay} learns goal-conditioned behaviors from play data, Iterative Residual Policy~\cite{chi2022iterativeresidualpolicy} predicts residual corrections to recover from execution drift, and Motion Tracks~\cite{ren2025motion_tracks} learns a unified motion representation for cross-embodiment adaptation. Regression-based policies remain prone to mode averaging when the demonstration data contains multiple valid responses for the same observation.
+P1 policies map observations to continuous action vectors in a single forward pass, trading distributional expressiveness for inference speed. 
+The basic design separates a pre-trained visual encoder from a lightweight action head. 
+BC-Z~\cite{jang2022bc} uses this pattern for multi-task zero-shot generalization, MVP~\cite{xiao2022mvp} shows that masked visual pre-training yields representations robust enough to reduce the policy to a simple MLP, and PointPolicy~\cite{haldar2025pointpolicy} extends explicit regression to 3D point clouds. 
+Single-step prediction, however, ignores trajectory-level context. Decision Transformer~\cite{chen2021decisiontransformer} instead reframes control as autoregressive sequence modeling with a regression objective, while ACT-style methods~\cite{zhao2023learning, fu2024mobile} combine action chunking with CVAE-based modeling to predict short-horizon action sequences and reduce jitter in bimanual and mobile manipulation.
+BAKU~\cite{haldar2024baku} combines CNN-based feature extraction with a transformer policy for multi-task settings. 
+To handle distribution shift, MimicPlay~\cite{wang2023mimicplay} learns goal-conditioned behaviors from play data, Iterative Residual Policy~\cite{chi2022iterativeresidualpolicy} predicts residual corrections to recover from execution drift, and Motion Tracks~\cite{ren2025motion_tracks} learns a unified motion representation for cross-embodiment adaptation. 
+Despite their simplicity and efficiency, explicit continuous policies are poorly matched to multimodal action distributions, as a single deterministic prediction cannot capture multiple valid behaviors.
 
 \subsubsection{Discrete Action Policies}\label{sec:discrete_action_policies}
 
-P2 policies quantize continuous actions into discrete tokens and generate them autoregressively via cross-entropy, naturally capturing multimodal action distributions that unimodal regression cannot represent.
-Early approaches employ uniform discretization. RT-1~\cite{brohan2023rt1} maps continuous dimensions to 256 bins, Gato~\cite{reed2022generalistagent} uses $\mu$-law encoding to tokenize diverse modalities into a unified sequence, and PerAct~\cite{shridhar2022peract} extends this to 3D by classifying actions over voxelized grids.
-Fixed discretization cannot simultaneously support high precision and a compact vocabulary; in practice, one is usually relaxed to improve the other.
-Learned quantization addresses this limitation. BeT~\cite{shafiullah2022bet} defines action modes via k-means clustering, VQ-BeT~\cite{lee2024vqbet} learns compact codebooks through VQ-VAE, and CARP~\cite{gong2025carp} introduces coarse-to-fine hierarchical prediction.
+P2 policies discretize continuous actions into tokens and model them autoregressively with cross-entropy objectives, enabling multimodal action generation beyond unimodal regression.
+Early approaches employ uniform discretization. 
+RT-1~\cite{brohan2023rt1} maps continuous dimensions to 256 bins, Gato~\cite{reed2022generalistagent} uses $\mu$-law encoding to tokenize diverse modalities into a unified sequence, and PerAct~\cite{shridhar2022peract} extends this to 3D by classifying actions over voxelized grids.
+However, fixed discretization imposes a rigid token space that is often poorly matched to continuous action distributions, motivating learned discretization methods that adapt the token space to the data.
+Learned discretization addresses this limitation. BeT~\cite{shafiullah2022bet} derives action modes through k-means clustering, VQ-BeT~\cite{lee2024vqbet} learns a compact discrete action vocabulary with VQ-VAE, and CARP~\cite{gong2025carp} further improves precision through coarse-to-fine hierarchical prediction.
 Once actions are reliably tokenized, they can be generated within the same autoregressive framework used for text. VIMA~\cite{jiang2023vima} interleaves visual objects with text instructions for multimodal prompt conditioning, GR-1~\cite{wu2023gr1} unifies vision, language, and action in a single stream, Seer~\cite{tian2024seer} attributes much of the gain to the discrete formulation itself, and ARP~\cite{zhang2025arp} shows that chunk-level autoregressive generation generalizes across diverse robots. ICIL~\cite{fu2025icil} further treats imitation as sequence completion, adapting to unseen tasks by conditioning on demonstration prompts without gradient updates.
-Discretization introduces two recurring costs. Quantization limits action precision even with learned codebooks, and autoregressive decoding adds token-level latency that grows restrictive in high-frequency control.
+The central challenge in these methods lies in aligning discrete action tokens with the structured, continuous nature of robot actions, while preserving action fidelity and efficient autoregressive generation.
 
 \subsubsection{Iterative Generative Policies}\label{sec:iterative_generative_policies}
 
-P3 policies model the full action distribution through multi-step denoising or flow matching, offering the richest distributional expressiveness at the cost of iterative refinement. 
+P3 policies treat action prediction as conditional generative modeling over continuous action trajectories, using iterative refinement to approximate the full action distribution.
 Early diffusion-based formulations first appeared in planning and structured generation: Diffuser~\cite{janner2022diffuser} casts long-horizon trajectory generation as probabilistic inpainting, and StructDiffusion~\cite{liu2022structdiffusion} constructs physically valid multi-object configurations from language prompts. 
 Diffusion Policy~\cite{chi2023diffusion} subsequently brings this paradigm into mainstream visuomotor control by learning the score function of the action distribution, thereby avoiding the mode-averaging limitations of direct regression. 
 In 3D embodied manipulation, DP3~\cite{ze2024diffusion} further conditions diffusion on point-cloud observations for spatial grounding, while iDP3~\cite{liang2024idp3} extends this formulation with improved 3D representations for more robust deployment.
@@ -835,7 +847,7 @@ Despite these advances, iterative denoising still imposes substantial inference 
 Flow matching addresses this by learning velocity fields that transport noise to data along straighter trajectories with fewer integration steps. 
 Consistency Policy~\cite{prasad2024consistency} distills a teacher diffusion model into few-step generation, Streaming Flow Policy~\cite{jiang2025streaming} streams action trajectories to the robot during generation, and RecFlow~\cite{xue2025recflow} accelerates inference by rectifying the learned flow itself.
 At foundation-model scale, Octo~\cite{octomodelteam2024} trains a transformer-based diffusion policy on the Open X-Embodiment dataset for cross-embodiment manipulation, RDT-1B~\cite{liu2025rdtb} scales to the 1B-parameter regime on larger multi-robot data, and FLOWER~\cite{reuss2025flower} improves sample efficiency through flow-based acceleration.
-Overall, P3 policies offer the strongest distributional modeling capacity, but their practical deployment still depends on balancing generative flexibility, inference efficiency, and control robustness.
+Overall, P3 policies offer the strongest distributional modeling capacity, but their practicality depends on making iterative generative control efficient enough for deployment while preserving action quality, control stability, and manageable compute cost.
 
 \begin{table}[t!]
 \centering
@@ -893,7 +905,7 @@ Within this three-type taxonomy, several recurrent patterns appear repeatedly in
 
 \begin{table}[t]
 \centering
-\caption{\textbf{Integration patterns under different data regimes.} Types~I--III remain the main taxonomy, while the rows below summarize finer recurrent patterns that differ in core idea, interface form, and typical B/P pairings. Data tiers indicate the regimes that most commonly support each pattern, not exclusive assignments. Paradigm codes follow Tables~\ref{tab:brain_paradigms}--\ref{tab:policy_paradigms}. Representative systems are discussed in Section~\ref{sec:integration_models}.}\label{tab:data_learning_map}
+\caption{\textbf{Integration patterns across data regimes.} The table summarizes recurrent integration patterns for embodied manipulation in terms of architecture type, supporting data regime, core idea, shared state, and typical pairings of cognitive planning and policy learning paradigms. Data tiers indicate common support regimes rather than exclusive assignments. Paradigm codes follow Tables~\ref{tab:brain_paradigms}--\ref{tab:policy_paradigms}.}\label{tab:data_learning_map}
 \renewcommand{\arraystretch}{1.3}
 \setlength{\tabcolsep}{3pt}
 \scriptsize
@@ -963,13 +975,13 @@ P3 \\
 Type I models treat actions as another modality tokenized alongside text and image patches, absorbing semantic understanding, reasoning, and action generation into a single backbone. 
 Early systems discretized actions into language-like tokens. RT-2~\cite{brohan2023rt2} co-fine-tuned a vision-language model to output discrete action tokens, and OpenVLA~\cite{kim2024openvla} released a 7B model trained on 970k Open X-Embodiment trajectories. X-VLA~\cite{zheng2026xvla} continues this line with embodiment-specific soft prompts inside a shared transformer, showing how a unified backbone can extend across multiple robot platforms without introducing an explicit hierarchical split. Continuous representations followed. $\pi_0$~\cite{black2024pi0} introduced flow matching for high-frequency dexterous control, and RDT-2~\cite{liu2026rdt2} extends this to bimanual manipulation with zero-shot cross-embodiment deployment. RoboMamba~\cite{liu2024robomamba} replaces self-attention with State Space Models for linear-time processing, and auxiliary reconstructive objectives encode 3D spatial structure to compensate for weak explicit geometry~\cite{song2025reconvla}.
 
-Although Type I systems demonstrate the advantage of unifying perception, semantic reasoning, and action generation within a single architecture, this unification also comes at a cost.
+Although Type I systems demonstrate strong benefits from unifying perception, semantic reasoning, and action generation within a single architecture, this unification also comes at a cost.
 By forcing cognitive planning and motor control into the same representational and computational loop, Type I couples processes that operate at very different temporal and physical scales. 
 As a result, its central challenge is whether a single unified architecture can effectively support both high-level reasoning and real-time control.
 
 \begin{table}[t!]
 \centering
-\caption{\textbf{Comprehensive Taxonomy of Embodied Integration Models.}
+\caption{\textbf{Representative Methods of Embodied Integration Models for Robotic manipulation.}
 \textbf{Brain (B):} B1: Semantic Logic, B2: L-H Decomp, B3: Grounded MM Reas., B4: Geo.\ Grounding, B5: Generative Dynamics.
 \textbf{Policy (P):} P1: Expl.\ Continuous, P2: Discrete Action, P3: Iter.\ Generative.
 \textbf{Mode}: Dirc.\ = Direct Control; Reas.\ = Reasoned Control; Hier.\ = Hierarchical Control; Genr.\ = Generative Control.
@@ -1090,7 +1102,37 @@ We discuss deployment in three stages: offline pre-deployment (Section~\ref{sec:
 These stages are analytically distinct but tightly coupled in practice: pre-deployment choices constrain later adaptation, and online alignment reshapes the execution properties that inference-time control must sustain. 
 Table~\ref{tab:deployment_lifecycle} summarizes the main bottlenecks and representative techniques at each stage.
 
-\begin{table}[t!]
+\subsubsection{Stage 1: Offline Pre-deployment}\label{sec:pre_deployment}
+
+Before physical deployment, the main challenges are transferring policies from simulation to reality, generalizing across embodiments, and making large models practical for real-world execution.
+Q-Transformer~\cite{chebotar2023qtransformer} shows that autoregressive Q-functions can scale offline actor-critic learning to transformer policies through temporal difference backups on static datasets.
+X-Sim~\cite{dan2025xsim} constructs embodiment-agnostic representations through a real-to-sim-to-real pipeline that establishes shared latent action spaces across platforms. 
+ASAP~\cite{he2025asap} addresses automated physics alignment by learning a delta-action compensation model that corrects simulation-to-reality dynamics mismatch. 
+TRANSIC~\cite{jiang2025transic} takes a complementary human-in-the-loop approach, allowing operators to intervene during real-world execution and correct failures online. 
+Residual policies learned from these corrections are then combined with the simulation-trained policy for autonomous deployment.
+As model size grows, pre-deployment compression also becomes necessary: FAST~\cite{pertsch2025fast} introduces DCT-based action tokenization, replacing per-dimension discretization with a frequency-space representation for more efficient deployment.
+
+\subsubsection{Stage 2: Online Physical Alignment}\label{sec:online_alignment}
+
+Once deployed on physical hardware, the primary bottleneck shifts from transfer preparation to adaptation under real contact, friction, sensing noise, and out-of-distribution objects. 
+SimpleVLA-RL~\cite{li2026simplevlarl} shows that large VLA models can be fine-tuned directly through large-scale reinforcement learning, FLaRe~\cite{hu2024flare} addresses the tension between generalist priors and specialist performance through adaptive large-scale RL fine-tuning, while DiWA~\cite{chandra2025diwa} adapts diffusion policies through an offline world model, reducing the amount of physical interaction needed for post-training improvement. 
+ConRFT~\cite{chen2025conrft} combines offline BC/Q-learning with online consistency policies and human intervention checkpoints to support safe adaptation in contact-rich settings. Human-in-the-loop real-world reinforcement learning provides another effective route for this stage: HIL-SERL~\cite{luo2025humaninloop} combines demonstrations, learned reward modeling, and online human corrections to learn precise and dexterous manipulation skills directly on physical robots.
+VT-Refine~\cite{huang2025vtrefine} further demonstrates that visuo-tactile policies, when paired with tactile digital twins and simulation-guided refinement, can improve high-precision dual-arm coordination. Other alignment strategies include residual adaptation via off-policy RL~\cite{xiao2025pld}. The adaptation choices made here directly affect Stage~3: aggressive full-parameter fine-tuning can improve task performance but complicate compression and serving, whereas residual or modular updates preserve more of the original policy structure at the cost of additional execution-time overhead.
+
+\subsubsection{Stage 3: Inference-Time Execution}\label{sec:inference_execution}
+
+During real-world deployment, the key challenge is to sustain reliable closed-loop execution on resource-constrained edge hardware.
+QVLA~\cite{xu2026qvla} addresses action-sensitive quantization by allocating precision unevenly across channels, recognizing that action-critical dimensions tolerate less compression than language-oriented ones. 
+TinyVLA~\cite{wen2025tinyvla} targets fast and data-efficient vision-language-action modeling for robotic manipulation, while PD-VLA~\cite{pdvla2025} accelerates inference by replacing autoregressive decoding with parallel fixed-point iterations over action chunks.
+Runtime robustness is equally critical. Policy Contrastive Decoding~\cite{wu2026policycontrastive} reduces spurious visual dependence during action generation, FAIL-Detect~\cite{xu2025detectfailures} detects potential failures under out-of-distribution conditions, and Neural MP~\cite{dalal2024neuralmp} augments learned policies with motion-planning-based safety constraints.
+Reflective TTP~\cite{hong2026rttp} supports online recovery through reflection and test-time updates, re-evaluating actions with hindsight to adapt the policy during deployment.
+
+Despite progress across all these three stages, current methods still face several limitations. 
+Pre-deployment approaches often remain sensitive to simulator fidelity, offline data coverage, and the scope of embodiment variation, which limits the robustness of transfer to open-ended real-world settings. 
+Online physical alignment methods improve adaptation under real dynamics, but they often require expensive robot interaction, careful reward or intervention design, and, in many cases, substantial human involvement that may hinder scalability. 
+At inference time, compression, quantization, and decoding acceleration improve deployability, yet their impact on fine-grained action fidelity and contact-rich control remains insufficiently understood.
+
+\begin{table}[!htbp]
 \centering
 \caption{\textbf{Deployment bottlenecks and representative techniques across the 3-Stage pipeline.}
 \textbf{S1}\,=\,Offline Pre-deployment; \textbf{S2}\,=\,Online Physical Alignment; \textbf{S3}\,=\,Inference-Time Execution.}\label{tab:deployment_lifecycle}
@@ -1125,55 +1167,14 @@ Table~\ref{tab:deployment_lifecycle} summarizes the main bottlenecks and represe
 \end{tabular}
 \end{table}
 
-\subsubsection{Stage 1: Offline Pre-deployment}\label{sec:pre_deployment}
-
-Before physical deployment, the main challenges are transferring policies from simulation to reality, generalizing across embodiments, and making large models practical for real-world execution.
-Q-Transformer~\cite{chebotar2023qtransformer} shows that autoregressive Q-functions can scale offline actor-critic learning to transformer policies through TD backups on static datasets.
-X-Sim~\cite{dan2025xsim} constructs embodiment-agnostic representations through a real-to-sim-to-real pipeline that establishes shared latent action spaces across platforms. 
-ASAP~\cite{he2025asap} addresses automated physics alignment by learning a delta-action compensation model that corrects simulation-to-reality dynamics mismatch. 
-TRANSIC~\cite{jiang2025transic} takes a complementary human-in-the-loop approach, allowing operators to intervene during real-world execution and correct failures online. 
-Residual policies learned from these corrections are then combined with the simulation-trained policy for autonomous deployment.
-As model size grows, pre-deployment compression also becomes necessary: FAST~\cite{pertsch2025fast} introduces DCT-based action tokenization, replacing per-dimension discretization with a frequency-space representation for more efficient deployment.
-
-\subsubsection{Stage 2: Online Physical Alignment}\label{sec:online_alignment}
-
-Once deployed on physical hardware, the primary bottleneck shifts from transfer preparation to adaptation under real contact, friction, sensing noise, and out-of-distribution objects. 
-SimpleVLA-RL~\cite{li2026simplevlarl} shows that large VLA models can be fine-tuned directly through large-scale reinforcement learning, FLaRe~\cite{hu2024flare} addresses the tension between generalist priors and specialist performance through adaptive large-scale RL fine-tuning, while DiWA~\cite{chandra2025diwa} adapts diffusion policies through an offline world model, reducing the amount of physical interaction needed for post-training improvement. 
-ConRFT~\cite{chen2025conrft} combines offline BC/Q-learning with online consistency policies and human intervention checkpoints to support safe adaptation in contact-rich settings. Human-in-the-loop real-world reinforcement learning provides another effective route for this stage: HIL-SERL~\cite{luo2025humaninloop} combines demonstrations, learned reward modeling, and online human corrections to learn precise and dexterous manipulation skills directly on physical robots.
-VT-Refine~\cite{huang2025vtrefine} further demonstrates that visuo-tactile policies, when paired with tactile digital twins and simulation-guided refinement, can improve high-precision dual-arm coordination. Other alignment strategies include residual adaptation via off-policy RL~\cite{xiao2025pld}. The adaptation choices made here directly affect Stage~3: aggressive full-parameter fine-tuning can improve task performance but complicate compression and serving, whereas residual or modular updates preserve more of the original policy structure at the cost of additional execution-time overhead.
-
-\subsubsection{Stage 3: Inference-Time Execution}\label{sec:inference_execution}
-
-During real-world deployment, the key challenge is to sustain reliable closed-loop execution on resource-constrained edge hardware.
-QVLA~\cite{xu2026qvla} addresses action-sensitive quantization by allocating precision unevenly across channels, recognizing that action-critical dimensions tolerate less compression than language-oriented ones. 
-TinyVLA~\cite{wen2025tinyvla} targets fast and data-efficient vision-language-action modeling for robotic manipulation, while PD-VLA~\cite{pdvla2025} accelerates inference by replacing autoregressive decoding with parallel fixed-point iterations over action chunks.
-Runtime robustness is equally critical. Policy Contrastive Decoding~\cite{wu2026policycontrastive} reduces spurious visual dependence during action generation, FAIL-Detect~\cite{xu2025detectfailures} detects potential failures under out-of-distribution conditions, and Neural MP~\cite{dalal2024neuralmp} augments learned policies with motion-planning-based safety constraints.
-Reflective TTP~\cite{hong2026rttp} supports online recovery through reflection and test-time updates, re-evaluating actions with hindsight to adapt the policy during deployment.
-
-Despite progress across all these three stages, current methods still face several limitations. 
-Pre-deployment approaches often remain sensitive to simulator fidelity, offline data coverage, and the scope of embodiment variation, which limits the robustness of transfer to open-ended real-world settings. 
-Online physical alignment methods improve adaptation under real dynamics, but they often require expensive robot interaction, careful reward or intervention design, and, in many cases, substantial human involvement that may hinder scalability. 
-At inference time, compression, quantization, and decoding acceleration improve deployability, yet their impact on fine-grained action fidelity and contact-rich control remains insufficiently understood.
-
 \section{System Evaluation of Robotic Arms}\label{sec:evaluation}
 
-Section~\ref{sec:embodiment_hardware}--Section~\ref{sec:embodiment_method} traced the chain from embodiment through data and learning to deployment. Evaluation closes that chain along four complementary axes: execution quality, data efficiency, generalization, and deployment cost. Table~\ref{tab:eval_metrics} summarizes representative metrics and protocols along these dimensions.
+Sections~\ref{sec:embodiment_hardware}--\ref{sec:embodiment_method} examined how robotic manipulation systems are shaped by embodiment, data, learning, and deployment. 
+This chapter closes that loop by evaluating the resulting systems from four complementary perspectives.
+Section~\ref{sec:eval_task_execution} focuses on task execution quality, Section~\ref{sec:eval_data_sample} on data efficiency and quality, Section~\ref{sec:eval_benchmarking} on generalization and transfer, and Section~\ref{sec:eval_energy} on deployment efficiency and cost. 
+Table~\ref{tab:eval_metrics} summarizes representative metrics and protocols.
 
-\subsection{Task Execution Quality Evaluation}\label{sec:eval_task_execution}
-
-Task execution is still most commonly evaluated by whether the policy completes the task successfully. 
-However, binary success rates are easy to interpret, but they cannot distinguish early failure from near-complete but unstable execution, especially in long-horizon or bimanual settings. 
-Finer-grained metrics address this along three families.
-For task completion, RoboEval~\cite{wang2025roboeval} decomposes manipulation into sequential stages and measures progress as the fraction completed, 
-while REALM~\cite{sedlacek2025realm} refines this idea by weighting stages according to their importance.
-\begin{equation}
-TP = \sum_{k=1}^K w_k s_k, \qquad \sum_{k=1}^K w_k = 1
-\end{equation}
-where $s_k \in {0,1}$ indicates whether stage $k$ succeeds, and $w_k$ captures its relative importance. REALM also evaluates robustness under perturbations through Root Mean Square Deviation.
-For trajectory quality, smoothness metrics such as SPARC~\cite{balasubramanian2015sparc} and LDLJ~\cite{antonelli2023movement} quantify jerk and motion regularity, while Dynamic Time Warping measures alignment with expert demonstrations under temporal misalignment. 
-For bimanual manipulation, RoboEval also measures coordination through velocity divergence and height discrepancy between end-effectors.
-
-\begin{table}[t]
+\begin{table}[!htbp]
 \centering
 \caption{\textbf{Evaluation metrics and representative works for embodied manipulation.}}\label{tab:eval_metrics}
 \renewcommand{\arraystretch}{1.15}
@@ -1211,6 +1212,19 @@ For bimanual manipulation, RoboEval also measures coordination through velocity 
 \end{tabular}
 \end{table}
 
+\subsection{Task Execution Quality Evaluation}\label{sec:eval_task_execution}
+
+Task execution is still most commonly evaluated by whether the policy completes the task successfully. 
+However, binary success rates are easy to interpret, but they cannot distinguish early failure from near-complete but unstable execution, especially in long-horizon or bimanual settings. 
+Finer-grained metrics address this along three families.
+For task completion, RoboEval~\cite{wang2025roboeval} decomposes manipulation into sequential stages and measures progress as the fraction completed, 
+while REALM~\cite{sedlacek2025realm} refines this idea by weighting stages according to their importance.
+\begin{equation}
+TP = \sum_{k=1}^K w_k s_k, \qquad \sum_{k=1}^K w_k = 1
+\end{equation}
+where $s_k \in {0,1}$ indicates whether stage $k$ succeeds, and $w_k$ captures its relative importance. REALM also evaluates robustness under perturbations through Root Mean Square Deviation.
+For trajectory quality, smoothness metrics such as SPARC~\cite{balasubramanian2015sparc} and LDLJ~\cite{antonelli2023movement} quantify jerk and motion regularity, while Dynamic Time Warping measures alignment with expert demonstrations under temporal misalignment. 
+For bimanual manipulation, RoboEval also measures coordination through velocity divergence and height discrepancy between end-effectors.
 
 \subsection{Data Efficiency and Quality Evaluation}\label{sec:eval_data_sample}
 
@@ -1260,9 +1274,9 @@ Deployment cost appears the least developed dimension, since latency, compute, a
 
 \section{Open Challenges and Future Directions}\label{sec:challenges}
 
-As discussed above, we find that the challenges in this field increasingly arise from the interactions among embodiment, data, model design, deployment constraints, and evaluation protocols.
-Hardware limits what can be sensed and collected; data regimes influence which learning strategies are viable; architectural choices affect deployability; and evaluation protocols shape which capabilities the field learns to prioritize. 
-We therefore organize the remaining challenges into six categories, while noting that many of the hardest problems arise at their interfaces.
+The preceding discussion shows that embodied manipulation has advanced rapidly across perception, learning, planning, and system design. 
+Yet these advances have not resolved a set of fundamental challenges in building systems that are robust, generalizable, deployable, and trustworthy in the real world. 
+We group these challenges into six categories and discuss each in turn, covering embodiment, data, learning, deployment, evaluation, and trustworthiness.
 
 \subsection{Embodiment}\label{sec:challenge_embodiment}
 
@@ -1345,7 +1359,7 @@ Current systems still offer limited support for such calibrated collaboration, r
 
 Recent work suggests that the field is beginning to move beyond isolated module-level improvements toward broader cross-stage directions. 
 On the embodiment and platform side, platforms such as UniDex~\cite{zhang2026unidex} highlight a shift toward embodiment-aware frameworks that unify data generation, cross-embodiment policy learning, and evaluation for dexterous manipulation.
-while IAIL~\cite{chen2026mint} aligns behavior at the level of intention, allowing robots with different morphologies to learn from one another without requiring trajectory-level correspondence. 
+IAIL~\cite{chen2026mint}, by contrast, aligns behavior at the level of intention, allowing robots with different morphologies to learn from one another without requiring trajectory-level correspondence.
 At the same time, data pipelines are becoming more reusable. 
 Always-on egocentric capture~\cite{yang2026aoe} explores how everyday human activity can be turned into a scalable data stream without dedicated recording sessions, 
 while correspondence-driven trajectory warping~\cite{liang2026tether} shows how single demonstrations can be adapted across novel scenes without relying on a physics engine. 
