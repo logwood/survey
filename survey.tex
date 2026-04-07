@@ -252,42 +252,71 @@ Section~\ref{sec:embodiment_hardware} reviews physical embodiment and software i
   \Description{A hierarchical diagram showing the organization of the survey on embodied AI for robotic arms. The top node branches into four main pillars: system architecture, data ecosystem, architectural paradigms, and evaluation metrics. These pillars further expand into subtopics including embodied systems, dataset categories, data refinement, cognitive planning, policy learning, integration models, deployment lifecycle, and evaluation criteria. Arrows indicate conceptual dependencies across the survey structure.}\label{fig:survey_structure}
 \end{figure}
 
-\section{System Architecture of Robotic Arms}\label{sec:embodiment_hardware}
+\section{Embodiment Foundations of Robotic Arms}\label{sec:embodiment_hardware}
 
-The action space of a robotic system is constrained by its hardware embodiment. 
-End-effector geometry, manipulator kinematics, and base mobility together determine what tasks a policy can physically execute. 
-This section reviews the hardware landscape through end effectors, stationary platforms, and mobile platforms, and then examines the software stack that closes the loop from perception to actuation.
+Embodiment shapes robotic manipulation before learning begins. 
+For robotic arm systems, it determines how interaction can be formed, what task-relevant state remains observable during execution, how manipulation is organized through arm motion, and how these conditions are ultimately constrained by computation and control. 
+This section therefore treats embodiment as the source of the physical and computational conditions under which robotic manipulation must be represented, learned, and executed.
 
 \subsection{Physical Embodiment}
 
-Physical embodiment strongly shapes what a manipulation system can sense, control, and execute. 
-In robotic arm systems, this influence can be analyzed at three levels, as shown in Figure~\ref{fig:embodiment_taxonomy}. 
-The end effector defines the contact interface. The fixed-base platform determines reach and control conditions. 
-The mobile or whole-body platform extends the workspace while increasing the coupling between manipulation and overall body motion.
+Physical embodiment shapes robotic manipulation before learning even starts. 
+In robotic arm systems, it governs how contact can be made, what task-relevant state remains observable during interaction, and how these conditions can be converted into controllable behavior, as shown in Figure~\ref{fig:embodiment_taxonomy}.  
+We describe this influence first at the manipulation interface, through end effectors and sensors, and then at the arm level, where multi-DoF motion structures contact into executable manipulation.
+From this perspective, embodiment matters not just as hardware, but as the source of the constraints that define manipulation objectives, data requirements, and methodological choices.
 
-\subsubsection{End Effectors and Contact Sensing}\label{subsec:end_effectors}
+\subsubsection{End Effectors and Sensors}\label{subsec:end_effectors}
 
-End effectors determine how the robot makes contact with the world, while contact sensing determines what the policy can observe once that contact begins. Parallel-jaw and adaptive grippers, including common Robotiq 2F/3F-style designs, are widely used when grasp robustness and implementation simplicity matter more than in-hand dexterity. Dexterous hands such as Shadow Hand and Allegro Hand enlarge the reachable manipulation space, but they also increase action dimensionality and make contact planning, inverse kinematics, and force distribution more difficult. Soft hands such as RBO Hand~3~\cite{Puhlmann_2022}, Festo BionicSoftHand, and SpiRobs shift part of this burden from explicit force control to mechanical compliance, improving tolerance to uncertainty while making state estimation and dynamics modeling more difficult.
+End effectors shape the contact space of manipulation by determining how contact is formed, maintained, and transformed during interaction.
+Different end-effector designs therefore differ not only in capability, but in the contact regime through which manipulation is organized.
+Jaw grippers, such as the Robotiq 2F/3F series, favor stable and mechanically constrained contact, making grasping, alignment, and release easier to control and predict.
+Dexterous hands, such as the Shadow Hand and Allegro Hand, allow contacts to change more freely during manipulation and support richer in-hand interaction, but they also make behavior harder to reduce to a small set of repeatable contact patterns.
+Soft hands, including the RBO Hand 3, Festo BionicSoftHand, and SpiRobs, address uncertainty differently by using compliance to absorb part of the interaction variability in the hardware itself.
 
-The sensing stack plays a major role in whether contact-rich control can remain closed loop. Eye-in-hand vision resolves object geometry before contact, but it provides only indirect information about force, slip, and local deformation once contact occurs. Tactile sensing fills this gap: vision-based tactile sensors such as GelSight~\cite{zhao2023gelsightsveltehumanfingershaped} and DIGIT convert contact geometry into images, while force- and vibration-sensitive sensors such as BioTac provide signals for slip detection and contact regulation. In practice, visuo-tactile integration matters most in insertion, re-grasping, and fragile-object handling, where task-relevant feedback comes primarily from contact state.
+Sensors shape the observation space of manipulation by providing access to task-relevant information during execution.
+What matters, however, is not how much information is available in principle, but which task-relevant states remain observable at different stages of interaction.
+Before contact, the dominant uncertainties concern object geometry, pose, and scene layout, so visual sensing is often sufficient for coarse localization, alignment, and approach. 
+During contact, however, task-relevant information becomes increasingly local and interaction-dependent, including slip, deformation, insertion error, and force misalignment. 
+These states are often critical to task success, yet they are only weakly reflected in external visual observations. 
+For this reason, tactile, force, and proprioceptive sensing become critical once task-relevant information is expressed primarily through contact itself. 
+Sensors such as GelSight, DIGIT, and IMU-equipped end-effectors make different portions of this observation space accessible by exposing local contact geometry, contact transients, and motion signals that are difficult to recover from external vision alone.
 
-\subsubsection{Fixed-base Platforms}\label{subsec:manipulators}
+End-effectors and sensors shape how a robotic arm interacts with its environment. 
+Through contact space and observation space, they bound the otherwise open-ended complexity of manipulation into structured constraints, making the discussion that follows more tractable.
 
-Fixed-base manipulators remain a common platform for contact-rich manipulation because they provide stable control conditions and separate manipulation from mobility. Single-arm systems such as Franka Panda, KUKA iiwa, and Kinova Gen3 are widely used for policy benchmarking, teleoperation, and high-precision force-controlled tasks. Their practical advantage is that base stability is usually fixed, so the control problem can focus on arm kinematics, contact regulation, and end-effector behavior.
+\subsubsection{Robotic arms}\label{subsec:manipulators}
 
-Bimanual fixed-base systems, such as dual Franka Panda setups or ABB YuMi, expand the task set to handover, folding, assembly, and other coordinated interactions, but they introduce stronger coupling between arms. Once two manipulators act on the same object, the control problem must account for internal-force regulation, collision avoidance, and occasional closed-chain constraints. Relative to single-arm setups, these platforms shift the bottleneck from local end-effector control to coordination across multiple contact points.
+Robotic arms give end effectors autonomous and controllable motion. Mounted on fixed bases, they provide controllable multi-DoF motion that allows contact to be established, maintained, and transformed during execution. 
+In this sense, robotic manipulation is defined not by motion alone, but by how motion is organized around contact under partial observability and task constraints.
 
-\subsubsection{Mobile and Whole-body Platforms}\label{subsec:mobile_platforms}
+In single-arm settings, such as the Franka Panda, KUKA iiwa, and Kinova Gen3, the structure of execution remains relatively localized. 
+Manipulation therefore can be organized around a relatively compact set of objectives: establishing a stable grasp, aligning the object to a desired pose, and completing the contact transition. 
+What matters here is not simply whether the arm can move, but whether its motion can produce reliable end-effector behavior under uncertainty. 
+Reachability, local contact regulation, and pose-sensitive execution therefore become central. 
+This is why single-arm systems continue to serve as the dominant setting for teleoperation, policy benchmarking, and high-precision force-controlled manipulation.
 
-Mounting manipulators on mobile bases expands task coverage, but it also couples manipulation to system-level stability and motion planning. Wheeled mobile manipulators such as PR2, TIAGo, and Stretch combine arm control with base navigation, forcing the controller to reconcile base constraints with end-effector accuracy. Legged manipulators, for example Spot-based systems or Unitree platforms equipped with arms, add a stronger form of coupling: when the arm interacts with the environment, contact forces affect foothold stability, and manipulation therefore competes directly with locomotion and balance.
+Bimanual settings, such as dual Franka Panda setups and ABB YuMi, reorganize these objectives rather than simply extending them. 
+Once two manipulators act on the same object, success is no longer determined solely by local grasp stability or end-effector precision. 
+Instead, the task becomes one of coordinated object transformation: relative arm motion must remain consistent, internal forces must remain consistent with the object and the environment, and temporary closed-chain constraints may arise during interaction. 
+As a result, the emphasis shifts from localized intervention to coordinated execution, where timing, force sharing, and multi-contact feasibility become intrinsic to the task.
 
-Humanoids such as Atlas, Figure~02, Optimus, and Unitree G1 combine bipedal balance, whole-body coordination, and often bimanual manipulation within a single control stack. In these systems, manipulation is no longer a localized arm problem: contact forces, posture regulation, center-of-mass motion, and angular momentum must all be coordinated together. As embodiment scope expands from fixed-base arms to mobile and humanoid systems, reachable task diversity increases, but so does the degree of coupling among contact, motion, and stability.
+What distinguishes these regimes is not simply the number of manipulators, but the structure they impose on manipulation. 
+Single-arm systems keep the problem comparatively localized, whereas bimanual systems reorganize it around coordinated object transformation. 
+This distinction matters beyond platform description. 
+It determines the interactions that later chapters must cover in data, the dependencies that the methodology must represent, and the coordination assumptions that control must preserve during execution.
+
+\subsubsection{Mobile Platforms}\label{subsec:mobile_platforms}
+
+Mounting robotic arms on mobile platforms expands the scope of manipulation.
+In wheeled mobile manipulators such as PR2, TIAGo, and Stretch, arm action must already be coordinated with base motion and navigation constraints. 
+In legged platforms and humanoids, including Spot-based systems, Atlas, Figure~02, Optimus, and Unitree G1, this coupling becomes stronger still: manipulation must be executed together with balance, posture regulation, and system-level support conditions. 
+In conclusion, the operation of robotic arms, as a central component of robotic manipulation, is increasingly shaped by mobility, balance, and whole-body support conditions.
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth,trim=0cm 4.1cm 0cm 5.9cm,clip]{assets/embodiment.pdf}
-    \caption{Taxonomy of physical embodiments for robotic manipulation. End effectors are classified by contact modality (jaw gripper, dexterous hand, soft hand) and sensing (vision, tactile); platforms are divided into stationary (single-arm, bimanual) and mobile (wheeled, quadrupedal, humanoid).}
-    \Description{A hierarchical diagram showing the taxonomy of physical embodiments for robotic manipulation. End effectors are classified by contact modality (jaw gripper, dexterous hand, soft hand) and sensing (vision, tactile); platforms are divided into stationary (single-arm, bimanual) and mobile (wheeled, quadrupedal, humanoid).}\label{fig:embodiment_taxonomy}
+    \caption{Overview of physical embodiments for robotic manipulation. The figure covers end effectors, sensors, stationary platforms, and mobile platforms.}
+    \Description{A hierarchical diagram showing the overview of physical embodiments for robotic manipulation. End effectors are classified by contact modality (jaw gripper, dexterous hand, soft hand) and sensing (vision, tactile); platforms are divided into stationary (single-arm, bimanual) and mobile (wheeled, quadrupedal, humanoid).}\label{fig:embodiment_taxonomy}
 \end{figure}
 
 \subsection{Software Framework}
@@ -297,7 +326,7 @@ Humanoids such as Atlas, Figure~02, Optimus, and Unitree G1 combine bipedal bala
 The software stack of embodied manipulation systems must support real-time control, efficient data transport, and system-level orchestration across heterogeneous compute and hardware. 
 We organize this stack into three tiers, as summarized in Table~\ref{tab:framework_comparison}. 
 
-The Kernel Layer (L0) centers on temporal determinism and low-latency control execution. Industrial stacks rely on kernels such as VxWorks\footnote{\url{https://www.windriver.com/products/vxworks}} and QNX\footnote{\url{https://blackberry.qnx.com}} for bounded interrupt latency and fault isolation, while Zephyr\footnote{\url{https://zephyrproject.org/}} extends the same guarantees to resource-constrained edge devices.
+The Kernel Layer (L0) centers on temporal determinism and low-latency control execution. Industrial stacks rely on kernels such as VxWorks and QNX for bounded interrupt latency and fault isolation, while Zephyr extends the same guarantees to resource-constrained edge devices.
 The Transport Layer (L1) is responsible for moving data between processes, devices, and model components, and today relies heavily on ROS~2, with decentralized DDS replacing earlier centralized designs~\cite{macenski2022robot}. 
 For embodied models, the pressure now comes less from basic connectivity than from the cost of moving multimodal data, which has driven zero-copy dataflow designs such as Dora-rs~\cite{zhang2026dora}.
 The System Layer (L2) shifts the emphasis from local message passing to orchestration across robots, edge devices, cloud services, and fleets. Systems such as Zenoh-Flow and FogROS2 treat deployment, routing, and compute offloading as first-class concerns, while RoboOS represents a more recent AI-native direction in which high-level multimodal planning is coupled to reusable skill libraries across heterogeneous embodiments~\cite{baldoni2023zenohflow, ichnowski2022fogros2, wang2025roboos}.
@@ -333,14 +362,14 @@ The software stack is organized into three layers. L0 is the Kernel Layer for ha
 \textbf{VxWorks} &
 Monolithic&
 Priority Preemptive &
-Deterministic RTOS kernel with priority-based preemptive scheduling, designed for low-latency and low-jitter execution in mission-critical control systems. &
+Deterministic RTOS kernel with priority-based preemptive scheduling, designed for low-latency and low-jitter execution in control systems. &
 $<$10\,$\mu$s &
 Industrial \\
 
 \textbf{QNX} &
 Microkernel &
 Spatial Isolation &
-Microkernel RTOS that isolates drivers and system services in user space, improving fault containment while preserving deterministic scheduling. &
+Microkernel RTOS that isolates drivers and system services, improving fault containment while preserving deterministic scheduling. &
 $<$5\,$\mu$s &
 Safety-critical \\
 
@@ -358,7 +387,7 @@ Robotic Edge \\
 \textbf{ROS~2}~\cite{macenski2022robot} &
 Decentralized &
 DDS (RTPS) &
-Decentralized middleware built on DDS/RTPS, providing configurable QoS policies for reliability, deadline, and liveliness in distributed robotic systems. &
+Middleware built on DDS/RTPS, providing configurable QoS policies for reliability, deadline, and liveliness in distributed robotic systems. &
 1--10\,ms &
 General Robotics \\
 
@@ -383,22 +412,22 @@ Distributed \\
 \textbf{FogROS2}~\cite{ichnowski2022fogros2} &
 Cloud &
 ROS~2 Graph &
-ROS 2 extension for hybrid edge-cloud execution, enabling selected components of a robotic graph to be offloaded while retaining local reactive control. &
+ROS 2 extension which enables selected components of a robotic graph to be offloaded while retaining local reactive control. &
 Hybrid &
 Raas \\
 
-\textbf{RoboOS}~\cite{wang2025roboos} &
-Agentic &
-MLLM + Skill Lib &
-Hierarchical system architecture that separates high-level perception and planning from modular low-level skill execution, with support for cross-embodiment and multi-agent coordination. &
-Logic &
-Multi-Agent \\
+%% \textbf{RoboOS}~\cite{wang2025roboos} &
+%% Agentic &
+%% MLLM + Skill Lib &
+%% Hierarchical system architecture that separates perception and planning from modular skill execution, with support for cross-embodiment and multi-agent coordination. &
+%% Logic &
+%% Multi-Agent \\
 
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsubsection{Low-level Motion Planning and Control}
+\subsubsection{Low-level Motion Planning and Control}\label{subsec:lowlevel_control}
 
 While middleware provides the communication substrate, the low-level motion generation and control layer translates task-space references into physically executable joint commands. 
 Its core role is to satisfy several tightly coupled requirements simultaneously: mapping between operational and joint space, compensating nonlinear rigid-body dynamics, enforcing joint and collision constraints, and maintaining stability under external contact. 
@@ -413,28 +442,24 @@ These constraints shape system execution and define the data requirements for le
 
 \section{Data Ecosystem of Robotic Arms}\label{sec:embodiment_dataset}
 
-Having examined the physical and software architecture of robotic arms, we now turn to the data ecosystem that supports learning, adaptation, and scaling in embodied manipulation beyond the datasets used for training.
-In practice, progress depends equally on how manipulation data is collected, refined, and scaled across tasks, scenes, and embodiments. 
-This chapter therefore moves beyond embodied datasets to examine the broader data support structure, beginning with dataset regimes in Section~\ref{sec:eai_datasets}, followed by data acquisition in Section~\ref{sec:data_acquisition}, data refinement in Section~\ref{sec:data_refinement}, and finally the large-scale pipelines that integrate these processes in Section~\ref{sec:data_factories_robotic_arms}.
-Together, these elements provide a structured view of the support system summarized in Fig.~\ref{fig:data_support}.
-
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\textwidth,trim=0cm 0.9cm 1.5cm 0.5cm,clip]{assets/datasupport.pdf}
+  \includegraphics[width=0.75\textwidth,trim=0cm 0.9cm 1.5cm 0.5cm,clip]{assets/datasupport.pdf}
   \caption{The taxonomy organizes Section 3 around embodied datasets, data acquisition, data refinement, and data pipelines, showing how data is collected, synthesized, improved, and scaled to support downstream learning and deployment.}
   \Description{A hierarchical diagram showing the organization of the survey on embodied AI for robotic arms. The top node branches into four main pillars: system architecture, data ecosystem, architectural paradigms, and evaluation metrics. These pillars further expand into subtopics including embodied systems, dataset categories, data refinement, cognitive planning, policy learning, integration models, deployment lifecycle, and evaluation criteria. Arrows indicate conceptual dependencies across the survey structure.}\label{fig:data_support}
 \end{figure}
+
+Having clarified how embodiment constrains robotic manipulation through contact space, observation space, and arm-centered execution, we now turn to the data ecosystem through which these constraints become learnable. 
+In robotic manipulation, data is not merely a collection of training examples, but a structured record of embodied execution: sequences of motion, state transitions, sensory observations, and contact events generated as the robot interacts with the world. 
+Progress therefore depends not only on model design, but also on how such data is organized, collected, refined, and scaled across tasks, scenes, and embodiments. 
+This chapter examines that broader data ecosystem, from dataset regimes to acquisition, refinement, and the large-scale pipelines that connect these processes, as summarized in Fig.~\ref{fig:data_support}.
 
 \subsection{Embodied Datasets}\label{sec:eai_datasets}
 
 Embodied datasets encode different kinds of information about the physical world, and these informational differences define their roles in manipulation learning. 
 Through a systematic review of the literature, we identify three progressively expanding tiers of embodied manipulation datasets (Tables~\ref{tab:grasping_datasets}--\ref{tab:foundation_datasets}). 
 This progression follows the broadening scope of the supervisions in manipulation learning, from local physical interaction modeling, to task-level composition, and ultimately to generalization across heterogeneous embodiments.
-We summarize this hierarchical evolution as
-\[
-\mathcal{K}_i \approx \mathcal{K}_{i-1} \oplus \mathcal{D}_i,
-\]
-where each tier extends the previous one by introducing new data support and enlarging the effective knowledge state available to the system.
+We summarize this hierarchical progression as a transition from \(\mathcal{K}_{i-1}\) to \(\mathcal{K}_i\), where each tier enlarges the effective knowledge support available to the system by introducing additional data support \(\mathcal{D}_i\). 
 Concretely, skill-level datasets ($\mathcal{K}_1$) encode information about local interaction dynamics, task-level datasets ($\mathcal{K}_2$) encode information about the composition of skills into temporally extended behaviors, and foundation-level datasets ($\mathcal{K}_3$) encode the cross-embodiment variation needed for transfer at scale.
 
 \subsubsection{Skill-level Datasets}\label{sec:skill_datasets_narrative}
@@ -683,7 +708,7 @@ Figure~\ref{fig:learning_paradigms} illustrates the overall organization of lear
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth,trim=2.7cm 4.3cm 2.2cm 1cm,clip]{assets/learningparadigms.pdf}
+  \includegraphics[width=0.8\linewidth,trim=2.7cm 4.3cm 2.2cm 1cm,clip]{assets/learningparadigms.pdf}
   \caption{Overview of learning paradigms for robotic-arm manipulation. The figure organizes the pipeline into cognitive planning, policy learning, integration models, and deployment stages, linked by multimodal inputs and downstream control across robotic-arm embodiments.}
   \Description{A diagram showing the organization of learning paradigms for robotic manipulation. The top level shows cognitive planning methods ranging from semantic logic to generative dynamics. The middle level shows policy learning approaches (P1 through P3) covering explicit continuous, discrete action, and iterative generative methods. The bottom level shows integration architectures (Type I, II, III) that couple planning and policy. Arrows indicate connections between data tiers, learning paradigms, and deployment stages.}\label{fig:learning_paradigms}
 \end{figure}
@@ -734,7 +759,7 @@ As the field broadens, B3 is increasingly evolving toward more integrated forms,
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth,trim=1cm 0cm 0cm 0.8cm,clip]{assets/brain.pdf}
+  \includegraphics[width=0.9\linewidth,trim=1cm 0cm 0cm 0.8cm,clip]{assets/brain.pdf}
   \caption{Cognitive planning paradigms for embodied manipulation. The figure summarizes five representative planning modes: semantic logic and code generation, long-horizon task decomposition, grounded multimodal reasoning, geometric grounding and spatial intelligence, and generative dynamics and physical imagination.}
   \Description{A diagram illustrating five cognitive planning paradigms for embodied manipulation. A central brain icon is surrounded by five labeled panels: semantic logic and code generation, long-horizon task decomposition, grounded multimodal reasoning, geometric grounding and spatial intelligence, and generative dynamics and physical imagination. The panels use a broccoli-into-pot task to show how each paradigm represents planning differently, from symbolic code and step decomposition to affordance maps, point clouds, and imagined future states.}\label{fig:brain_paradigms}
 \end{figure}
@@ -1056,7 +1081,7 @@ As a result, its central challenge is whether a single unified architecture can 
 
 \textbf{3D-VLA}~\cite{zhen20243dvla} & B4, P3 & Flan-T5-XL (3B) & Genr. & Franka & 2M samples OXE (3D) & Sim: RLBench | Real: 10 3D tasks \\
 
-\textbf{GR-2}~\cite{cheang2024gr2} & B5, P3 & CVAE (230M) & Genr. & Franka & 38M Web Vid. & Sim: CALVIN | Real: 100+ manipulation tasks \\
+\textbf{VideoVLA}~\cite{shen2025videovla} & B5, P3 & CogVideoX (5B) & Genr. & Div. & OXE + 5K samples & Sim: SIMPLER | Real: 6 unseen tasks \\
 
 \textbf{SpatialVLA}~\cite{qu2025spatialvla} & B4, P2 & PaLiGemma 2 (4B) & Dirc. & Franka+WidowX & OXE + RH20T Real Traj. & Sim: RLBench | Real: 10+ spatial tasks \\
 
@@ -1088,7 +1113,7 @@ What they share is the bottleneck introduced by decomposition: once slow plannin
 Type III maintains a shared world representation that planning and policy jointly consume. 
 This world state takes two forms. 
 Spatial grounding systems build a persistent geometric representation: 3D-VLA~\cite{zhen20243dvla} embeds 3D perception into the LLM for spatial reasoning, SpatialVLA~\cite{qu2025spatialvla} grounds actions in metric 3D structure via Ego3D Position Encoding, TraceVLA~\cite{zheng2025tracevla} conditions generation on visual trajectory traces, and BridgeVLA~\cite{li2025bridgevla} aligns spatial and predictive representations to ensure kinematic feasibility. 
-Predictive world models instead learn forward dynamics from data: GR-2~\cite{cheang2024gr2} trains action-conditioned video prediction at web scale, DreamZero~\cite{ye2026dreamzero} jointly models video and action as a World Action Model, and DreamVLA~\cite{zhang2025dreamvla} integrates a diffusion-based world model into the manipulation pipeline for planning via imagined trajectories.
+Predictive world models instead learn forward dynamics from data: VideoVLA~\cite{shen2025videovla} jointly predicts action sequences and future visual outcomes using a pre-trained video generator, DreamVLA~\cite{zhang2025dreamvla} integrates a diffusion-based world model into the manipulation pipeline for planning via imagined trajectories, and DreamZero~\cite{ye2026dreamzero} jointly models video and action as a World Action Model.
 
 Although Type III models exhibit strong potential, they rely heavily on a reliable shared world representation. 
 If this representation is inaccurate or stale, the entire system can be misled. 
@@ -1132,7 +1157,7 @@ Pre-deployment approaches often remain sensitive to simulator fidelity, offline 
 Online physical alignment methods improve adaptation under real dynamics, but they often require expensive robot interaction, careful reward or intervention design, and, in many cases, substantial human involvement that may hinder scalability. 
 At inference time, compression, quantization, and decoding acceleration improve deployability, yet their impact on fine-grained action fidelity and contact-rich control remains insufficiently understood.
 
-\begin{table}[!htbp]
+\begin{table}[t]
 \centering
 \caption{\textbf{Deployment bottlenecks and representative techniques across the 3-Stage pipeline.}
 \textbf{S1}\,=\,Offline Pre-deployment; \textbf{S2}\,=\,Online Physical Alignment; \textbf{S3}\,=\,Inference-Time Execution.}\label{tab:deployment_lifecycle}
@@ -1174,7 +1199,7 @@ This chapter closes that loop by evaluating the resulting systems from four comp
 Section~\ref{sec:eval_task_execution} focuses on task execution quality, Section~\ref{sec:eval_data_sample} on data efficiency and quality, Section~\ref{sec:eval_benchmarking} on generalization and transfer, and Section~\ref{sec:eval_energy} on deployment efficiency and cost. 
 Table~\ref{tab:eval_metrics} summarizes representative metrics and protocols.
 
-\begin{table}[!htbp]
+\begin{table}[t]
 \centering
 \caption{\textbf{Evaluation metrics and representative works for embodied manipulation.}}\label{tab:eval_metrics}
 \renewcommand{\arraystretch}{1.15}
