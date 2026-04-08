@@ -254,16 +254,16 @@ Section~\ref{sec:embodiment_hardware} reviews physical embodiment and software i
 
 \section{Embodiment Foundations of Robotic Arms}\label{sec:embodiment_hardware}
 
-Embodiment shapes robotic manipulation before learning begins. 
-For robotic arm systems, it determines how interaction can be formed, what task-relevant state remains observable during execution, how manipulation is organized through arm motion, and how these conditions are ultimately constrained by computation and control. 
-This section therefore treats embodiment as the source of the physical and computational conditions under which robotic manipulation must be represented, learned, and executed.
+For robotic arm systems, embodiment foundations defines both the physical substrate of interaction and the computational substrate of control, thereby setting the conditions under which perception, action, and coordination can be realized.
+This section therefore examines embodiment as the joint basis of hardware capability and system support, spanning physical embodiment and the software framework.
 
 \subsection{Physical Embodiment}
 
-Physical embodiment shapes robotic manipulation before learning even starts. 
-In robotic arm systems, it governs how contact can be made, what task-relevant state remains observable during interaction, and how these conditions can be converted into controllable behavior, as shown in Figure~\ref{fig:embodiment_taxonomy}.  
-We describe this influence first at the manipulation interface, through end effectors and sensors, and then at the arm level, where multi-DoF motion structures contact into executable manipulation.
-From this perspective, embodiment matters not just as hardware, but as the source of the constraints that define manipulation objectives, data requirements, and methodological choices.
+Physical embodiment shapes robotic manipulation before learning starts. 
+In robotic arm systems, it governs how contact can be made, and how these conditions can be converted into controllable behavior.  
+We begin at the manipulation interface, through end effectors and sensors, and then at the arm level, where multi-DoF motion structures contact into executable manipulation.
+Figure~\ref{fig:embodiment_taxonomy} summarizes this taxonomy. 
+From this perspective, physical embodiment can be seen as the source of the constraints that define manipulation objectives, data requirements, and methodological choices.
 
 \subsubsection{End Effectors and Sensors}\label{subsec:end_effectors}
 
@@ -274,22 +274,22 @@ Dexterous hands, such as the Shadow Hand and Allegro Hand, allow contacts to cha
 Soft hands, including the RBO Hand 3, Festo BionicSoftHand, and SpiRobs, address uncertainty differently by using compliance to absorb part of the interaction variability in the hardware itself.
 
 Sensors shape the observation space of manipulation by providing access to task-relevant information during execution.
-What matters, however, is not how much information is available in principle, but which task-relevant states remain observable at different stages of interaction.
+The central task of sensors is to ensure the information required at different stages of interaction is observable.
 Before contact, the dominant uncertainties concern object geometry, pose, and scene layout, so visual sensing is often sufficient for coarse localization, alignment, and approach. 
 During contact, however, task-relevant information becomes increasingly local and interaction-dependent, including slip, deformation, insertion error, and force misalignment. 
 These states are often critical to task success, yet they are only weakly reflected in external visual observations. 
 For this reason, tactile, force, and proprioceptive sensing become critical once task-relevant information is expressed primarily through contact itself. 
-Sensors such as GelSight, DIGIT, and IMU-equipped end-effectors make different portions of this observation space accessible by exposing local contact geometry, contact transients, and motion signals that are difficult to recover from external vision alone.
+Sensors such as GelSight, DIGIT, and IMU-equipped end effectors make different portions of this observation space accessible by exposing local contact geometry, contact transients, and motion signals that are difficult to recover from external vision alone.
 
-End-effectors and sensors shape how a robotic arm interacts with its environment. 
+End effectors and sensors shape how a robotic arm interacts with its environment. 
 Through contact space and observation space, they bound the otherwise open-ended complexity of manipulation into structured constraints, making the discussion that follows more tractable.
 
 \subsubsection{Robotic arms}\label{subsec:manipulators}
 
-Robotic arms give end effectors autonomous and controllable motion. Mounted on fixed bases, they provide controllable multi-DoF motion that allows contact to be established, maintained, and transformed during execution. 
+Robotic arms organize manipulation at the execution level by transforming contact and observation into controllable multi-DoF motion. Mounted on fixed bases, they provide controllable multi-DoF motion that allows contact to be established, maintained, and transformed during execution. 
 In this sense, robotic manipulation is defined not by motion alone, but by how motion is organized around contact under partial observability and task constraints.
 
-In single-arm settings, such as the Franka Panda, KUKA iiwa, and Kinova Gen3, the structure of execution remains relatively localized. 
+In single-arm settings, such as the Franka Panda, KUKA iiwa, and Kinova Gen3, the structure of execution is relatively localized. 
 Manipulation therefore can be organized around a relatively compact set of objectives: establishing a stable grasp, aligning the object to a desired pose, and completing the contact transition. 
 What matters here is not simply whether the arm can move, but whether its motion can produce reliable end-effector behavior under uncertainty. 
 Reachability, local contact regulation, and pose-sensitive execution therefore become central. 
@@ -297,7 +297,10 @@ This is why single-arm systems continue to serve as the dominant setting for tel
 
 Bimanual settings, such as dual Franka Panda setups and ABB YuMi, reorganize these objectives rather than simply extending them. 
 Once two manipulators act on the same object, success is no longer determined solely by local grasp stability or end-effector precision. 
-Instead, the task becomes one of coordinated object transformation: relative arm motion must remain consistent, internal forces must remain consistent with the object and the environment, and temporary closed-chain constraints may arise during interaction. 
+Instead, the task becomes one of coordinated object transformation: 
+relative arm motion must keep consistent, 
+internal forces must keep consistent with the object and the environment, 
+and temporary closed-chain constraints may arise during interaction. 
 As a result, the emphasis shifts from localized intervention to coordinated execution, where timing, force sharing, and multi-contact feasibility become intrinsic to the task.
 
 What distinguishes these regimes is not simply the number of manipulators, but the structure they impose on manipulation. 
@@ -320,16 +323,6 @@ In conclusion, the operation of robotic arms, as a central component of robotic 
 \end{figure}
 
 \subsection{Software Framework}
-
-\subsubsection{Modern Robotics Middleware and Operating Systems}\label{subsec:control_middleware}
-
-The software stack of embodied manipulation systems must support real-time control, efficient data transport, and system-level orchestration across heterogeneous compute and hardware. 
-We organize this stack into three tiers, as summarized in Table~\ref{tab:framework_comparison}. 
-
-The Kernel Layer (L0) centers on temporal determinism and low-latency control execution. Industrial stacks rely on kernels such as VxWorks and QNX for bounded interrupt latency and fault isolation, while Zephyr extends the same guarantees to resource-constrained edge devices.
-The Transport Layer (L1) is responsible for moving data between processes, devices, and model components, and today relies heavily on ROS~2, with decentralized DDS replacing earlier centralized designs~\cite{macenski2022robot}. 
-For embodied models, the pressure now comes less from basic connectivity than from the cost of moving multimodal data, which has driven zero-copy dataflow designs such as Dora-rs~\cite{zhang2026dora}.
-The System Layer (L2) shifts the emphasis from local message passing to orchestration across robots, edge devices, cloud services, and fleets. Systems such as Zenoh-Flow and FogROS2 treat deployment, routing, and compute offloading as first-class concerns, while RoboOS represents a more recent AI-native direction in which high-level multimodal planning is coupled to reusable skill libraries across heterogeneous embodiments~\cite{baldoni2023zenohflow, ichnowski2022fogros2, wang2025roboos}.
 
 \begin{table}[t]
 \centering
@@ -427,6 +420,19 @@ Raas \\
 \end{tabular}
 \end{table}
 
+If physical embodiment determines what a robotic arm can do, the software framework determines how those capabilities are organized and executed at runtime.
+We therefore turn from embodiment as hardware to embodiment as system support, focusing on the middleware, communication, and control layers that make robotic manipulation deployable in practice.
+
+\subsubsection{Modern Robotics Middleware and Operating Systems}\label{subsec:control_middleware}
+
+The software stack of embodied manipulation systems must support real-time control, efficient data transport, and system-level orchestration across heterogeneous compute and hardware. 
+We organize this stack into three tiers, as summarized in Table~\ref{tab:framework_comparison}. 
+
+The Kernel Layer (L0) centers on temporal determinism and low-latency control execution. Industrial stacks rely on kernels such as VxWorks and QNX for bounded interrupt latency and fault isolation, while Zephyr extends the same guarantees to resource-constrained edge devices.
+The Transport Layer (L1) is responsible for moving data between processes, devices, and model components, and today relies heavily on ROS~2, with decentralized DDS replacing earlier centralized designs~\cite{macenski2022robot}. 
+For embodied models, the pressure now comes less from basic connectivity than from the cost of moving multimodal data, which has driven zero-copy dataflow designs such as Dora-rs~\cite{zhang2026dora}.
+The System Layer (L2) shifts the emphasis from local message passing to orchestration across robots, edge devices, cloud services, and fleets. Systems such as Zenoh-Flow and FogROS2 treat deployment, routing, and compute offloading as first-class concerns, while RoboOS represents a more recent AI-native direction in which high-level multimodal planning is coupled to reusable skill libraries across heterogeneous embodiments~\cite{baldoni2023zenohflow, ichnowski2022fogros2, wang2025roboos}.
+
 \subsubsection{Low-level Motion Planning and Control}\label{subsec:lowlevel_control}
 
 While middleware provides the communication substrate, the low-level motion generation and control layer translates task-space references into physically executable joint commands. 
@@ -434,7 +440,7 @@ Its core role is to satisfy several tightly coupled requirements simultaneously:
 For this reason, embodied systems commonly adopt optimization-based controllers, particularly model predictive control and whole-body control, which solve tracking, feasibility, and safety objectives within a unified constrained optimization problem solved online at the control rate~\cite{schulman2014optimizing}.
 
 In manipulation, contact behavior is as important as free-space accuracy. 
-Impedance control remains a standard mechanism for shaping compliant interaction during assembly, tool use, and human-robot collaborative tasks, because it allows the robot to absorb positional deviations through compliance and tuned stiffness. 
+Impedance control is a standard mechanism for shaping compliant interaction during assembly, tool use, and human-robot collaboration by balancing positional deviations through compliance and tuned stiffness.
 In practice, however, the effectiveness of MPC, WBC, and impedance control still depends on low-level temporal determinism: timing jitter in the execution loop can destabilize high-frequency feedback well before perception or learning becomes the limiting factor.
 
 Together, hardware embodiment and the software stack define the physical and computational constraints under which any learned policy must operate. 
@@ -450,23 +456,22 @@ These constraints shape system execution and define the data requirements for le
 \end{figure}
 
 Having clarified how embodiment constrains robotic manipulation through contact space, observation space, and arm-centered execution, we now turn to the data ecosystem through which these constraints become learnable. 
-In robotic manipulation, data is not merely a collection of training examples, but a structured record of embodied execution: sequences of motion, state transitions, sensory observations, and contact events generated as the robot interacts with the world. 
-Progress therefore depends not only on model design, but also on how such data is organized, collected, refined, and scaled across tasks, scenes, and embodiments. 
-This chapter examines that broader data ecosystem, from dataset regimes to acquisition, refinement, and the large-scale pipelines that connect these processes, as summarized in Fig.~\ref{fig:data_support}.
+In robotic manipulation, we denote this data support by \(\mathcal{D}\): a structured record of embodied execution, including sequences of motion, state transitions, sensory observations, and contact events generated as the robot interacts with the world. 
+Progress therefore depends not only on model design, but also on how \(\mathcal{D}\) is organized, collected, refined, and scaled across tasks, scenes, and embodiments. 
+This chapter begins with embodied datasets in Section~\ref{sec:eai_datasets} and then examines the broader processes centered on them, including data acquisition in Section~\ref{sec:data_acquisition}, data refinement in Section~\ref{sec:data_refinement}, and the large-scale pipelines for datasets in Section~\ref{sec:data_factories_robotic_arms}.
+Together, these elements provide a structured view of the support system summarized in Fig.~\ref{fig:data_support}.
 
 \subsection{Embodied Datasets}\label{sec:eai_datasets}
 
-Embodied datasets encode different kinds of information about the physical world, and these informational differences define their roles in manipulation learning. 
-Through a systematic review of the literature, we identify three progressively expanding tiers of embodied manipulation datasets (Tables~\ref{tab:grasping_datasets}--\ref{tab:foundation_datasets}). 
-This progression follows the broadening scope of the supervisions in manipulation learning, from local physical interaction modeling, to task-level composition, and ultimately to generalization across heterogeneous embodiments.
-We summarize this hierarchical progression as a transition from \(\mathcal{K}_{i-1}\) to \(\mathcal{K}_i\), where each tier enlarges the effective knowledge support available to the system by introducing additional data support \(\mathcal{D}_i\). 
-Concretely, skill-level datasets ($\mathcal{K}_1$) encode information about local interaction dynamics, task-level datasets ($\mathcal{K}_2$) encode information about the composition of skills into temporally extended behaviors, and foundation-level datasets ($\mathcal{K}_3$) encode the cross-embodiment variation needed for transfer at scale.
-
-\subsubsection{Skill-level Datasets}\label{sec:skill_datasets_narrative}
+Through a systematic review of the literature, we observe that embodied manipulation datasets have evolved toward progressively broader support for learning, from preserving local interaction structure (Table~\ref{tab:skill_datasets}), to capturing how robotic arms organize these interactions into temporally extended execution (Table~\ref{tab:task_datasets}), and ultimately to supporting transfer across heterogeneous embodiments (Table~\ref{tab:foundation_datasets}).
+We summarize this progression as a transition from \(\mathcal{D}_{i-1}\) to \(\mathcal{D}_i\), where each tier enlarges the available data support and thereby expands the effective knowledge support \(\mathcal{K}\) available to the system. 
+Concretely, skill-level datasets \(\mathcal{D}_1\) provide support at the level of \(\mathcal{K}_1\) by encoding information about local interaction dynamics, 
+task-level datasets \(\mathcal{D}_2\) provide support at the level of \(\mathcal{K}_2\) by encoding information about the composition of skills into temporally extended behaviors, 
+and foundation-level datasets \(\mathcal{D}_3\) provide support at the level of \(\mathcal{K}_3\) by encoding the cross-embodiment variation needed for transfer at scale.
 
 \begin{table}[t]
 \centering
-\caption{\textbf{Chronological Overview of Skill-level Datasets.} Evolution reflects the shift from planar grasping rectangles to dense 6-DoF poses, dexterous hands, language-grounded reasoning, and diverse motor primitives (pushing, articulation, deformable manipulation, assembly). Note the scarcity of real-world data for non-grasping primitives.}\label{tab:grasping_datasets}
+\caption{\textbf{Chronological Overview of Skill-level Datasets.} Evolution reflects the shift from planar grasping rectangles to dense 6-DoF poses, dexterous hands, language-grounded reasoning, and diverse motor primitives (pushing, articulation, deformable manipulation, assembly). Note the scarcity of real-world data for non-grasping primitives.}\label{tab:skill_datasets}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{l l l l l l l l l}
 \toprule
@@ -502,8 +507,10 @@ Concretely, skill-level datasets ($\mathcal{K}_1$) encode information about loca
 }
 \end{table}
 
-The development of skill-level datasets reflects a steady broadening of what counts as a manipulable primitive: from planar grasp annotations, to dense 6-DoF grasp synthesis, to dexterous hand configurations and non-grasping interactions such as pushing, articulation, and assembly. 
-Table~\ref{tab:grasping_datasets} lists representative datasets along this tier.
+\subsubsection{Skill-level Datasets}\label{sec:skill_datasets_narrative}
+
+The development of skill-level datasets reflects a steady expansion of \(\mathcal{D}_1\), from planar grasp annotations, to dense 6-DoF grasp synthesis, to dexterous hand configurations and non-grasping interactions such as pushing, articulation, and assembly. 
+Table~\ref{tab:skill_datasets} lists representative datasets along this tier.
 Early grasping benchmarks such as Cornell~\cite{lenz2014deep} labeled graspable regions as 2D oriented rectangles, covering only top-down parallel-jaw approaches.
 Dex-Net 2.0~\cite{mahler2017dex} used analytical force-closure synthesis to generate millions of grasp labels without physical trials.
 GraspNet-1B~\cite{fang2020graspnet} annotated 1.2 billion 6-DoF grasps across cluttered real-world scenes, and GraspClutter6D~\cite{back2025graspclutter6d} extended this to denser clutter configurations.
@@ -513,7 +520,7 @@ Beyond grasping, Omnipush~\cite{bauza2021omnipush} records planar pushing dynami
 
 \subsubsection{Task-level Datasets}\label{sec:task_datasets_narrative}
 
-Task-level datasets evolved by extending isolated motor primitives into instruction-aligned trajectories, gradually increasing semantic coverage, environmental diversity, and calibration quality across collection sites. Table~\ref{tab:real_world_tasks} lists representative datasets along this tier.
+Task-level datasets evolved \(\mathcal{D}_2\) by extending isolated motor primitives into instruction-aligned trajectories, gradually increasing semantic coverage, environmental diversity, and calibration quality across collection sites. Table~\ref{tab:task_datasets} lists representative datasets along this tier.
 MT-Opt~\cite{kalashnikov2021mt} collected 800k trajectories through autonomous exploration but used task IDs to index actions, without language supervision. 
 BC-Z~\cite{jang2022bc} introduced language-conditioned supervision by pairing 26k trajectories with 100 semantic verbs, and RT-1 Dataset~\cite{brohan2023rt1} extended this to 130k trajectories spanning 700+ instructions. 
 These early datasets were collected in one or two institutional kitchens, limiting environmental diversity. 
@@ -524,19 +531,32 @@ FMB~\cite{fu2025fmb} added force-torque calibration across 22k contact-rich asse
 \centering
 \caption{\textbf{Representative task-level embodied datasets collected from real-world physical trajectories.} 
 \# Traj.\ denotes the number of recorded demonstrations or episodes; 
-\# View.\ denotes the number of camera views available; 
+Views denotes the number of camera views available; 
 Tasks denotes the number of distinct task types; Scenes denotes the number of distinct environments or scene settings; 
 Lang.\ indicates whether language annotations or task instructions are provided; 
 Depth indicates whether depth observations are provided;
 Calib.\ indicates whether camera-robot calibration or equivalent calibration metadata is available.; 
+Form.\ indicates the primary release format, such as raw files, HDF5, TFDS, or RLDS.;
 Platform denotes the robot platform used for data collection; 
 Collection Mode summarizes the acquisition protocol; and Format denotes the primary release format. 
-In the table, Teleop. = teleoperation, and H/S Hybrid = a combination of human demonstrations and scripted data collection.}\label{tab:real_world_tasks}
+In the table, Teleop. = teleoperation, and H/S Hybrid = a combination of human demonstrations and scripted data collection.}\label{tab:task_datasets}
 \scriptsize
-\setlength{\tabcolsep}{2.5pt}
-\begin{tabular}{lccccccccccc}
+\begin{tabular}{
+  l
+  c
+  c
+  c
+  c
+  c
+  c
+  c
+  c
+  c
+  c
+  c
+  c}
 \toprule
-\textbf{Dataset} & \textbf{Year} & \textbf{\# Traj.} & \textbf{\# View.} & \textbf{Tasks} & \textbf{Scenes} & \textbf{Lang.} & \textbf{Depth} & \textbf{Calib.} & \textbf{Platform} & \textbf{Collection} & \textbf{Format} \\
+\textbf{Dataset} & \textbf{Year} & \textbf{Traj.} & \textbf{V} & \textbf{Tasks} & \textbf{Scenes} & \textbf{Lang.} & \textbf{Depth} & \textbf{Calib.} & \textbf{Platform} & \textbf{Collection} & \textbf{Form.} \\
 \midrule
 MIME~\cite{sharma2018mime} & 2018 & 8.3k & 3 & 20 & 1 & $\times$ & $\checkmark$ & $\times$ & Baxter & Teleop. & Raw \\
 RoboTurk~\cite{mandlekar2018roboturk} & 2018 & 2.1k & 2 & 3 & 1 & $\times$ & $\checkmark$ & $\times$ & Panda & Teleop. & HDF5 \\
@@ -553,7 +573,7 @@ FMB~\cite{fu2025fmb} & 2025 & 22k & 4 & 2 & 1 & $\checkmark$ & $\checkmark$ & $\
 
 \subsubsection{Foundation-level Datasets}\label{sec:foundation_datasets}
 
-Foundation-level datasets emerged from the need to aggregate robot experience across platforms, and their evolution is marked by increasing emphasis on cross-robot alignment, standardization, and multimodal consistency.
+Foundation-level datasets expand \(\mathcal{D}_3\) by organizing robot experience across platforms into a unified layer of support for cross-embodiment learning, with increasing emphasis on alignment, standardization, and multimodal consistency.
 Table~\ref{tab:foundation_datasets} summarizes representative datasets in this tier.
 RoboNet~\cite{dasari2020robonet} established an early multi-robot dataset with 15 million video frames collected across seven robot platforms.
 OXE~\cite{padalkar2023open} scaled this direction by unifying over one million trajectories from 22 robot platforms through the RLDS protocol.
@@ -562,10 +582,6 @@ ARIO~\cite{wang2024ario} provides a unified large-scale dataset with approximate
 RoboMIND~\cite{wu2025robomind} extends this tier toward standardized multi-robot task datasets, pairing 107k trajectories across four robot types with failure annotations, and RoboMIND 2.0~\cite{hou2026robomind20} scales this to over 310k trajectories across six robot platforms and 739 tasks.
 AgiBot World Beta~\cite{agibot2025} pushes this tier toward foundation-scale humanoid and dual-arm manipulation, providing over one million trajectories from 100 robots across 100+ real-world scenarios.
 As robot data demand outpaces collection speed, some pipelines supplement trajectory datasets with egocentric human video such as Ego-Exo4D~\cite{grauman2024egoexo4d}.
-
-\subsection{Data Acquisition}\label{sec:data_acquisition}
-
-The dataset taxonomy above establishes what knowledge each tier provides; this subsection examines how that knowledge is acquired. Three channels supply training datasets: real-world gathering, simulation ecosystems, and automatic data generation. Together they populate the skill-level, task-level, and foundation-level regimes described in Section~\ref{sec:eai_datasets}.
 
 \begin{table}[t]
 \centering
@@ -577,37 +593,45 @@ Embod.\ Types: S\,=\,single-arm, B\,=\,bimanual, M\,=\,mobile manipulator, H\,=\
 Lang.\,=\,language supervision;
 Action: EE\,=\,end-effector, Emb.\,=\,embodiment-specific, WB\,=\,whole-body;
 Alignment: how multi-robot differences are reconciled.}\label{tab:foundation_datasets}
-\setlength{\tabcolsep}{2.5pt}
 \scriptsize
-\begin{tabular}{lcccccccccc}
+\begin{tabular}{lccccccccc}
 \toprule
-\textbf{Dataset} & \textbf{Year} & \textbf{\# Traj.} & \textbf{\# Embod.} & \textbf{Types} & \textbf{Source} & \textbf{Modalities} & \textbf{Lang.} & \textbf{Action} & \textbf{Alignment} & \textbf{Format} \\
+\textbf{Dataset} & \textbf{Year} & \textbf{\# Traj.} & \textbf{\# Embo.} & \textbf{Types} & \textbf{Source} & \textbf{Modalities} & \textbf{Lang.} & \textbf{Action} & \textbf{Alignment} \\
 \midrule
-RoboNet~\cite{dasari2020robonet} & 2019 & 162k & 7 & S & Scripted & RGB & $\times$ & EE & Interface-level & HDF5 \\
-RH-20T~\cite{fang2023rh} & 2023 & 110k & 7 & S & Teleop & RGB, D, F, A & $\checkmark$ & Emb. & Calibration-level & Custom \\
-OXE~\cite{padalkar2023open} & 2023 & 1M+ & 22 & S, B, M & Aggregated & RGB & $\checkmark$ & EE & Schema-level & RLDS \\
-ARIO~\cite{wang2024ario} & 2024 & 3M & N/A & S, B, M & Aggregated & RGB, D & $\checkmark$ & Emb. & Temporal & Unified \\
-AgiBot World~\cite{agibot2025} & 2025 & 1M+ & 100+ & B, H & Teleop & RGB, D, F & $\checkmark$ & WB & Pipeline-level & Custom \\
+RoboNet~\cite{dasari2020robonet} & 2019 & 162k & 7 & S & Scripted & RGB & $\times$ & EE & Interface-level \\
+RH-20T~\cite{fang2023rh} & 2023 & 110k & 7 & S & Teleop & RGB, D, F, A & $\checkmark$ & Emb. & Calibration-level \\
+OXE~\cite{padalkar2023open} & 2023 & 1M+ & 22 & S, B, M & Aggregated & RGB & $\checkmark$ & EE & Schema-level \\
+ARIO~\cite{wang2024ario} & 2024 & 3M & N/A & S, B, M & Aggregated & RGB, D & $\checkmark$ & Emb. & Temporal \\
+AgiBot World~\cite{agibot2025} & 2025 & 1M+ & 100+ & B, H & Teleop & RGB, D, F & $\checkmark$ & WB & Pipeline-level \\
 \bottomrule
 \end{tabular}
 \end{table}
 
+\subsection{Data Acquisition}\label{sec:data_acquisition}
+
+The previous section distinguished dataset tiers by the support they provide. 
+However, acquiring such support is not straightforward. 
+Unlike generic datasets, embodied manipulation data must record action sequences under the constraints of observation space and contact space. 
+Collecting data that is both physically grounded and rich enough to support learning at scale is difficult. 
+This section therefore examines three main routes by which embodied interaction is converted into \(\mathcal{D}\) through real-world collection in Section~\ref{sec:real_acquisition}, simulation ecosystems in Section~\ref{sec:simulation_infrastructure}, and automatic data generation in Section~\ref{sec:auto_data_gen}. 
+
 \subsubsection{Real-world Data Gathering}\label{sec:real_acquisition}
 
-Recent work has expanded the ways manipulation data can be collected in the real world. 
-Some approaches make teleoperation easier to scale, some collect data without requiring the deployment robot to be present, and others use human activity itself as a source of supervision.
-
-RoboTurk~\cite{mandlekar2018roboturk} showed that teleoperated demonstrations could be collected from geographically distributed operators over the internet, relaxing the requirement that data gathering happen in a single shared lab. 
-ALOHA~\cite{zhao2023learning, fu2024mobile} made this direction easier to adopt in practice by lowering the hardware barrier for bimanual and mobile whole-body teleoperation, especially for contact-rich tasks. 
-A related line of work weakened the dependence of collection on the deployment robot itself. 
-UMI~\cite{chi2024umi} used handheld grippers and consumer cameras to capture demonstrations in everyday environments and then retargeted them offline to the robot platform, 
-while DexCap~\cite{wang2024dexcap} pushed this approach toward dexterous manipulation by recording high-dimensional human hand motion for transfer to multi-fingered robot hands. 
-The source of supervision has also broadened beyond robot-mediated demonstrations. EgoMimic~\cite{kareer2025egomimic} used egocentric human video to enable large-scale data capture without requiring robot hardware during collection, 
-and AV-ALOHA~\cite{chuang2025avaloha} showed that such data become more useful when the demonstrator's viewpoint remains perceptually aligned with the robot's onboard observations. 
+Since real-world collection conducts under concrete hardware and scene constraints, its efficiency and coverage are constrained by the robotic arm platform, end effectors, and execution environments. 
+Recent research can be read as a gradual effort to weaken this coupling while retaining useful observation, contact, and execution structure. 
+Direct teleoperation on the deployment robot provides a straightforward way to acquire such data, and it forms the basis of many early approaches.
+RoboTurk~\cite{mandlekar2018roboturk} built a cloud-based teleoperation interface that enabled demonstrations to be collected from geographically distributed users over the internet rather than in a single shared lab. 
+ALOHA~\cite{zhao2023learning, fu2024mobile} introduced a low-cost teleoperation setup for bimanual and later mobile whole-body manipulation, making long-horizon and contact-rich data collection more accessible. 
+Teleoperation preserves the coupling between observation space, contact space, and arm-centered execution most faithfully, but it is also tightly constrained by hardware access and human labor. 
+For this reason, later work seeks more reusable collection interfaces so that the resulting behavior can transfer across several robotic arm platforms. 
+UMI~\cite{chi2024umi} used handheld grippers and consumer cameras to capture demonstrations in everyday environments and then retargeted them offline to the target robot platform, 
+while DexCap~\cite{wang2024dexcap} pushed this approach toward dexterous manipulation by recording high-dimensional human hand motion for transfer to multi-fingered robot hands within the same broader dexterous-hand regime. 
+Even so, these interfaces are limited to narrower robotic arms and still rely on teleoperation. 
+This motivates a further step toward egocentric and video-based supervision by retargeting human demonstrations back into robotic arm execution.
+EgoMimic~\cite{kareer2025egomimic} used egocentric human video to enable large-scale data capture without requiring robot hardware during collection, 
+and AV-ALOHA~\cite{chuang2025avaloha} showed that such data become more useful when the demonstrator's viewpoint is perceptually aligned with the robot's onboard observation space. 
 
 \subsubsection{Simulation Data Ecosystems}\label{sec:simulation_infrastructure}
-
-In recent work, several reusable ecosystems have become common reference points for manipulation simulation, each with a different data emphasis. Table~\ref{tab:sim_classification} compares their design priorities. MuJoCo emphasizes contact-stable, controller-oriented dynamics; SAPIEN emphasizes articulated-object interaction and part semantics; and NVIDIA Isaac emphasizes GPU-parallel data generation at scale. Specialized platforms remain useful when the target is a narrower benchmark, a particular task family, or a physical regime not covered well by these larger ecosystems.
 
 \begin{table}[t]
 \centering
@@ -619,24 +643,22 @@ In recent work, several reusable ecosystems have become common reference points 
 \midrule
 \multicolumn{4}{c}{\textbf{\textbf{I. The Core Simulation Ecosystems}}} \\
 \midrule
-\addlinespace[0.5ex]
 \textbf{MuJoCo} & Stable analytic contact solver; MJX hardware acceleration (TPU/GPU); Unified differentiable dynamics. & \textbf{Physics-Aligned Data}: Artifact-free trajectories for fine-grained motor control. 
 
-\textbf{Modalities: Proprioception, Contact forces, Kinematics, RGB.} & \textbf{Yu et al.}~\cite{yu2021meta}, \textbf{LIBERO}~\cite{liu2023libero},~\cite{nasiriany2024robocasa}, BiGym~\cite{chernyadev2024bigym}, Han et al.~\cite{han2025robocerebra} \\ 
+\textbf{Modalities: Proprioception, Contact forces, Kinematics, RGB.} & \textbf{Yu et al.}~\cite{yu2021meta}, \textbf{LIBERO}~\cite{liu2023libero},~\cite{nasiriany2024robocasa} \\ 
 
 \textbf{Isaac Suite} & PhysX5;RTX-enabled neural rendering; LLM-driven generative synthesis. & \textbf{Generative Scalable Data}: Large scale synthetic and high-DoF control.
 
-\textbf{Modalities: RGB-D, LiDAR, Segmentation, Bounding boxes, Force/Torque, Event camera.} & \textbf{Isaac Lab}~\cite{mittal2023orbit}, DexGraspNet~\cite{wang2023dexgraspnetlargescaleroboticdexterous}, FurnitureBench~\cite{heo2023furniturebench} \\
+\textbf{Modalities: RGB-D, LiDAR, Segmentation, Bounding boxes, Force/Torque, Event camera.} & \textbf{Isaac Lab}~\cite{mittal2023orbit}, \textbf{Behavior-1k}~\cite{li2024behavior1k}, \textbf{Arnold}~\cite{gong2023arnold} \\
 
 \textbf{SAPIEN} & High-fidelity articulated dynamics; Part-level mobility (PartNet); Parallelized Vulkan rendering. & \textbf{Semantic Interaction Data}: Interactions across articulated categories and part-level reasoning. 
 
-\textbf{Modalities: RGB-D, Masks, Contact forces, Articulated object states.} & \textbf{ManiSkill3}~\cite{tao2025maniskill3}, \textbf{SIMPLER}~\cite{li2025simpler}, \textbf{RoboTwin}~\cite{chen2025robotwin2}, RoboFactory~\cite{qin2025robofactory} \\
+\textbf{Modalities: RGB-D, Masks, Contact forces, Articulated object states.} & \textbf{ManiSkill3}~\cite{tao2025maniskill3}, \textbf{SIMPLER}~\cite{li2025simpler}, \textbf{RoboTwin}~\cite{mu2025robotwin} \\
 
 \midrule
 
 \multicolumn{4}{c}{\textbf{\textbf{II\@. Specialized Task Platforms}}} \\
 \midrule
-\addlinespace[0.5ex]
 \textbf{PyBullet / CoppeliaSim} & Lightweight legacy physics; Stable IK solvers; Broad hardware and ROS abstraction. & \textbf{Algorithmic Baseline Data}: Logic planning and action primitives. 
 
 \textbf{Modalities: RGB-D, Joint states, Contact forces, Proximity sensors, Force/Torque.} & \textbf{CALVIN}~\cite{mees2022calvin}, \textbf{RLBench}~\cite{james2020rlbench} \\
@@ -645,47 +667,80 @@ In recent work, several reusable ecosystems have become common reference points 
 
 \textbf{Modalities: RGB-D, Segmentations, Object states, Agent pose, Audio.} & OpenEQA~\cite{majumdar2024openeqa}, ALFRED~\cite{shridhar2020alfred} \\
 
-\textbf{SoftGym / Genesis} & Unified solvers; Differentiable physics; Auto generation. & \textbf{Generative Multi-Physics Data}: Coupled interactions (rigid/soft/fluid). 
-
-\textbf{Modalities: RGB-D, Proprioceptive haptics, Particle states, Differentiable gradients.} & ClothFunnels~\cite{canberk2022clothfunnels}, Difftaichi~\cite{hu2020difftaichi} \\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-MuJoCo~\cite{todorov2012mujoco} is commonly used when contact stability and controller-oriented evaluation matter. Meta-World~\cite{yu2021meta} provided a standard state-based multi-task setting, and later suites such as LIBERO~\cite{liu2023libero} and RoboCasa~\cite{nasiriany2024robocasa} added lifelong-learning curricula and richer household scenes. MJX and MuJoCo Playground support larger-batch rollouts, differentiable simulation, and sim-to-real analysis within the same stack~\cite{deepmind2025playground}.
-
-SAPIEN~\cite{xiang2020sapien} is used primarily for articulated-object interaction, where kinematic structure and part semantics must be represented explicitly. PartNet-Mobility provides articulated assets with annotated joints, ManiSkill builds benchmark suites on this basis~\cite{gu2023maniskill2}, and SIMPLER uses the same infrastructure for sim-to-real evaluation~\cite{li2025simpler}.
-
-NVIDIA Isaac emphasizes throughput and large-batch synthesis. Isaac Lab provides the common runtime and tooling layer, while DexGraspNet and FurnitureBench illustrate how the ecosystem is used for dexterous grasp generation and high-DoF manipulation data at larger scale~\cite{mittal2023orbit, wang2023dexgraspnetlargescaleroboticdexterous, heo2023furniturebench}.
-
-Beyond these three ecosystems, specialized platforms remain necessary. PyBullet and CoppeliaSim still support manipulation baselines such as RLBench and CALVIN~\cite{james2020rlbench, mees2022calvin}; Habitat and AI2-THOR support indoor semantic reasoning benchmarks such as ALFRED and OpenEQA~\cite{shridhar2020alfred, majumdar2024openeqa}; and Genesis targets deformable and multi-physics interaction, where rigid-body simulators remain incomplete~\cite{genesis2024}.
+Compared with real-world collection, simulation weakens the dependence of data acquisition on specific robotic arm platforms, end-effector and sensor setups, and scene conditions. 
+This makes it easier to construct different ranges of \(\mathcal{D}\) for robotic arm manipulation under clearer assumptions.
+In this section, MuJoCo, SAPIEN, and NVIDIA Isaac are treated as three representative directions because they align naturally with different tiers of \(\mathcal{D}\)  for robotic arm manipulation, while other platforms serve for specialized applications. Table~\ref{tab:sim_classification} summarizes these design tendencies.
+MuJoCo~\cite{todorov2012mujoco} is well suited with \(\mathcal{D}_1\) data, where stable local interaction and controller-oriented rollouts matter most for robotic arm execution.
+Meta-World~\cite{yu2021meta} provided a standard state-based multi-task setting, 
+and later suites such as LIBERO~\cite{liu2023libero} and RoboCasa~\cite{nasiriany2024robocasa} added lifelong-learning curricula and richer household scenes. 
+MJX and MuJoCo Playground support larger-batch rollouts, differentiable simulation, and sim-to-real analysis within the same stack~\cite{deepmind2025playground}.
+SAPIEN~\cite{xiang2020sapien} is particularly suitable for \(\mathcal{D}_2\) support, since articulated object states and part-level semantics make temporally extended object interaction easier to structure for robotic arms.
+PartNet-Mobility provides articulated assets with annotated joints, ManiSkill builds benchmark suites on this basis~\cite{tao2025maniskill3}, 
+and SIMPLER uses the same infrastructure for sim-to-real evaluation~\cite{li2025simpler}.
+NVIDIA Isaac is the platform best aligned with \(\mathcal{D}_3\) particularly in settings that demand multimodality, scale, and broad platform coverage~\cite{mittal2023orbit}. 
+Representative embodied benchmarks built on Isaac-Sim-based simulation stacks include BEHAVIOR-1K, which targets large-scale household activities, 
+and ARNOLD, which focuses on language-grounded manipulation with rich continuous object states~\cite{li2024behavior1k, gong2023arnold}.
+Beyond these three ecosystems, several other platforms still used for specialized applications of robotic arm manipulation.
+PyBullet and CoppeliaSim support manipulation baselines such as RLBench and CALVIN~\cite{james2020rlbench, mees2022calvin}.
+Habitat and AI2-THOR help fill scene-level semantic gaps that main manipulation simulators cover less well, supporting benchmarks such as ALFRED and OpenEQA~\cite{shridhar2020alfred, majumdar2024openeqa}.
+SoftGym supports deformable object manipulation benchmarks that rigid-body simulators still capture only weakly~\cite{lin2021softgym}.
+By reducing dependence on physical robot hardware, simulation improves experimental efficiency and allows more effort to be directed toward algorithmic questions above the arm hardware layer. 
+However, it cannot fully reproduce real physical environments or hardware-specific effects, and the target robotic arm is absent from the collection loop itself. 
+Consequently, the resulting \(\mathcal{D}\) for robotic arm learning often exhibits a substantial sim-to-real gap.
 
 \subsubsection{Automatic Data Generation}\label{sec:auto_data_gen}
 
-Automatic data generation builds on simulation ecosystems to produce scenes, demonstrations, and rollouts without manual effort. 
-We organize this along three axes: environment construction, demonstration synthesis, and world-model rollouts.
-
-Scene generation has moved from procedural randomization to semantically grounded synthesis. ProcTHOR~\cite{deitke2022procthor} generated large-scale procedural indoor environments, Holodeck~\cite{yang2024holodeck} added language-conditioned semantic control, and RoboGen~\cite{wang2024robogen} connected asset retrieval, scene construction, and policy training within one automated pipeline.
-
-Demonstration synthesis has likewise progressed from trajectory augmentation to task-aware generation. MimicGen~\cite{mandlekar2023mimicgen} showed that one demonstration can be expanded into many valid trajectories through spatial transformation, and GenSim~\cite{wang2024gensim} moved this idea to task generation by using LLMs to produce simulation code and reward structure.
-
-Generative world models extend automation by learning dynamics directly from data. Cosmos~\cite{nvidia2025cosmos} represents the internet-scale version of this idea, training video foundation models on web data to learn physical priors. IRASim~\cite{zhu2025irasim} grounds this in robot-specific interaction video, and DreamGen uses learned world models as both data generators and training environments~\cite{jang2025dreamge}. A persistent limitation is maintaining physical consistency over long horizons, especially once generated rollouts are used for planning or policy improvement.
+Build on existing environments mentioned before. 
+Automatic data generation synthesize \(\mathcal{D}\) by synthesizing different parts of the structured record of embodied execution. 
+According to the content of this structured record, 
+we discuss automatic data generation in three forms: scene generation synthesize sensory observations, 
+demonstration synthesis synthesize sequences of motion together with contact events, and generative world models synthesize state transitions through their associated future rollouts.
+Scene generation synthesize sensory observations by widening the scene and semantic conditions under which they are produced within the observation space.
+ProcTHOR~\cite{deitke2022procthor} generated large-scale procedural indoor environments, 
+Holodeck~\cite{yang2024holodeck} added language-conditioned semantic control, 
+and RoboGen~\cite{wang2024robogen} connected asset retrieval, scene construction, and policy training within one automated pipeline.
+Demonstration synthesis synthesize sequences of motion together with contact events by generating additional robotic arm trajectories from limited source demonstrations or task specifications.
+MimicGen~\cite{mandlekar2023mimicgen} showed that one demonstration can be expanded into many valid trajectories through spatial transformation, 
+and GenSim~\cite{wang2024gensim} moved this idea to task generation by using LLMs to produce simulation code and reward structure.
+Generative world models synthesize state transitions together with future trajectories by learning predictive models that can synthesize additional transitions from existing data.
+Cosmos~\cite{nvidia2025cosmos} represents the internet-scale version of this idea, training video foundation models on web data to learn physical priors. 
+IRASim~\cite{zhu2025irasim} grounds this in robot-specific interaction video, 
+and DreamGen uses learned world models as both data generators and training environments~\cite{jang2025dreamge}. 
+Automatic data generation, however, synthesize \(\mathcal{D}\) by recombining or rolling forward an existing environment, so the errors and limitations of that environment is also be amplified.
 
 \subsection{Data Refinement}\label{sec:data_refinement}
 
-Once data can be collected or synthesized at scale, the bottleneck shifts from availability to quality. We organize data refinement around four mechanisms: visual and viewpoint augmentation (Section~\ref{sec:trajectory_redrawing}) expands the perceptual distribution, physically grounded augmentation (Section~\ref{sec:dynamics_constraints}) preserves executability under kinematic and contact constraints, correction and recovery augmentation (Section~\ref{sec:correction_recovery}) supplies the failure-recovery data absent from expert-only datasets, and data curation (Section~\ref{sec:data_curation}) filters and reweights heterogeneous datasets. 
+In real-world settings, available \(\mathcal{D}\) is often still limited in scale and uneven in quality., which motivates further data refinement and augmentation. 
+We organize these methods around four mechanisms: visual and viewpoint augmentation (Section~\ref{sec:trajectory_redrawing}) broadens sensory observations, 
+physically grounded augmentation (Section~\ref{sec:dynamics_constraints}) preserves the executability of sequences of motion together with contact events under kinematic and contact constraints, 
+correction and recovery augmentation (Section~\ref{sec:correction_recovery}) supplements state transitions with the failure-recovery data absent from expert-only datasets, 
+and data curation (Section~\ref{sec:data_curation}) determines whether existing \(\mathcal{D}\) still usable for learning and how low-quality data can be filtered, reweighted, or curated. 
 
 \subsubsection{Visual and Viewpoint Augmentation}\label{sec:trajectory_redrawing}
 
-Visual and viewpoint augmentation expands existing demonstrations along two main axes: semantic appearance variation and camera transformation, both without requiring new robot rollouts. Early work such as GenAug and ROSIE used generative image models to vary textures, objects, and scene composition in order to widen the visual distribution seen during imitation learning~\cite{chen2023genaug, yu2023scalingrobotlearningsemantically}. Later methods moved from appearance randomization to viewpoint-aware synthesis: RoVi-Aug augments both robot appearance and camera pose while preserving action labels and contact consistency under novel views~\cite{chen2025roviaug}. A complementary line extends supervision beyond robot demonstrations: VISTA enables zero-shot novel-view synthesis for view-invariant policy learning, H2R converts egocentric human video into robot-centric pretraining data by replacing hands with rendered end-effectors, and LucidSim uses generative visuals coupled with physics simulation to synthesize first-person data for RGB sim-to-real transfer~\cite{wang2024vista, li2026h2r, yu2024lucidsim}.
+Visual and viewpoint augmentation expands existing demonstrations along two main axes: semantic appearance variation and camera transformation, both without requiring new robot rollouts. 
+Early work such as GenAug and ROSIE used generative image models to vary textures, objects, and scene composition in order to widen the visual distribution seen during imitation learning~\cite{chen2023genaug, yu2023scalingrobotlearningsemantically}. 
+Later methods moved from appearance randomization to viewpoint-aware synthesis: RoVi-Aug augments both robot appearance and camera pose while preserving action labels and contact consistency under novel views~\cite{chen2025roviaug}. 
+A complementary line extends supervision beyond robot demonstrations: VISTA enables zero-shot novel-view synthesis for view-invariant policy learning, H2R converts egocentric human video into robot-centric pretraining data by replacing hands with rendered end effectors, and LucidSim uses generative visuals coupled with physics simulation to synthesize first-person data for RGB sim-to-real transfer~\cite{wang2024vista, li2026h2r, yu2024lucidsim}.
 
 \subsubsection{Physically Grounded Augmentation}\label{sec:dynamics_constraints}
 
-Augmenting physical trajectories (e.g., shifting a grasp 5\,cm laterally) requires that the result still obey kinematic limits, collision constraints, and contact dynamics. CP-Gen~\cite{lin2025cpgen} integrates kinematic boundaries with contact dynamics for one-shot trajectory augmentation. Physics-Driven Data Generation~\cite{yang2025physicsdriven} combines VR human demonstrations, retargeting, and trajectory optimization to maintain dynamic feasibility across embodiments. CyberDemo~\cite{wang2024cyberdemo} transfers simulated human demonstrations through large-scale in-simulator augmentation to real-world dexterous policies with minimal real data. Beyond geometric feasibility, RoCoDA~\cite{ameperosa2025rocoda} uses symmetry to distinguish perturbations that should leave the policy invariant from those that should induce equivariant action changes.
+Augmenting physical trajectories (e.g., shifting a grasp 5\,cm laterally) requires that the result still obey kinematic limits, collision constraints, and contact dynamics. 
+CP-Gen~\cite{lin2025cpgen} integrates kinematic boundaries with contact dynamics for one-shot trajectory augmentation. 
+yang et al.~\cite{yang2025physicsdriven} combines VR human demonstrations, retargeting, and trajectory optimization to maintain dynamic feasibility across embodiments. 
+CyberDemo~\cite{wang2024cyberdemo} transfers simulated human demonstrations through large-scale in-simulator augmentation to real-world dexterous policies with minimal real data. 
+Beyond geometric feasibility, RoCoDA~\cite{ameperosa2025rocoda} uses symmetry to distinguish perturbations that should leave the policy invariant from those that should induce equivariant action changes.
 
 \subsubsection{Correction and Recovery Augmentation}\label{sec:correction_recovery}
 
-Expert-only datasets lack failure-recovery examples, leaving policies brittle at out-of-distribution states. DMD~\cite{zhang2024dmd} uses diffusion models to synthesize corrective observations from perturbed states, enabling DAgger-style recovery without physical collection. Complementing these offline methods, IntervenGen~\cite{pinto2024intervengen} and CR-DAgger~\cite{xu2025compliant} systematize online human intervention during autonomous rollouts, converting sparse operator corrections into dense recovery-aware training signal.
+Expert-only datasets lack failure-recovery examples, leaving policies brittle at out-of-distribution states. 
+DMD~\cite{zhang2024dmd} uses diffusion models to synthesize corrective observations from perturbed states, 
+enabling DAgger-style recovery without physical collection. Complementing these offline methods, 
+IntervenGen~\cite{pinto2024intervengen} and CR-DAgger~\cite{xu2025compliant} systematize online human intervention during autonomous rollouts, converting sparse operator corrections into dense recovery-aware training signal.
 
 \subsubsection{Data Curation and Verification}\label{sec:data_curation}
 
@@ -693,9 +748,16 @@ As datasets scale to millions of heterogeneous trajectories, the bottleneck shif
 
 \subsection{Data Pipeline}\label{sec:data_factories_robotic_arms}
 
-The acquisition, synthesis, and refinement methods described above are increasingly integrated into end-to-end production systems. Data pipelines automate the flow from raw collection through augmentation, curation, and verification, treating data production as an engineering stack with tightly coupled stages. This integration becomes more important as manipulation research scales: manual coordination across simulators, real robots, and curation tools becomes prohibitively expensive, and biases introduced at one stage can carry forward into later parts of the learning pipeline.
-
-RoboTwin~\cite{mu2025robotwin} and RoboTwin v2~\cite{chen2025robotwin2} keep synthetic data tethered to measured physical setups by matching dual-arm kinematics and sensor noise; the second version adds MLLM-driven task synthesis for automatic scenario generation. RoboVerse~\cite{geng2025roboverse} addresses fragmentation across simulators and datasets by providing a standardized MetaSim backbone spanning many tasks and assets. At larger scale, AgiBot World Colosseo~\cite{agibot2025} couples fleet-scale humanoid collection with simulator-based augmentation so that real and synthetic streams remain mutually useful, while NVIDIA Isaac GR00T~\cite{nvidia_gr00t} packages synthetic data generation, foundation-model training, and sim-to-real deployment into a humanoid-oriented stack built on Isaac infrastructure. Supporting these pipelines, AIRSPEED~\cite{xia2024airspeed} decouples collection and generation from specific hardware backends, LeRobot~\cite{lerobot2024} turns fragmented real-world trajectories into shareable repositories, and MimicLabs~\cite{saxena2025matters} studies how quantity, diversity, and quality trade off as pipelines scale. These infrastructures move data production toward automated, reproducible workflows, but introduce new challenges in maintaining physical fidelity, cross-platform compatibility, and systematic quality control.
+In current practice, \(\mathcal{D}\) is increasingly managed over a unified lifecycle, where collection, generation, augmentation, and refinement are treated as parts of one integrated production lifecycle.
+Existing systems reflect different ways of organizing this full lifecycle of \(\mathcal{D}\). 
+RoboTwin~\cite{mu2025robotwin} keeps synthetic data tethered to measured physical setups by matching dual-arm kinematics and sensor noise, and its second version adds MLLM-driven task synthesis for automatic scenario generation. 
+RoboVerse~\cite{geng2025roboverse} addresses fragmentation across simulators and datasets by providing a standardized MetaSim backbone spanning many tasks and assets. 
+At larger scale, AgiBot World Colosseo~\cite{agibot2025} couples fleet-scale humanoid collection with simulator-based augmentation so that real and synthetic streams remain mutually useful, 
+while NVIDIA Isaac GR00T~\cite{nvidia_gr00t} packages synthetic data generation, foundation-model training, and sim-to-real deployment into a humanoid-oriented stack built on Isaac infrastructure. 
+Supporting these pipelines, AIRSPEED~\cite{xia2024airspeed} decouples collection and generation from specific hardware backends, 
+LeRobot~\cite{lerobot2024} turns fragmented real-world trajectories into reusable repositories, 
+and MimicLabs~\cite{saxena2025matters} studies how quantity, diversity, and quality trade off as pipelines scale.
+Taken together, these infrastructures move \(\mathcal{D}\) production toward automated and reproducible workflows.
 
 \section{Learning Paradigms of Robotic Arms}\label{sec:embodiment_method}
 
@@ -709,7 +771,7 @@ Figure~\ref{fig:learning_paradigms} illustrates the overall organization of lear
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.8\linewidth,trim=2.7cm 4.3cm 2.2cm 1cm,clip]{assets/learningparadigms.pdf}
-  \caption{Overview of learning paradigms for robotic-arm manipulation. The figure organizes the pipeline into cognitive planning, policy learning, integration models, and deployment stages, linked by multimodal inputs and downstream control across robotic-arm embodiments.}
+  \caption{Overview of learning paradigms for robotic arm manipulation. The figure organizes the pipeline into cognitive planning, policy learning, integration models, and deployment stages, linked by multimodal inputs and downstream control across robotic arm embodiments.}
   \Description{A diagram showing the organization of learning paradigms for robotic manipulation. The top level shows cognitive planning methods ranging from semantic logic to generative dynamics. The middle level shows policy learning approaches (P1 through P3) covering explicit continuous, discrete action, and iterative generative methods. The bottom level shows integration architectures (Type I, II, III) that couple planning and policy. Arrows indicate connections between data tiers, learning paradigms, and deployment stages.}\label{fig:learning_paradigms}
 \end{figure}
 
@@ -743,8 +805,7 @@ A shared limitation of B1 methods is that their outputs remain in the semantic l
 
 B2 converts intent into logical task structures, decomposing long-horizon goals into ordered sub-task sequences or formal plans. 
 LLM+P~\cite{liu2023llmp} addresses this by translating natural language into PDDL and delegating reasoning to classical solvers that guarantee feasibility. 
-L3M+P~\cite{agarwal2025l3mp} further enables the solver to learn domain transition models from experience, reducing reliance on pre-defined rules. 
-To improve executability under embodied scene constraints, TAPA~\cite{wu2023tapa} aligns LLM planning with visual perception, grounding action sequences in the objects actually present in the environment. 
+L3M+P~\cite{agarwal2025l3mp} further enables the solver to learn domain transition models from experience, reducing reliance on pre-defined rules.  
 Classical solvers, however, face combinatorial explosions in large environments. SayPlan~\cite{rana2023sayplan} mitigates this by anchoring search in 3D scene graphs, hierarchically pruning irrelevant regions before planning.
 Inner Monologue~\cite{huang2023inner} extends this paradigm to feedback-driven replanning, while Statler~\cite{yoneda2024statler} maintains a task-relevant world state throughout execution.
 
@@ -759,7 +820,7 @@ As the field broadens, B3 is increasingly evolving toward more integrated forms,
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.9\linewidth,trim=1cm 0cm 0cm 0.8cm,clip]{assets/brain.pdf}
+  \includegraphics[width=0.8\linewidth,trim=1cm 0cm 0cm 0.8cm,clip]{assets/brain.pdf}
   \caption{Cognitive planning paradigms for embodied manipulation. The figure summarizes five representative planning modes: semantic logic and code generation, long-horizon task decomposition, grounded multimodal reasoning, geometric grounding and spatial intelligence, and generative dynamics and physical imagination.}
   \Description{A diagram illustrating five cognitive planning paradigms for embodied manipulation. A central brain icon is surrounded by five labeled panels: semantic logic and code generation, long-horizon task decomposition, grounded multimodal reasoning, geometric grounding and spatial intelligence, and generative dynamics and physical imagination. The panels use a broccoli-into-pot task to show how each paradigm represents planning differently, from symbolic code and step decomposition to affordance maps, point clouds, and imagined future states.}\label{fig:brain_paradigms}
 \end{figure}
@@ -798,14 +859,14 @@ B5 comprises predictive planning artifacts, in which candidate actions are evalu
 \midrule
 \multirow{4}{*}{\textbf{B1}}
  & \multirow{4}{*}{$\mathcal{K}_2$} & Probabilistic Alignment & Skill ranking & Skill API & SayCan~\cite{brohan2023can} \\
- & & Program Synthesis & Executable code & Runtime interp. & CaP~\cite{liang2022code}, ProgPrompt~\cite{singh2022progprompt}, Demo2Code~\cite{wang2023demo2code} \\
+ & & Program Synthesis & Executable code & Runtime interp. & CaP~\cite{liang2022code}, Demo2Code~\cite{wang2023demo2code} \\
  & & Reward Synthesis & Reward functions & RL optimizer & Language to Reward~\cite{tan2023l2r} \\
  & & Structured Control Flow & BT / XML & Reactive exec. & LLM-BT~\cite{zhou2024llmbt}, LLM-as-BT~\cite{ao2025llmbt} \\
 \midrule
 \multirow{3}{*}{\textbf{B2}}
  & \multirow{3}{*}{$\mathcal{K}_2$} & Formal Solvers & Symbolic task plan & Classical planner & LLM+P~\cite{liu2023llmp}, L3M+P~\cite{agarwal2025l3mp} \\
- & & Semantic Search & Sub-task sequence & Motion planner & TAPA~\cite{wu2023tapa}, SayPlan~\cite{rana2023sayplan} \\
- & & State-Aware Planning & Re-planned task state & Skill API & huang et al.~\cite{huang2023inner}, Statler~\cite{yoneda2024statler} \\ \\
+ & & Semantic Search & Sub-task sequence & Motion planner & SayPlan~\cite{rana2023sayplan} \\
+ & & State-Aware Planning & Re-planned task state & Skill API & huang et al.~\cite{huang2023inner}, Statler~\cite{yoneda2024statler}\\
 \midrule
 \multirow{2}{*}{\textbf{B3}}
  & \multirow{2}{*}{$\mathcal{K}_2/\mathcal{K}_3$} & Explicit Grounding & Text / action & Skill API & PaLM-E~\cite{driess2023palme}, RoboBrain~\cite{ji2025robobrain} \\
@@ -837,7 +898,7 @@ Efficiency-oriented acceleration and compression are treated as a cross-cutting 
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth,trim=3cm 0.5cm 3.5cm 0.3cm,clip]{assets/celeberrum.pdf}
+  \includegraphics[width=0.8\linewidth,trim=3cm 0.5cm 3.5cm 0.3cm,clip]{assets/celeberrum.pdf}
   \caption{Comparison of policy learning paradigms for robotic manipulation. The figure contrasts explicit continuous policies, discrete-action policies, and iterative generative policies in terms of distributional expressivity and computational complexity.}\label{fig:policy_paradigms}
   \Description{A comparison diagram of three policy learning paradigms for robotic manipulation. The figure is arranged along two axes: computational complexity increases from left to right, and distribution expressivity increases from top to bottom. The top row compares explicit continuous policies and discrete-action policies, while the bottom row illustrates iterative generative policies based on diffusion and flow matching.}
 \end{figure}
@@ -932,7 +993,7 @@ Within this three-type taxonomy, several recurrent patterns appear repeatedly in
 \centering
 \caption{\textbf{Integration patterns across data regimes.} The table summarizes recurrent integration patterns for embodied manipulation in terms of architecture type, supporting data regime, core idea, shared state, and typical pairings of cognitive planning and policy learning paradigms. Data tiers indicate common support regimes rather than exclusive assignments. Paradigm codes follow Tables~\ref{tab:brain_paradigms}--\ref{tab:policy_paradigms}.}\label{tab:data_learning_map}
 \renewcommand{\arraystretch}{1.3}
-\setlength{\tabcolsep}{3pt}
+\setlength{\tabcolsep}{2pt}
 \scriptsize
 \begin{tabular}{
   l
@@ -1249,7 +1310,7 @@ TP = \sum_{k=1}^K w_k s_k, \qquad \sum_{k=1}^K w_k = 1
 \end{equation}
 where $s_k \in {0,1}$ indicates whether stage $k$ succeeds, and $w_k$ captures its relative importance. REALM also evaluates robustness under perturbations through Root Mean Square Deviation.
 For trajectory quality, smoothness metrics such as SPARC~\cite{balasubramanian2015sparc} and LDLJ~\cite{antonelli2023movement} quantify jerk and motion regularity, while Dynamic Time Warping measures alignment with expert demonstrations under temporal misalignment. 
-For bimanual manipulation, RoboEval also measures coordination through velocity divergence and height discrepancy between end-effectors.
+For bimanual manipulation, RoboEval also measures coordination through velocity divergence and height discrepancy between end effectors.
 
 \subsection{Data Efficiency and Quality Evaluation}\label{sec:eval_data_sample}
 
@@ -1299,7 +1360,7 @@ Deployment cost appears the least developed dimension, since latency, compute, a
 
 \section{Open Challenges and Future Directions}\label{sec:challenges}
 
-The preceding discussion shows that embodied manipulation has advanced rapidly across perception, learning, planning, and system design. 
+The preceding sections show that embodied manipulation has advanced rapidly across perception, learning, planning, and system design. 
 Yet these advances have not resolved a set of fundamental challenges in building systems that are robust, generalizable, deployable, and trustworthy in the real world. 
 We group these challenges into six categories and discuss each in turn, covering embodiment, data, learning, deployment, evaluation, and trustworthiness.
 

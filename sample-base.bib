@@ -486,7 +486,7 @@
 
 @InProceedings{jin2024reasoninggrasp,
   title = 	 {Reasoning Grasping via Multimodal Large Language Model},
-  author =       {Jin, Shiyu and XU, JINXUAN and Lei, Yutian and Zhang, Liangjun},
+  author =       {Jin, Shiyu and xu, jinxuan and Lei, Yutian and Zhang, Liangjun},
   booktitle = 	 {Proceedings of The 8th Conference on Robot Learning},
   pages = 	 {3809--3827},
   year = 	 {2025},
@@ -975,9 +975,9 @@
 
 @InProceedings{zhang2026unidex,
   title={UniDex: A Robot Foundation Suite for Universal Dexterous Hand Control from Egocentric Human Videos},
-  author={Zhang, Gu and Xu, Qicheng and Zhang, Haozhe and others},
+  author={Zhang, Gu and others},
   journal={arXiv preprint arXiv:2603.22264},
-  booktitle={2024 IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  booktitle={2026 IEEE/CVF Conference on Computer Vision and Pattern Recognition},
   year={2026}
 }
 
@@ -1579,8 +1579,7 @@
       author={Chi-Pin Huang and others},
       booktitle={The Thirty-ninth Annual Conference on Neural Information Processing Systems},
       volume = {38},
-      year={2025},
-      url={https://openreview.net/forum?id=72UR53jN7T}
+      year={2025}
 }
 
 @inproceedings{chen2025fis,
@@ -1652,7 +1651,7 @@
       author={Peiyan Li and others},
       booktitle={The Thirty-ninth Annual Conference on Neural Information Processing Systems},
       year={2025},
-      url={https://openreview.net/forum?id=ffBF6hYuQv}
+      journal={arXiv preprint arXiv:2506.07961}
 }
 
 @InProceedings{zhang2025robridge,
@@ -2541,7 +2540,7 @@
 
 @inproceedings{chuang2025avaloha,
   title={Active vision might be all you need: Exploring active vision in bimanual robotic manipulation},
-  author={Chuang, Ian and Lee, Andrew and Gao, Dechen and Naddaf-Sh, M-Mahdi and Soltani, Iman},
+  author={Chuang, Ian and Lee, Andrew and Gao, Dechen and others},
   booktitle={2025 IEEE International Conference on Robotics and Automation},
   pages={7952--7959},
   year={2025},
@@ -2598,4 +2597,41 @@
     booktitle={The Thirty-ninth Annual Conference on Neural Information Processing Systems},
     year={2025},
     journal={arXiv preprint arXiv:2512.06963}
+}
+
+@InProceedings{li2024behavior1k,
+  title = 	 {BEHAVIOR-1K: A Benchmark for Embodied AI with 1,000 Everyday Activities and Realistic Simulation},
+  author =       {Li, Chengshu and Zhang, Ruohan and others},
+  booktitle = 	 {Proceedings of The 6th Conference on Robot Learning},
+  pages = 	 {80--93},
+  year = 	 {2023},
+  volume = 	 {205},
+  month = 	 {14--18 Dec},
+  publisher =    {PMLR},
+  abstract = 	 {We present BEHAVIOR-1K, a comprehensive simulation benchmark for human-centered robotics. BEHAVIOR-1K includes two components, guided and motivated by the results of an extensive survey on "what do you want robots to do for you?". The first is the definition of 1,000 everyday activities, grounded in 50 scenes (houses, gardens, restaurants, offices, etc.) with more than 5,000 objects annotated with rich physical and semantic properties. The second is OmniGibson, a novel simulation environment that supports these activities via realistic physics simulation and rendering of rigid bodies, deformable bodies, and liquids. Our experiments indicate that the activities in BEHAVIOR-1K are long-horizon and dependent on complex manipulation skills, both of which remain a challenge for even state-of-the-art robot learning solutions. To calibrate the simulation-to-reality gap of BEHAVIOR-1K, we provide an initial study on transferring solutions learned with a mobile manipulator in a simulated apartment to its real-world counterpart. We hope that BEHAVIOR-1K’s human-grounded nature, diversity, and realism make it valuable for embodied AI and robot learning research. Project website: https://behavior.stanford.edu.}
+}
+
+@INPROCEEDINGS{gong2023arnold,
+  author={Gong, Ran and Huang, Jiangyong and Zhao, Yizhou and others},
+  booktitle={2023 IEEE/CVF International Conference on Computer Vision}, 
+  title={ARNOLD: A Benchmark for Language-Grounded Task Learning With Continuous States in Realistic 3D Scenes}, 
+  year={2023},
+  volume={},
+  number={},
+  pages={20426-20438},
+  keywords={Computer vision;Analytical models;Three-dimensional displays;Systematics;Grounding;Benchmark testing;Libraries},
+  doi={10.1109/ICCV51070.2023.01873}
+}
+
+
+@InProceedings{lin2021softgym,
+  title = 	 {SoftGym: Benchmarking Deep Reinforcement Learning for Deformable Object Manipulation},
+  author =       {Lin, Xingyu and Wang, Yufei and Olkin, Jake and Held, David},
+  booktitle = 	 {Proceedings of the 2020 Conference on Robot Learning},
+  pages = 	 {432--448},
+  year = 	 {2021},
+  volume = 	 {155},
+  month = 	 {16--18 Nov},
+  publisher =    {PMLR},
+  abstract = 	 {Manipulating deformable objects has long been a challenge in robotics due to its high dimensional state representation and complex dynamics. Recent success in deep reinforcement learning provides a promising direction for learning to manipulate deformable objects with data driven methods. However, existing reinforcement learning benchmarks only cover tasks with direct state observability and simple low-dimensional dynamics or with relatively simple image-based environments, such as those with rigid objects. In this paper, we present SoftGym, a set of open-source simulated benchmarks for manipulating deformable objects, with a standard OpenAI Gym API and a Python interface for creating new environments. Our benchmark will enable reproducible research in this important area. Further, we evaluate a variety of algorithms on these tasks and highlight challenges for reinforcement learning algorithms, including dealing with a state representation that has a high intrinsic dimensionality and is partially observable. The experiments and analysis indicate the strengths and limitations of existing methods in the context of deformable object manipulation that can help point the way forward for future methods development.}
 }
