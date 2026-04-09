@@ -695,22 +695,22 @@ Consequently, the resulting \(\mathcal{D}\) for robotic arm learning often exhib
 \subsubsection{Automatic Data Generation}\label{sec:auto_data_gen}
 
 Build on existing environments mentioned before. 
-Automatic data generation synthesize \(\mathcal{D}\) by synthesizing different parts of the structured record of embodied execution. 
-According to the content of this structured record, 
-we discuss automatic data generation in three forms: scene generation synthesize sensory observations, 
-demonstration synthesis synthesize sequences of motion together with contact events, and generative world models synthesize state transitions through their associated future rollouts.
-Scene generation synthesize sensory observations by widening the scene and semantic conditions under which they are produced within the observation space.
+Automatic data generation synthesizes \(\mathcal{D}\) by synthesizing different parts of the structured record of embodied execution. 
+Based on the content of this structured record,
+we discuss automatic data generation in three forms: scene generation synthesizes sensory observations, 
+demonstration synthesis generates sequences of motion together with contact events, and generative world models synthesize state transitions along with their future rollouts.
+Scene generation synthesizes sensory observations by widening the scene and semantic conditions under which they are produced within the observation space.
 ProcTHOR~\cite{deitke2022procthor} generated large-scale procedural indoor environments, 
 Holodeck~\cite{yang2024holodeck} added language-conditioned semantic control, 
 and RoboGen~\cite{wang2024robogen} connected asset retrieval, scene construction, and policy training within one automated pipeline.
-Demonstration synthesis synthesize sequences of motion together with contact events by generating additional robotic arm trajectories from limited source demonstrations or task specifications.
+Demonstration synthesis generates sequences of motion together with contact events by generating additional robotic arm trajectories from limited source demonstrations or task specifications.
 MimicGen~\cite{mandlekar2023mimicgen} showed that one demonstration can be expanded into many valid trajectories through spatial transformation, 
 and GenSim~\cite{wang2024gensim} moved this idea to task generation by using LLMs to produce simulation code and reward structure.
-Generative world models synthesize state transitions together with future trajectories by learning predictive models that can synthesize additional transitions from existing data.
+Generative world models synthesize state transitions along with their future rollouts by learning predictive models that can synthesize additional transitions from existing data.
 Cosmos~\cite{nvidia2025cosmos} represents the internet-scale version of this idea, training video foundation models on web data to learn physical priors. 
 IRASim~\cite{zhu2025irasim} grounds this in robot-specific interaction video, 
 and DreamGen uses learned world models as both data generators and training environments~\cite{jang2025dreamge}. 
-Automatic data generation, however, synthesize \(\mathcal{D}\) by recombining or rolling forward an existing environment, so the errors and limitations of that environment is also be amplified.
+Automatic data generation, however, synthesizes \(\mathcal{D}\) by recombining or rolling forward an existing environment, the errors and limitations of that environment are also amplified.
 
 \subsection{Data Refinement}\label{sec:data_refinement}
 
@@ -761,7 +761,8 @@ Taken together, these infrastructures move \(\mathcal{D}\) production toward aut
 
 \section{Learning Paradigms of Robotic Arms}\label{sec:embodiment_method}
 
-The data ecosystem discussed in Section~\ref{sec:embodiment_dataset} provides the raw material for learning, while the learning paradigms discussed here determine how that material is converted into manipulation capability.
+The data ecosystem discussed in Section~\ref{sec:embodiment_dataset} provides the knowledge support \(\mathcal{K}\) to the system. 
+The present section examines how different learning paradigms organize \(\mathcal{K}\) into manipulation capabilities.
 We divide the learning stack into two components. Cognitive planning, which we refer to as the embodied brain and discuss in Section~\ref{sec:embodied_brain}, converts semantic intent into structured planning artifacts. 
 Policy learning, which we refer to as the embodied cerebellum and discuss in Section~\ref{sec:policy_learning_low_level}, maps observations to motor commands through different action representations.
 Section~\ref{sec:integration_models} then examines how planning and policy learning are coupled in unified, hierarchical, and world-state-maintaining architectures, and how these design patterns relate to different data tiers.
@@ -851,7 +852,7 @@ B5 comprises predictive planning artifacts, in which candidate actions are evalu
 }
 \toprule
 \textbf{ID} &
-\textbf{Data Tier} &
+\textbf{Support} &
 \textbf{Sub-direction} &
 \textbf{Output Abstraction} &
 \textbf{Execution Gap} &
@@ -937,7 +938,7 @@ Overall, P3 policies offer the strongest distributional modeling capacity, but t
 
 \begin{table}[t!]
 \centering
-\caption{\textbf{Taxonomy of Policy Learning Paradigms for Embodied Manipulation.} \textbf{P1}\,=\,Explicit Continuous (1-step forward pass, MSE/L1 regression); \textbf{P2}\,=\,Discrete Action ($T$-step autoregressive, cross-entropy); \textbf{P3}\,=\,Iterative Generative ($K$-step denoising/flow). Data Tier indicates the dataset level (Section~\ref{sec:eai_datasets}) that primarily supports each paradigm ($\mathcal{K}_1$\,=\,Skill, $\mathcal{K}_2$\,=\,Task, $\mathcal{K}_3$\,=\,Foundation). Abbrev.: Percept.\,=\,Perception; Regr.\,=\,Regression; Resid.\,=\,Residual; Discr.\,=\,Discretization; Enhanc.\,=\,Enhancement; Consist.\,=\,Consistency; Diff.\,=\,Diffusion; refine.\,=\,refinement; Cont.\,=\,Continuous.}\label{tab:policy_paradigms}
+\caption{\textbf{Taxonomy of Policy Learning Paradigms for Embodied Manipulation.} \textbf{P1}\,=\,Explicit Continuous (1-step forward pass, MSE/L1 regression); \textbf{P2}\,=\,Discrete Action ($T$-step autoregressive, cross-entropy); \textbf{P3}\,=\,Iterative Generative ($K$-step denoising/flow). Support indicates the dataset level (Section~\ref{sec:eai_datasets}) that primarily supports each paradigm ($\mathcal{K}_1$\,=\,Skill, $\mathcal{K}_2$\,=\,Task, $\mathcal{K}_3$\,=\,Foundation). Abbrev.: Percept.\,=\,Perception; Regr.\,=\,Regression; Resid.\,=\,Residual; Discr.\,=\,Discretization; Enhanc.\,=\,Enhancement; Consist.\,=\,Consistency; Diff.\,=\,Diffusion; refine.\,=\,refinement; Cont.\,=\,Continuous.}\label{tab:policy_paradigms}
 \renewcommand{\arraystretch}{1.15}
 \setlength{\tabcolsep}{2.5pt}
 \scriptsize
@@ -953,30 +954,30 @@ Overall, P3 policies offer the strongest distributional modeling capacity, but t
 }
 \toprule
 \textbf{ID} &
-\textbf{Data Tier} &
+\textbf{Support} &
 \textbf{Sub-direction} &
 \textbf{Action Space} &
 \textbf{Scale} &
 \textbf{Input} &
-\textbf{Multimodality} &
+\textbf{Modeling} &
 \textbf{Methods} \\
 \midrule
 \multirow{3}{*}{\textbf{P1}}
- & \multirow{3}{*}{$\mathcal{K}_1/\mathcal{K}_2$} & Percept.-Action Regr. & Cont. & {$<$100M} & 2D / 3D & Mode-averaging & BC-Z~\cite{jang2022bc},~\cite{xiao2022mvp},~\cite{haldar2025pointpolicy} \\
- & & Temporal Chunking & Cont.\ chunk & {100M--1B} & 2D / multi-view & Mode-averaging & ACT~\cite{zhao2023learning}, BAKU~\cite{haldar2024baku} \\
+ & \multirow{3}{*}{$\mathcal{K}_1/\mathcal{K}_2$} & Percept.-Action Regr. & Cont. & {$<$100M} & 2D / 3D & Direct regression & BC-Z~\cite{jang2022bc},haldar et al.\cite{haldar2025pointpolicy} \\
+ & & Temporal Chunking & Cont.\ chunk & {100M--1B} & 2D / multi-view & Chunked action & ACT~\cite{zhao2023learning}, BAKU~\cite{haldar2024baku} \\
  & & Recovery \& Transfer & Cont.\ / resid. & {100M--1B} & 2D / video & Goal-conditioned & MimicPlay~\cite{wang2023mimicplay},~\cite{ren2025motion_tracks} \\
 \midrule
 \multirow{4}{*}{\textbf{P2}}
- & \multirow{4}{*}{$\mathcal{K}_2/\mathcal{K}_3$} & Uniform \& Spatial Discr. & Fixed bins & {1B--55B} & 2D / voxel & Categorical modes & RT-1~\cite{brohan2023rt1},~\cite{reed2022generalistagent},~\cite{shridhar2022peract} \\
- & & Learned Quantization & Codebook & {100M--1B} & 2D & Codebook modes & BeT~\cite{shafiullah2022bet},~\cite{lee2024vqbet},~\cite{gong2025carp} \\
+ & \multirow{4}{*}{$\mathcal{K}_2/\mathcal{K}_3$} & Uniform \& Spatial Discr. & Fixed bins & {1B--55B} & 2D / voxel & Discr.\ categorical & RT-1~\cite{brohan2023rt1},~\cite{reed2022generalistagent},~\cite{shridhar2022peract} \\
+ & & Learned Quantization & Codebook & {100M--1B} & 2D & Latent discrete & BeT~\cite{shafiullah2022bet},~\cite{lee2024vqbet},~\cite{gong2025carp} \\
  & & Prompted LM Tokens & LM tokens & {1B--10B+} & 2D / multi-modal & Prompt-conditioned & VIMA~\cite{jiang2023vima},~\cite{wu2023gr1},~\cite{fu2025icil} \\
- & & Autoregr.\ Generalists & LM tokens & {1B--10B+} & 2D / multi-modal & Chunked categorical & Seer~\cite{tian2024seer}, ARP~\cite{zhang2025arp} \\
+ & & Autoregr.\ Generalists & LM tokens & {1B--10B+} & 2D / multi-modal & Autoregr.\ sequence & Seer~\cite{tian2024seer}, ARP~\cite{zhang2025arp} \\
 \midrule
 \multirow{4}{*}{\textbf{P3}}
- & \multirow{4}{*}{$\mathcal{K}_1/\mathcal{K}_3$} & Diffusion Foundations & Denoised cont. & {$<$500M} & 2D & Score-based refine. & Diffuser~\cite{janner2022diffuser},~\cite{chi2023diffusion},~\cite{liu2022structdiffusion} \\
- & & 3D Geometric Enhanc. & Denoised cont. & {$<$500M} & 3D / point cloud & Equivariant refine. & DP3~\cite{ze2024diffusion}, iDP3~\cite{liang2024idp3} \\
- & & Flow \& Acceleration & Flow cont. & {$<$500M} & 2D / 3D & OT flow & Prasad et al.~\cite{prasad2024consistency},~\cite{xue2025recflow} \\
- & & Generalist Scaling & Denoised cont. & {1B--8B} & 2D / multi-view & Score-based refine. & Octo~\cite{octomodelteam2024},~\cite{liu2025rdtb},~\cite{reuss2025flower} \\
+ & \multirow{4}{*}{$\mathcal{K}_1/\mathcal{K}_3$} & Diffusion Foundations & Denoised cont. & {$<$500M} & 2D & Diffusion denoising & Diffuser~\cite{janner2022diffuser},~\cite{chi2023diffusion},~\cite{liu2022structdiffusion} \\
+ & & 3D Geometric Enhanc. & Denoised cont. & {$<$500M} & 3D / point cloud & Geometry-aware & DP3~\cite{ze2024diffusion}, iDP3~\cite{liang2024idp3} \\
+ & & Flow \& Acceleration & Flow cont. & {$<$500M} & 2D / 3D & Flow / consistency & Prasad et al.~\cite{prasad2024consistency},~\cite{xue2025recflow} \\
+ & & Generalist Scaling & Denoised cont. & {1B--8B} & 2D / multi-view & Scaled generative & Octo~\cite{octomodelteam2024},~\cite{liu2025rdtb},~\cite{reuss2025flower} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -991,7 +992,7 @@ Within this three-type taxonomy, several recurrent patterns appear repeatedly in
 
 \begin{table}[t]
 \centering
-\caption{\textbf{Integration patterns across data regimes.} The table summarizes recurrent integration patterns for embodied manipulation in terms of architecture type, supporting data regime, core idea, shared state, and typical pairings of cognitive planning and policy learning paradigms. Data tiers indicate common support regimes rather than exclusive assignments. Paradigm codes follow Tables~\ref{tab:brain_paradigms}--\ref{tab:policy_paradigms}.}\label{tab:data_learning_map}
+\caption{\textbf{Integration patterns across data regimes.} The table summarizes recurrent integration patterns for embodied manipulation in terms of architecture type, supporting data regime, core idea, shared state, and typical pairings of cognitive planning and policy learning paradigms. Support indicate the data regimes that support each pattern. Paradigm codes follow Tables~\ref{tab:brain_paradigms}--\ref{tab:policy_paradigms}.}\label{tab:data_learning_map}
 \renewcommand{\arraystretch}{1.3}
 \setlength{\tabcolsep}{2pt}
 \scriptsize
