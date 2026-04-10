@@ -135,3 +135,14 @@ The data ecosystem discussed in Section~\ref{sec:embodiment_dataset} provides \(
 \(\mathcal{K}_3\) is the level of support that makes cross-embodiment transfer learnable, by exposing the shared structure required for generalization beyond a single embodiment.
 
 Embodied manipulation is learned within a feasible space already shaped by embodiment, structured recorded data, and carried forward by knowledge support.
+
+
+In this section, \(\mathcal{D}\) remains the immediate object of learning: a structured record of embodied execution from which the system learns. What learning acquires from this object is the knowledge support \(\mathcal{K}\) induced by the data ecosystem. Different learning paradigms should therefore not be understood as learning different objects or defining independent knowledge categories. Rather, they differ in how the same underlying support is internalized, organized, and made operational under embodiment constraints. This is why \(\mathcal{K}\) serves as the underlying organizing logic of the chapter, while the taxonomy itself is presented through two major learning paths, cognitive planning and policy learning, and their corresponding sub-directions.
+
+
+The object available to learning remains \(\mathcal{D}\), whereas \(\mathcal{K}\) denotes the knowledge support induced by that object. What varies across learning paradigms is therefore not the ultimate learning object itself, but the way in which this support is internalized, organized, and externalized under embodiment constraints. In this sense, \(\mathcal{K}\) provides the underlying logic of the taxonomy, while B and P describe its two principal learning paths.
+
+
+Embodied learning is internalization, organization, and expression of \(\mathcal{K}\) support within a feasible space already constrained by embodiment foundations.
+
+Embodied manipulation is learned within a feasible space already shaped by embodiment foundations, reflected in \(\mathcal{D}\), and inherited by \(\mathcal{K}\).
