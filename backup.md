@@ -146,3 +146,324 @@ The object available to learning remains \(\mathcal{D}\), whereas \(\mathcal{K}\
 Embodied learning is internalization, organization, and expression of \(\mathcal{K}\) support within a feasible space already constrained by embodiment foundations.
 
 Embodied manipulation is learned within a feasible space already shaped by embodiment foundations, reflected in \(\mathcal{D}\), and inherited by \(\mathcal{K}\).
+
+
+
+对，这正好反过来解释了为什么你的 taxonomy 很难分干净，而且这不是你分类能力不够，而是对象本身就不干净。
+
+更准确地说，你的 taxonomy 分不干净，至少说明了三件事：
+
+第一，类别之间不是天然互斥的。
+很多方法不是落在单一范畴里，而是同时混合了多个设计维度：表示、规划、控制、接口、适配机制。你在分类时看到的“重叠”，往往不是 taxonomy 的失误，而是方法本身就是混成的。
+
+第二，同一个标签下面的方法并不功能等价。
+也就是说，名字一样，不代表它们在 grounding、executability、control coupling、deployment role 上是同一种东西。这样一来，按“名义类别”分类就必然会漏掉真正重要的差异。
+
+第三，决定方法形态的主轴不是单一原理，而是 trade-off 和 deployment context。
+当设计选择主要由任务结构、平台条件、实时性要求、可执行性约束共同决定时，taxonomy 就很难像纯理论分类那样切出清晰边界。因为边界本身就在被具体条件不断改写。
+
+所以你可以把这个判断说得更锋利一点：
+
+The difficulty of drawing a clean taxonomy is itself symptomatic of the field: the relevant categories are neither functionally uniform nor compositionally stable, because system design is shaped less by a single organizing principle than by layered trade-offs across tasks, platforms, and deployment conditions.
+
+中文压缩一下就是：
+
+taxonomy 分不干净，本身就是问题结构的一部分。它说明这个领域的方法类别既不功能齐整，也不组合稳定，其边界会随着任务、平台和部署约束的变化而变形。
+
+这其实是个很强的论点，因为它把“分类不够整齐”从一个写作缺陷，转成了一个诊断信号：
+
+不是 taxonomy 失败了，而是 taxonomy 的模糊性暴露了该领域尚未形成稳定、可分解、可收敛的方法结构。
+
+如果你愿意，你这里甚至可以顺手落一句很漂亮的话：
+
+In this sense, the taxonomy does not fail despite the field’s complexity; it becomes informative precisely where clean separation breaks down.
+
+这句的意思是：
+
+taxonomy 的价值，不是在于硬分干净，而是在于它在哪些地方分不干净，恰恰揭示了领域真正的结构张力。
+
+
+一、流水线的起点不是 D，而是 embodiment
+
+这篇一开始就说，physical embodiment 和 software framework 一起定义了机器人系统可实现 perception、action、coordination 的条件；更具体地说，end effector 决定 contact space，sensor 决定 observation space，arm/platform 决定 execution structure，而 software/control stack 决定这些能力如何在 runtime 被组织和执行。最后作者明确说：这些 physical and computational constraints shape system execution and define the data requirements for learning。
+
+这一步很重要，因为它说明：
+
+D 不是凭空出现的数据集，D 是 embodiment constraints 被记录下来的形式。
+
+也就是说，
+机器人能看到什么、摸到什么、如何动作、哪些动作稳定可复现、哪些状态能被观测——这些都先由 embodiment 决定，然后才进入数据。
+
+所以如果写成最前面的链条，就是：
+
+Embodiment / software stack
+→ 决定 observation space / contact space / execution structure
+→ 决定什么样的 embodied execution 可以被记录
+→ 才有 D。
+
+二、D 到底是什么：不是“数据集”，而是 embodied execution 的结构化记录
+
+作者对 D 的定义非常关键。文中明确说：
+
+𝐷
+D 是 a structured record of embodied execution generated as the robot interacts with the world。
+更具体地，它包括：
+
+motion sequences
+sensory observations
+contact events
+state transitions。
+
+这四项其实就是作者整篇最重要的“数据构成论”。
+
+所以 D 不是普通意义上的训练样本，而是：
+
+机器人在具身约束下与世界发生耦合时，留下来的四种核心痕迹。
+
+这意味着后面所有 learning，本质上都在利用这四类支撑：
+
+motion sequences：动作怎么展开
+sensory observations：过程看到了什么
+contact events：接触怎么发生、怎么变化
+state transitions：任务状态如何被改变。
+三、D 不是单层的，作者把它分成 D1 / D2 / D3
+
+作者接着说，embodied datasets 不是平的，而是在逐步扩大“support for learning”。于是把 D 写成分层演化：
+
+𝐷
+1
+D
+1
+	​
+
+：skill-level datasets，编码 local interaction dynamics
+𝐷
+2
+D
+2
+	​
+
+：task-level datasets，编码 skills 如何被组织成 temporally extended behaviors
+𝐷
+3
+D
+3
+	​
+
+：foundation-level datasets，编码 cross-embodiment variation needed for transfer at scale。
+
+这是整篇里 D 和 K 开始联动的地方，因为作者紧接着说：
+
+each tier enlarges the available data support and thereby expands the effective knowledge support 
+𝐾
+K available to the system.
+
+也就是说：
+
+D1 不只是“小数据”，而是支持局部交互知识
+D2 不只是“长轨迹”，而是支持任务结构知识
+D3 不只是“多机器人大规模数据”，而是支持跨 embodiment 的可迁移知识。
+四、K 到底是什么：不是显式知识库，而是“knowledge support”
+
+这里最容易误解。
+K 不是作者说的某个独立模块，也不是显式 symbolic knowledge base。
+
+它更像是：
+
+系统从 D 中可以获得并组织起来、用来支撑操控能力的知识基础。
+
+作者在 learning section 里明确说：
+
+learning paradigms take 
+𝐷
+D as the central object
+from 
+𝐷
+D, the knowledge support 
+𝐾
+K is acquired and organized
+\mathcal K}_1 supports local interaction
+\mathcal K}_2 supports task structure over time
+\mathcal K}_3 supports transferable structure across embodiments。
+
+所以 K 最准确的理解不是“知识内容本身”，而是：
+
+可被学习系统提炼出来、并足以支撑某一级操控能力的结构化知识支持。
+
+于是：
+
+K1 对应 local interaction competence
+K2 对应 long-horizon task organization
+K3 对应 transfer/generalization across embodiments。
+
+换句话说，D 是“被记录下来的 embodied experience”，K 是“从这些 experience 中可形成的 support hierarchy”。
+
+五、B 和 P 到底是什么：它们不是 K 的结果，而是 K 的两种组织路径
+
+这是整篇最关键、也最容易被说错的地方。
+
+很多人会顺手把它理解成：
+
+先有 D，再得到 K，然后再做 B 和 P。
+
+但作者写得更精确：
+B 和 P 是 acquiring and organizing K 的两类 learning paradigms。
+
+也就是说：
+
+B（cognitive planning）：更偏从 sensory observations + state transitions 中获取和组织 K，用来形成 intermediate artifacts and action specification
+P（policy learning）：更偏从 contact events + motion sequences 中获取和组织 K，用来形成 executable motor behavior through action representations。
+
+这句话非常重要，因为它说明：
+
+B 和 P 不是两个成品模块，而是两种不同的“知识组织机制”。
+
+5.1 B：从 D 中抽取“中间结构”
+
+作者把 B 叫做 cognitive planning，并细分成 B1–B5。
+它们的共同点是：不直接等于动作，而是产生某种 intermediate artifact。
+
+B1：semantic logic / code generation
+输出 code、reward、skill ranking 这类可执行语义规格
+B2：long-horizon task decomposition
+输出 sub-task sequence / symbolic task plan
+B3：grounded multimodal reasoning
+输出 grounded scene-conditioned task representation
+B4：geometric grounding / spatial intelligence
+输出 contact region、pose、affordance map、3D field 这类空间表示
+B5：generative dynamics / physical imagination
+输出 imagined futures / predicted consequences，用来评估行动。
+
+所以 B 的功能不是“直接控制”，而是：
+
+把 D 中的 observation/state-transition 支撑组织成某种足以指导执行的中间表示。
+
+这也是为什么文中说 B1/B2/B5 更强调 state transitions，而 B3/B4 更强调 sensory observations。
+
+5.2 P：从 D 中抽取“可执行动作机制”
+
+作者把 P 叫做 policy learning，并按 action representation 分成 P1–P3。
+
+P1：explicit continuous
+直接回归 continuous action vectors
+P2：discrete action
+把动作 token 化，做 autoregressive generation
+P3：iterative generative
+用 diffusion / flow matching 建模完整 action distribution。
+
+P 的共同点是：
+
+它更接近“从 perception 到 motor command”的执行环节。
+
+所以它更强调 D 里的：
+
+contact events
+motion sequences。
+
+也就是说：
+
+B 更像把 K 组织成“怎么想、怎么表征、怎么中介”；
+P 更像把 K 组织成“怎么做、怎么出动作、怎么闭环执行”。
+
+六、从 B/P 到 integration：文章真正关心的是两条路怎么接起来
+
+作者接下来明确说：
+
+To learn from the full structured record of D, a practical and widely adopted solution is to integrate cognitive planning and policy learning within a complete manipulation learning paradigm.
+
+这句话说明：
+
+仅有 B 不够，因为它往往停在中间 artifact
+仅有 P 也不够，因为它难以覆盖高层 reasoning
+所以完整系统需要把两者耦合起来。
+
+于是 integration 被分成三类：
+
+Type I：Unified End-to-End
+
+一个 shared backbone 同时吸收 reasoning 和 action generation。
+典型配对是 B3 + P2/P3，对应 K3 级的数据支持。
+
+Type II：Hierarchical
+
+把 slow planning 和 fast execution 分开。
+显式层级多见 B1/B2 + P1/P2；隐式层级多见 B2/B3 + P2/P3。
+
+Type III：Shared World Representation
+
+让 planning 和 policy 共同消费一个 shared state。
+如果 shared state 是 spatial 的，就偏 B4 + P1/P2/P3；
+如果 shared state 是 predictive world model，就偏 B5 + P3。
+
+所以从流水线看，这里发生的是：
+
+D 提供的多种支撑 → 被 B / P 分别组织 → 再在 integration 层被耦合成系统架构。
+
+七、deployment 不是尾声，而是 B/P 系统真正进入现实的第二次加工
+
+deployment 这一章特别重要，因为它说明：
+
+B/P integration 之后，系统还没有真正完成。
+
+作者把 deployment 写成三阶段：
+
+S1 Offline Pre-deployment
+
+把 learned system 从训练状态改造成能上真实机器人之前的状态：
+包括 offline RL at scale、cross-embodiment transfer、sim-to-real alignment、compression。
+
+S2 Online Physical Alignment
+
+系统上到真实硬件后，还要适应 real contact、friction、noise、OOD objects。
+这里发生的是 post-training improvement、real-world fine-tuning、contact-rich refinement。
+
+S3 Inference-Time Execution
+
+真正运行时，要解决 latency、quantization、decoding acceleration、runtime robustness、failure recovery。
+
+所以 deployment 在这篇文里不是“工程细节”，而是：
+
+K 经过 B/P 组织后，要变成真实 embodied capability，还必须经历第二轮系统加工。
+
+八、evaluation 如何回头检查整条流水线
+
+作者自己给了一个非常明确的回看方式：
+
+Execution Quality：检查 B 和 P 能否把 D 诱导出的 K 组织成成功的 embodied task execution
+Data Efficiency & Quality：检查 D 是否足够 efficient / informative，能够诱导 useful K
+Generalization & Transfer：检查从 D 学到、经 B/P 组织的 K，在 embodiment 变化和 distribution shift 下是否仍然 robust
+Deployment Cost：检查由 B/P 从 D-induced K 产生的 embodied capability，是否能在 deployment pipeline 中高效执行。
+
+这一步很关键，因为 evaluation 不是只测 policy，而是在四个角度回查整条链：
+
+D 好不好？
+K 够不够？
+B/P 组织得对不对？
+deployment 后还能不能跑？
+
+九、把整条流水线压成一句真正完整的话
+
+这篇文章里的完整流水线，其实应该写成：
+
+Embodiment 与 software stack 先定义 observation/contact/execution constraints；
+这些 constraints 被记录成 D（motion sequences, sensory observations, contact events, state transitions）；
+不同层级的 D（D1/D2/D3）扩展出不同层级的 knowledge support K（K1/K2/K3）；
+B 和 P 不是 K 之后的附属模块，而是从 D 中获取并组织 K 的两类学习路径——B 更生成中间 planning artifacts，P 更生成 executable motor behavior；
+integration 把 B/P 耦合成完整系统；
+deployment 再把这个系统加工成可在真实机器人上运行的能力；
+evaluation 最后从 execution、data、generalization、deployment cost 四个角度回查这条链是否成立。
+
+十、这条流水线里最深的 insight
+
+如果只留一个最重要的 insight，我会留这个：
+
+这篇文章真正想做的，不是给机器人方法分类，而是把“操控智能”重新表述成一条由 embodied constraints 驱动的数据—知识—组织—部署流水线。
+
+因此：
+
+D 不是资源，是 embodied execution 的记录
+K 不是显式知识库，是由 D 支撑出来的能力层级
+B/P 不是并列模型种类，而是两种获取和组织 K 的路径
+integration / deployment / evaluation 则是在检查这些路径能否真正拼成并支撑现实系统。
+
+这才是这篇文章最硬的骨架。
