@@ -446,7 +446,7 @@ These constraints shape system execution and define the data requirements for le
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.9\textwidth,trim=0cm 0.9cm 1.5cm 0.5cm,clip]{assets/datasupport.pdf}
+  \includegraphics[width=0.8\textwidth,trim=0cm 0.9cm 1.5cm 0.5cm,clip]{assets/datasupport.pdf}
   \caption{The taxonomy organizes Section 3 around embodied datasets, data acquisition, data refinement, and data pipelines, showing how data is collected, synthesized, improved, and scaled to support downstream learning and deployment.}
   \Description{A hierarchical diagram showing the organization of the survey on embodied AI for robotic arms. The top node branches into four main pillars: system architecture, data ecosystem, architectural paradigms, and evaluation metrics. These pillars further expand into subtopics including embodied systems, dataset categories, data refinement, cognitive planning, policy learning, integration models, deployment lifecycle, and evaluation criteria. Arrows indicate conceptual dependencies across the survey structure.}\label{fig:data_support}
 \end{figure}
@@ -632,7 +632,7 @@ and AV-ALOHA~\cite{chuang2025avaloha} showed that such data become more useful w
 
 \begin{table}[t]
 \centering
-\caption{\textbf{Simulation infrastructures for embodied manipulation.} Platforms are grouped into three main ecosystems (MuJoCo, SAPIEN, Isaac) and specialized platforms for specific task families or physical regimes.}\label{tab:sim_classification}
+\caption{\textbf{Simulation infrastructures for embodied manipulation.} Platforms are grouped into three main ecosystems (MuJoCo, SAPIEN, Isaac) and specialized platforms for specific task categories or physical regimes.}\label{tab:sim_classification}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}l >{\raggedright\arraybackslash}p{4.2cm} >{\raggedright\arraybackslash}p{5.8cm} >{\raggedright\arraybackslash}p{5.5cm}@{}}
 \toprule
@@ -640,7 +640,7 @@ and AV-ALOHA~\cite{chuang2025avaloha} showed that such data become more useful w
 \midrule
 \multicolumn{4}{c}{\textbf{\textbf{I. The Core Simulation Ecosystems}}} \\
 \midrule
-\textbf{MuJoCo} & Stable analytic contact solver; MJX hardware acceleration (TPU/GPU); Unified differentiable dynamics. & \textbf{Physics-Aligned Data}: Artifact-free trajectories for fine-grained motor control. 
+\textbf{MuJoCo} & Stable analytic contact solver; MJX hardware acceleration; Unified differentiable dynamics. & \textbf{Physics-Aligned Data}: Trajectories for fine-grained motor control. 
 
 \textbf{Modalities: Proprioception, Contact forces, Kinematics, RGB.} & \textbf{Yu et al.}~\cite{yu2021meta}, \textbf{LIBERO}~\cite{liu2023libero},~\cite{nasiriany2024robocasa} \\ 
 
@@ -761,11 +761,12 @@ Taken together, these infrastructures move \(\mathcal{D}\) production toward aut
 Learning paradigms take \(\mathcal{D}\) discussed in Section~\ref{sec:eai_datasets} as the central object from which the knowledge support \(\mathcal{K}\) is acquired and organized under embodiment constraints.
 We classify these paradigms into cognitive planning and policy learning according to how they acquire and organize \(\mathcal{K}\). 
 This distinction is reflected in the parts of \(\mathcal{D}\) each paradigm primarily emphasizes.
-Cognitive planning, which we refer to as B, draws primarily on state transitions and sensory observations to acquire \(\mathcal{K}\) needed for intermediate artifacts and action specification. 
+Cognitive planning, which we refer to as B, draws primarily on state transitions and sensory observations 
+to acquire \(\mathcal{K}\) needed for intermediate artifacts and action specification. 
 Policy learning, which we refer to as P, relies more on contact events and motion sequences to acquire \(\mathcal{K}\) needed for executable motor behavior through different action representations.
 Integration models then couple these two components into unified architectures, either explicitly or implicitly.
 In this section, \(\mathcal{K}_i\) is used as a coarse support hierarchy: 
-\(\mathcal{K}_1\) supports learning local interaction, \(\mathcal{K}_2\) supports learning task structure over time, and \(\mathcal{K}_3\) supports learning transferable structure across embodiments.
+\(\mathcal{K}_1\) supports learning local interaction, \(\mathcal{K}_2\) supports learning task structure for execution, and \(\mathcal{K}_3\) supports learning transferable structure across embodiments.
 Section~\ref{sec:embodied_brain} introduces cognitive planning paradigms, 
 Section~\ref{sec:policy_learning_low_level} covers policy learning paradigms, 
 Section~\ref{sec:integration_models} examines how the two paths are coupled, 
@@ -774,7 +775,7 @@ Figure~\ref{fig:learning_paradigms} provides an overview of these paradigms.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.9\linewidth,trim=2cm 4.5cm 2.2cm 1cm,clip]{assets/learningparadigms.pdf}
+  \includegraphics[width=0.8\linewidth,trim=2cm 4.5cm 2.2cm 1cm,clip]{assets/learningparadigms.pdf}
   \caption{Overview of learning paradigms for robotic arm manipulation. The figure organizes the pipeline into cognitive planning, policy learning, integration models, and deployment stages, linked by multimodal inputs and downstream control across robotic arm embodiments.}
   \Description{A diagram showing the organization of learning paradigms for robotic manipulation. The top level shows cognitive planning methods ranging from semantic logic to generative dynamics. The middle level shows policy learning approaches (P1 through P3) covering explicit continuous, discrete action, and iterative generative methods. The bottom level shows integration architectures (Type I, II, III) that couple planning and policy. Arrows indicate connections between data tiers, learning paradigms, and deployment stages.}\label{fig:learning_paradigms}
 \end{figure}
@@ -794,6 +795,13 @@ whereas B3 and B4 place greater emphasis on sensory observations, because they f
 Meanwhile, the intermediate artifacts associated with B1--B5 collectively suggest a broader trend toward forms that are increasingly grounded and closer to execution.
 Table~\ref{tab:brain_paradigms} provides an overview of these paradigms.
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.8\linewidth,trim=1cm 0cm 0cm 0.8cm,clip]{assets/brain.pdf}
+  \caption{Cognitive planning paradigms for embodied manipulation. The figure summarizes five representative planning modes: semantic logic and code generation, long-horizon task decomposition, grounded multimodal reasoning, geometric grounding and spatial intelligence, and generative dynamics and physical imagination.}
+  \Description{A diagram illustrating five cognitive planning paradigms for embodied manipulation. A central brain icon is surrounded by five labeled panels: semantic logic and code generation, long-horizon task decomposition, grounded multimodal reasoning, geometric grounding and spatial intelligence, and generative dynamics and physical imagination. The panels use a broccoli-into-pot task to show how each paradigm represents planning differently, from symbolic code and step decomposition to affordance maps, point clouds, and imagined future states.}\label{fig:brain_paradigms}
+\end{figure}
+
 \subsubsection{Semantic Logic and Code Generation}\label{sec:code_gen}
 
 B1 is closest to the semantic interface of MLLMs, outputting executable specifications such as code, reward functions, or skill rankings. 
@@ -805,7 +813,8 @@ Text2Touch~\cite{field2025text2touch} extends this reward-synthesis paradigm to 
 For structured control flow, LLM-BT~\cite{zhou2024llmbt} generates behavior trees that can be dynamically updated under environmental changes, enabling adaptive execution and recovery. 
 LLM-as-BT~\cite{ao2025llmbt} generates modular behavior trees that support reactive switching and error recovery. 
 Demo2Code~\cite{wang2023demo2code} extends the input modality by translating visual demonstrations into symbolic code, grounding program synthesis in physical observation alongside language. 
-A shared limitation of B1 methods is that their outputs remain in the semantic layer and do not engage with the geometric or dynamic structure of the physical world; execution quality depends entirely on the downstream skill API or solver.
+B1 primarily formulate task structure in the form of executable semantic specifications.
+For this reason, they mainly require \(\mathcal{K}_2\) as their primary knowledge support. 
 
 \subsubsection{Long-Horizon Task Decomposition}\label{sec:task_decomp}
 
@@ -814,36 +823,21 @@ LLM+P~\cite{liu2023llmp} addresses this by translating natural language into PDD
 L3M+P~\cite{agarwal2025l3mp} further enables the solver to learn domain transition models from experience, reducing reliance on pre-defined rules.  
 Classical solvers, however, face combinatorial explosions in large environments. SayPlan~\cite{rana2023sayplan} mitigates this by anchoring search in 3D scene graphs, hierarchically pruning irrelevant regions before planning.
 Inner Monologue~\cite{huang2023inner} extends this paradigm to feedback-driven replanning, while Statler~\cite{yoneda2024statler} maintains a task-relevant world state throughout execution.
+Since they depend on the organization of long-horizon task structure and subtask relations, they primarily require \(\mathcal{K}_2\) as well.
+B1 and B2 paradigms share the limitation that their representations are insufficiently grounded in real physical execution.
 
 \subsubsection{Grounded Multimodal Representation}\label{sec:multimodal_reasoning}
 
-B3 captures the regime in which multimodal models ground task intent in the current embodied scene, forming a scene-conditioned task representation that supports downstream policy execution.
+B3 grounds task intent in the current embodied scene, forming a scene-conditioned task representation that supports downstream policy execution.
 PaLM-E~\cite{driess2023palme} injects visual observations and continuous robot representation directly into the LLM embedding space, so that semantic reasoning is conditioned on the current embodied scene.
 EmbodiedGPT~\cite{mu2023embodiedgpt} extends this interface into the temporal domain by reasoning step by step with current observations in the loop, making task progression and intermediate sub-goals more explicit.
 ECoT~\cite{zawalski2025ecot} externalizes richer intermediate traces, including task descriptions, object grounding, and step-level plans, before action prediction.
 RoboBrain~\cite{ji2025robobrain} pushes this paradigm toward a more integrated manipulation-oriented interface by jointly modeling planning, affordance, trajectory, and longer-horizon visual context.
-As the field broadens, B3 is increasingly evolving toward more integrated forms, with its implicit grounded representations being absorbed into larger models that jointly handle reasoning, grounding, memory, and action.
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.8\linewidth,trim=1cm 0cm 0cm 0.8cm,clip]{assets/brain.pdf}
-  \caption{Cognitive planning paradigms for embodied manipulation. The figure summarizes five representative planning modes: semantic logic and code generation, long-horizon task decomposition, grounded multimodal reasoning, geometric grounding and spatial intelligence, and generative dynamics and physical imagination.}
-  \Description{A diagram illustrating five cognitive planning paradigms for embodied manipulation. A central brain icon is surrounded by five labeled panels: semantic logic and code generation, long-horizon task decomposition, grounded multimodal reasoning, geometric grounding and spatial intelligence, and generative dynamics and physical imagination. The panels use a broccoli-into-pot task to show how each paradigm represents planning differently, from symbolic code and step decomposition to affordance maps, point clouds, and imagined future states.}\label{fig:brain_paradigms}
-\end{figure}
-
-\subsubsection{Geometric Grounding and Spatial Intelligence}\label{sec:affordance_mapping}
-
-B4 outputs spatial representations, including contact regions, SE(3) poses, affordance maps, and neural fields, that planners and controllers can consume directly. ManipLLM~\cite{li2024manipllm} predicts pixel-wise contact masks from language, and A3VLM~\cite{huang2024a3vlm} extends this grounding to articulated objects by inferring joint axes and motion types. In image space, CLIPort~\cite{shridhar2022cliport} establishes the two-stream formulation separating semantic understanding from spatial precision, while PASG~\cite{zhu2025pasg} strengthens the mapping with functional keypoints. In 3D, F3RM~\cite{shen2023distilled} injects open-vocabulary semantics into neural feature fields, while D3Fields~\cite{wang2025d3fields} extends this line with dynamic 3D descriptor fields that encode semantic features and instance masks and support goal specification from 2D images. VoxPoser~\cite{huang2023voxposer} and ReKep~\cite{huang2024rekep} push this line further by turning language or task descriptions into explicit value maps and time-varying keypoint constraints for downstream optimization. 
-Across these methods, the common objective is to expose enough spatial structure for manipulation to query and optimize at execution time. 
-A recurring limitation across many of these methods is that they emphasize the current geometric state more than post-contact evolution, leaving dynamic interaction and longer-horizon consequences to other modules.
-
-\subsubsection{Generative Dynamics and Physical Imagination}\label{sec:generative_dynamics}
-
-B5 comprises predictive planning artifacts, in which candidate actions are evaluated through explicit forecasts or imagined rollouts of future states, observations, or latent world dynamics. One route uses learned predictive models as the substrate for imagination. UniPi~\cite{du2023unipi} reformulates policy as future video generation, UWM~\cite{zhu2025uwm} unifies video and action diffusion within one transformer, and V-JEPA2~\cite{assran2025vjepa} shifts from pixel reconstruction to latent predictive reasoning. Purely learned prediction, however, drifts from physical consistency over long horizons. A second line constrains prediction with structural priors. Schulze et al.~\cite{schulze2025lagrangian} inject analytical mechanics into learned dynamics, Zhang et al.~\cite{zhang2025particlegrid} targets deformable interaction through particle-mesh structure, and LUMOS~\cite{nematollahi2025lumos} conditions predictive rollouts on language-level task compliance. Taken together, these methods define B5 by a shared commitment to evaluating action through predicted consequences, but they also expose its main difficulty: prediction becomes useful for planning only when it remains sufficiently stable under long-horizon physical interaction.
+The primary knowledge support of B3 shifts from \(\mathcal{K}_2\), associated with task-conditioned scene understanding, toward \(\mathcal{K}_3\), associated with more transferable multimodal structure.
 
 \begin{table}[t!]
 \centering
-\caption{\textbf{Taxonomy of Cognitive Planning Paradigms.} \textbf{B1}\,=\,Semantic Logic \& Code Generation; \textbf{B2}\,=\,Long-Horizon Task Decomposition; \textbf{B3}\,=\,Grounded Multimodal Reasoning; \textbf{B4}\,=\,Geometric Grounding \& Spatial Intelligence; \textbf{B5}\,=\,Generative Dynamics \& Physical Imagination. Output Abstraction denotes the generated artifact; Execution Gap specifies what additional computation converts the output into motor commands; Data Tier indicates the dataset level (Section~\ref{sec:eai_datasets}) that primarily supports each paradigm ($\mathcal{K}_1$\,=\,Skill, $\mathcal{K}_2$\,=\,Task, $\mathcal{K}_3$\,=\,Foundation).}\label{tab:brain_paradigms}
+\caption{\textbf{Taxonomy of Cognitive Planning Paradigms.} \textbf{B1}\,=\,Semantic Logic \& Code Generation; \textbf{B2}\,=\,Long-Horizon Task Decomposition; \textbf{B3}\,=\,Grounded Multimodal Reasoning; \textbf{B4}\,=\,Geometric Grounding \& Spatial Intelligence; \textbf{B5}\,=\,Generative Dynamics \& Physical Imagination. Output Abstraction denotes the generated artifact; Execution Gap specifies what additional computation converts the output into motor commands; Data Tier indicates the dataset level (Section~\ref{sec:eai_datasets}) that primarily supports each paradigm.}\label{tab:brain_paradigms}
 \renewcommand{\arraystretch}{1.15}
 \setlength{\tabcolsep}{2.5pt}
 \scriptsize
@@ -876,7 +870,7 @@ B5 comprises predictive planning artifacts, in which candidate actions are evalu
 \midrule
 \multirow{2}{*}{\textbf{B3}}
  & \multirow{2}{*}{$\mathcal{K}_2/\mathcal{K}_3$} & Explicit Grounding & Text / action & Skill API & PaLM-E~\cite{driess2023palme}, RoboBrain~\cite{ji2025robobrain} \\
- & & Implicit Grounding & CoT trace & Skill API & EmbodiedGPT~\cite{mu2023embodiedgpt} \\
+ & & Implicit Grounding & CoT trace & Skill API & Mu et al.~\cite{mu2023embodiedgpt}, ECoT~\cite{zawalski2025ecot} \\
 \midrule
 \multirow{4}{*}{\textbf{B4}}
  & \multirow{4}{*}{$\mathcal{K}_1/\mathcal{K}_2$} & Physical Constraint & Contact / SE(3) pose & Motion planner & ManipLLM~\cite{li2024manipllm}, A3VLM~\cite{huang2024a3vlm} \\
@@ -893,42 +887,70 @@ B5 comprises predictive planning artifacts, in which candidate actions are evalu
 \end{tabular}
 \end{table}
 
+\subsubsection{Geometric Grounding and Spatial Intelligence}\label{sec:affordance_mapping}
+
+B4 outputs spatial representations, including contact regions, SE(3) poses, affordance maps, and neural fields, that planners and controllers can consume directly. 
+ManipLLM~\cite{li2024manipllm} predicts pixel-wise contact masks from language, 
+and A3VLM~\cite{huang2024a3vlm} extends this grounding to articulated objects by inferring joint axes and motion types. 
+In image space, CLIPort~\cite{shridhar2022cliport} establishes the two-stream formulation separating semantic understanding from spatial precision, 
+while PASG~\cite{zhu2025pasg} strengthens the mapping with functional keypoints. 
+In 3D, F3RM~\cite{shen2023distilled} injects open-vocabulary semantics into neural feature fields, 
+while D3Fields~\cite{wang2025d3fields} extends this line with dynamic 3D descriptor fields that encode semantic features and instance masks and support goal specification from 2D images. 
+VoxPoser~\cite{huang2023voxposer} and ReKep~\cite{huang2024rekep} push this line further by turning language or task descriptions into explicit value maps and time-varying keypoint constraints for downstream optimization. 
+Across these methods, the common objective is to expose enough spatial structure for manipulation to query and optimize at execution time. 
+B4 methods primarily represent the current geometric state of interaction, and therefore mainly require \(\mathcal{K}_1\). 
+When extended toward high-level constraint reasoning, they increasingly require \(\mathcal{K}_2\).
+Therefore, B4 representations cannot adequately capture post-contact evolution, dynamic interaction, or longer-horizon consequences.
+
+\subsubsection{Generative Dynamics and Physical Imagination}\label{sec:generative_dynamics}
+
+B5 comprises predictive planning artifacts, in which candidate actions are evaluated through explicit forecasts or imagined rollouts of future states, observations, or latent world dynamics. 
+One route uses learned predictive models as the substrate for imagination. 
+UniPi~\cite{du2023unipi} reformulates policy as future video generation, UWM~\cite{zhu2025uwm} unifies video and action diffusion within one transformer, and V-JEPA2~\cite{assran2025vjepa} shifts from pixel reconstruction to latent predictive reasoning. 
+Purely learned prediction, however, drifts from physical consistency over long horizons. 
+A second line constrains prediction with structural priors. Schulze et al.~\cite{schulze2025lagrangian} inject analytical mechanics into learned dynamics, Zhang et al.~\cite{zhang2025particlegrid} targets deformable interaction through particle-mesh structure, and LUMOS~\cite{nematollahi2025lumos} conditions predictive rollouts on language-level task compliance. 
+B5 methods primarily require \(\mathcal{K}_2\) when they are used to organize state transitions through predictive rollout, they sometimes extend toward \(\mathcal{K}_3\) by modeling broader latent predictive structure. 
+However, B5 is limited by the reliability of predictive modeling itself. 
+Therefore, errors accumulate in latent rollout, making it difficult to maintain stability over long horizons.
+
 \subsection{Policy Learning: The Embodied Cerebellum}\label{sec:policy_learning_low_level}
 
 Policy learning maps perceptual observations to motor commands, thus focusing more on the contact events and motion sequences. 
-We organize these methods into three families by how the action space is represented. 
+We organize these methods into three categories by how the action space is represented. 
 P1 policies output continuous action vectors via regression in a single forward pass; 
 P2 policies quantize actions into tokens and generate them autoregressively via cross-entropy; 
 P3 policies model the full action distribution through multi-step denoising or flow matching. 
-Within these three families, sub-directions further distinguish how policy generation is factorized in practice, how it handles distribution shift, and how it generalizes across embodiments.
+Within these three categories, sub-directions further distinguish how policy generation is factorized in practice, how it handles distribution shift, and how it generalizes across embodiments.
 Efficiency-oriented acceleration and compression are treated as a cross-cutting deployment concern in Section~\ref{sec:deployment_pipeline}. 
 Table~\ref{tab:policy_paradigms} summarizes the paradigm-level properties.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.9\linewidth,trim=3cm 0.5cm 3.5cm 0.3cm,clip]{assets/celeberrum.pdf}
+  \includegraphics[width=0.8\linewidth,trim=3cm 0.5cm 3.5cm 0.3cm,clip]{assets/celeberrum.pdf}
   \caption{Comparison of policy learning paradigms for robotic manipulation. The figure contrasts explicit continuous policies, discrete-action policies, and iterative generative policies in terms of distributional expressivity and computational complexity.}\label{fig:policy_paradigms}
   \Description{A comparison diagram of three policy learning paradigms for robotic manipulation. The figure is arranged along two axes: computational complexity increases from left to right, and distribution expressivity increases from top to bottom. The top row compares explicit continuous policies and discrete-action policies, while the bottom row illustrates iterative generative policies based on diffusion and flow matching.}
 \end{figure}
 
 \subsubsection{Explicit Continuous Policies}\label{sec:explicit_continuous_policies}
 
-P1 policies map observations to continuous action vectors in a single forward pass, trading distributional expressiveness for inference speed. 
+P1 policies map observations directly to continuous action vectors.
 The basic design separates a pre-trained visual encoder from a lightweight action head. 
 BC-Z~\cite{jang2022bc} uses this pattern for multi-task zero-shot generalization, MVP~\cite{xiao2022mvp} shows that masked visual pre-training yields representations robust enough to reduce the policy to a simple MLP, and PointPolicy~\cite{haldar2025pointpolicy} extends explicit regression to 3D point clouds. 
 Single-step prediction, however, ignores trajectory-level context. Decision Transformer~\cite{chen2021decisiontransformer} instead reframes control as autoregressive sequence modeling with a regression objective, while ACT-style methods~\cite{zhao2023learning, fu2024mobile} combine action chunking with CVAE-based modeling to predict short-horizon action sequences and reduce jitter in bimanual and mobile manipulation.
 BAKU~\cite{haldar2024baku} combines CNN-based feature extraction with a transformer policy for multi-task settings. 
 To handle distribution shift, MimicPlay~\cite{wang2023mimicplay} learns goal-conditioned behaviors from play data, Iterative Residual Policy~\cite{chi2022iterativeresidualpolicy} predicts residual corrections to recover from execution drift, and Motion Tracks~\cite{ren2025motion_tracks} learns a unified motion representation for cross-embodiment adaptation. 
+Within P1, reactive local control is grounded in local interaction and therefore primarily depends on \(\mathcal{K}_1\). Task-conditioned, chunked, and recovery-aware policies, by contrast, rely more on task-level execution structure and accordingly require \(\mathcal{K}_2\) more strongly.
 Despite their simplicity and efficiency, explicit continuous policies are poorly matched to multimodal action distributions, as a single deterministic prediction cannot capture multiple valid behaviors.
 
 \subsubsection{Discrete Action Policies}\label{sec:discrete_action_policies}
 
-P2 policies discretize continuous actions into tokens and model them autoregressively with cross-entropy objectives, enabling multimodal action generation beyond unimodal regression.
+P2 policies discretize continuous actions into tokens and model them autoregressively, enabling multimodal action generation beyond unimodal regression.
 Early approaches employ uniform discretization. 
-RT-1~\cite{brohan2023rt1} maps continuous dimensions to 256 bins, Gato~\cite{reed2022generalistagent} uses $\mu$-law encoding to tokenize diverse modalities into a unified sequence, and PerAct~\cite{shridhar2022peract} extends this to 3D by classifying actions over voxelized grids.
+RT-1~\cite{brohan2023rt1} maps continuous dimensions to 256 bins, and PerAct~\cite{shridhar2022peract} extends this to 3D by classifying actions over voxelized grids.
 However, fixed discretization imposes a rigid token space that is often poorly matched to continuous action distributions, motivating learned discretization methods that adapt the token space to the data.
 Learned discretization addresses this limitation. BeT~\cite{shafiullah2022bet} derives action modes through k-means clustering, VQ-BeT~\cite{lee2024vqbet} learns a compact discrete action vocabulary with VQ-VAE, and CARP~\cite{gong2025carp} further improves precision through coarse-to-fine hierarchical prediction.
 Once actions are reliably tokenized, they can be generated within the same autoregressive framework used for text. VIMA~\cite{jiang2023vima} interleaves visual objects with text instructions for multimodal prompt conditioning, GR-1~\cite{wu2023gr1} unifies vision, language, and action in a single stream, Seer~\cite{tian2024seer} attributes much of the gain to the discrete formulation itself, and ARP~\cite{zhang2025arp} shows that chunk-level autoregressive generation generalizes across diverse robots. ICIL~\cite{fu2025icil} further treats imitation as sequence completion, adapting to unseen tasks by conditioning on demonstration prompts without gradient updates.
+Within P2, task-scale discrete action generation remains organized around task-level action structure and therefore primarily requires \(\mathcal{K}_2\). Multimodal and generalist token policies increasingly require \(\mathcal{K}_3\) when they must organize transferable action structure across heterogeneous embodiments.
 The central challenge in these methods lies in aligning discrete action tokens with the structured, continuous nature of robot actions, while preserving action fidelity and efficient autoregressive generation.
 
 \subsubsection{Iterative Generative Policies}\label{sec:iterative_generative_policies}
@@ -941,6 +963,7 @@ Despite these advances, iterative denoising still imposes substantial inference 
 Flow matching addresses this by learning velocity fields that transport noise to data along straighter trajectories with fewer integration steps. 
 Consistency Policy~\cite{prasad2024consistency} distills a teacher diffusion model into few-step generation, Streaming Flow Policy~\cite{jiang2025streaming} streams action trajectories to the robot during generation, and RecFlow~\cite{xue2025recflow} accelerates inference by rectifying the learned flow itself.
 At foundation-model scale, Octo~\cite{octomodelteam2024} trains a transformer-based diffusion policy on the Open X-Embodiment dataset for cross-embodiment manipulation, RDT-1B~\cite{liu2025rdtb} scales to the 1B-parameter regime on larger multi-robot data, and FLOWER~\cite{reuss2025flower} improves sample efficiency through flow-based acceleration.
+Within P3, local generative control is grounded in continuous interaction and therefore primarily requires \(\mathcal{K}_1\). Larger-scale generalist generative policies, however, require \(\mathcal{K}_3\) to the extent that they are used to capture transferable action regularities across embodiments, rather than merely benefiting from larger-scale pretraining.
 Overall, P3 policies offer the strongest distributional modeling capacity, but their practicality depends on making iterative generative control efficient enough for deployment while preserving action quality, control stability, and manageable compute cost.
 
 \begin{table}[t!]
@@ -970,12 +993,12 @@ Overall, P3 policies offer the strongest distributional modeling capacity, but t
 \textbf{Methods} \\
 \midrule
 \multirow{3}{*}{\textbf{P1}}
- & \multirow{3}{*}{$\mathcal{K}_1/\mathcal{K}_2$} & Percept.-Action Regr. & Cont. & {$<$100M} & 2D / 3D & Direct regression & BC-Z~\cite{jang2022bc},haldar et al.\cite{haldar2025pointpolicy} \\
+ & \multirow{3}{*}{$\mathcal{K}_1/\mathcal{K}_2$} & Percept.-Action Regr. & Cont. & {$<$100M} & 2D / 3D & Direct regression & BC-Z~\cite{jang2022bc},~\cite{haldar2025pointpolicy} \\
  & & Temporal Chunking & Cont.\ chunk & {100M--1B} & 2D / multi-view & Chunked action & ACT~\cite{zhao2023learning}, BAKU~\cite{haldar2024baku} \\
  & & Recovery \& Transfer & Cont.\ / resid. & {100M--1B} & 2D / video & Goal-conditioned & MimicPlay~\cite{wang2023mimicplay},~\cite{ren2025motion_tracks} \\
 \midrule
 \multirow{4}{*}{\textbf{P2}}
- & \multirow{4}{*}{$\mathcal{K}_2/\mathcal{K}_3$} & Uniform \& Spatial Discr. & Fixed bins & {1B--55B} & 2D / voxel & Discr.\ categorical & RT-1~\cite{brohan2023rt1},~\cite{reed2022generalistagent},~\cite{shridhar2022peract} \\
+ & \multirow{4}{*}{$\mathcal{K}_2/\mathcal{K}_3$} & Uniform \& Spatial Discr. & Fixed bins & {1B--55B} & 2D / voxel & Discr.\ categorical & RT-1~\cite{brohan2023rt1}, Peract\cite{shridhar2022peract} \\
  & & Learned Quantization & Codebook & {100M--1B} & 2D & Latent discrete & BeT~\cite{shafiullah2022bet},~\cite{lee2024vqbet},~\cite{gong2025carp} \\
  & & Prompted LM Tokens & LM tokens & {1B--10B+} & 2D / multi-modal & Prompt-conditioned & VIMA~\cite{jiang2023vima},~\cite{wu2023gr1},~\cite{fu2025icil} \\
  & & Autoregr.\ Generalists & LM tokens & {1B--10B+} & 2D / multi-modal & Autoregr.\ sequence & Seer~\cite{tian2024seer}, ARP~\cite{zhang2025arp} \\
@@ -1026,7 +1049,7 @@ and Table~\ref{tab:integration_methods} further lists representative integrated 
 Explicit Hierarchy &
 II &
 $\mathcal{K}_2$ &
-Explicitly decoupled Brain and Policy &
+Explicitly decoupled &
 Language / code / task trace &
 B1 / B2 &
 P1 / P2 \\
@@ -1034,7 +1057,7 @@ P1 / P2 \\
 Unified End-to-End &
 I &
 $\mathcal{K}_3$ &
-Shared backbone for reasoning and action generation &
+Shared backbone &
 Minimal / implicit &
 B3 &
 P2 / P3 \\
@@ -1042,7 +1065,7 @@ P2 / P3 \\
 Implicit Hierarchy &
 II &
 $\mathcal{K}_2 / \mathcal{K}_3$ &
-Implicitly decoupled Brain and Policy &
+Implicitly decoupled &
 Latent / token / soft split &
 B3 / B2 &
 P2 / P3 \\
@@ -1269,11 +1292,11 @@ At inference time, compression, quantization, and decoding acceleration improve 
 \section{System Evaluation of Robotic Arms}\label{sec:evaluation}
 
 Previous sections have examined how robotic manipulation systems are shaped by embodied foundations, data, learning, and deployment. 
-This chapter serves as the validation layer of that pipeline by evaluating the resulting systems from four corresponding perspectives. 
+This chapter reviews current efforts to evaluate the resulting systems from four corresponding perspectives.
 Section~\ref{sec:eval_task_execution} evaluates whether cognitive planning (\(B\)) and policy learning (\(P\)) can organize the knowledge support \(\mathcal{K}\) induced by \(\mathcal{D}\) into successful embodied task execution. 
 Section~\ref{sec:eval_data_sample} evaluates whether the structured record \(\mathcal{D}\) provides data that is sufficiently efficient and informative to induce useful knowledge support \(\mathcal{K}\). 
 Section~\ref{sec:eval_benchmarking} evaluates whether the knowledge support \(\mathcal{K}\) learned from \(\mathcal{D}\), and organized through \(B\) and \(P\), remains robust beyond the training distribution under varying embodiment constraints. 
-Section~\ref{sec:eval_energy} evaluates whether the embodied capability produced by \(B\) and \(P\) from \(\mathcal{D}\)-induced support \(\mathcal{K}\) can be executed efficiently on physical embodiments within the deployment pipeline.
+Section~\ref{sec:eval_energy} evaluates whether the embodied capability produced by \(B\) and \(P\) from \(\mathcal{K}\) can be executed efficiently on physical embodiments within the deployment pipeline.
 Table~\ref{tab:eval_metrics} summarizes representative metrics and protocols.
 
 \begin{table}[t]
@@ -1316,9 +1339,10 @@ Table~\ref{tab:eval_metrics} summarizes representative metrics and protocols.
 
 \subsection{Task Execution Quality Evaluation}\label{sec:eval_task_execution}
 
-Task execution is still most commonly evaluated by whether the policy completes the task successfully. 
+Task execution is a widely adopted evaluation criterion because it provides a direct measure of model success on the task.
 However, binary success rates are easy to interpret, but they cannot distinguish early failure from near-complete but unstable execution, especially in long-horizon or bimanual settings. 
-Finer-grained metrics address this along three families.
+Finer-grained metrics can be grouped into three categories.
+Task progression metrics are more closely aligned with \(\mathcal{K}_2\)-level task organization, trajectory-quality metrics probe \(\mathcal{K}_1\)-level execution quality, and bimanual coordination metrics reflect execution coupling.
 For task completion, RoboEval~\cite{wang2025roboeval} decomposes manipulation into sequential stages and measures progress as the fraction completed, 
 while REALM~\cite{sedlacek2025realm} refines this idea by weighting stages according to their importance.
 \begin{equation}
@@ -1330,7 +1354,8 @@ For bimanual manipulation, RoboEval also measures coordination through velocity 
 
 \subsection{Data Efficiency and Quality Evaluation}\label{sec:eval_data_sample}
 
-Embodied manipulation is often constrained by the cost and uneven quality of collected data, so evaluation must also measure how effectively demonstrations convert into capability.
+Data efficiency and quality concern whether the structured record \(\mathcal{D}\) is sufficiently informative and efficient to induce useful \(\mathcal{K}\).
+Existing evaluation efforts in this direction are typically conducted along three dimensions.
 One dimension is whether a dataset provides broad and non-redundant coverage. 
 DemInf~\cite{hejna2025robot} approaches this question by measuring the marginal contribution of each demonstration to state-action coverage. 
 Another dimension is whether demonstrations still useful for downstream learning. 
@@ -1344,8 +1369,8 @@ where $SR(n)$ is the success rate after training on $n$ demonstrations. AULC is 
 
 \subsection{Generalization and Transfer Evaluation}\label{sec:eval_benchmarking}
 
-Evaluation needs to account for human judgment, robustness under distribution shift, and whether scalable proxies preserve conclusions that hold on physical hardware.
-Human judgment captures aspects of manipulation quality that automated success metrics may miss. RoboArena~\cite{atreya2025roboarena} uses pairwise human comparison to infer global policy rankings across distributed real-world evaluations, while AutoEval~\cite{zhou2025autoeval} reduces annotation cost by replacing manual trial-by-trial labeling with vision-language-model-based success assessment.
+Generalization and transfer evaluation concern whether the knowledge support \(\mathcal{K}\) learned from the structured record \(\mathcal{D}\), and organized through \(B\) and \(P\), remains valid under distribution shift and varying embodiment conditions. Existing efforts in this direction can be grouped into three categories: human judgment, robustness under distribution shift, and proxy validity.
+Human judgment evaluates aspects of manipulation quality that are not fully reflected by automated success metrics. RoboArena~\cite{atreya2025roboarena} uses pairwise human comparison to infer global policy rankings across distributed real-world evaluations, while AutoEval~\cite{zhou2025autoeval} reduces annotation cost by replacing manual trial-by-trial labeling with vision-language-model-based success assessment.
 Robustness under distribution shift measures whether performance remains stable outside the training distribution. 
 REALM~\cite{sedlacek2025realm} evaluates this under visual, semantic, and physical perturbations, reporting both the OOD success-rate gap, $\Delta SR_{\text{OOD}} = SR_{\text{in-dist}} - SR_{\text{out-dist}}$, and Root Mean Square Deviation to characterize degradation under shift.
 Proxy validity concerns whether scalable evaluation environments preserve the same conclusions as real-world execution. SIMPLER~\cite{li2025simpler} measures this through Mismatched Ranking Violations,
@@ -1358,8 +1383,7 @@ Together, these methods define a hierarchy of increasingly scalable but increasi
 
 \subsection{Deployment Efficiency Readiness Evaluation}\label{sec:eval_energy}
 
-Deployment efficiency readiness focus on the resources required to run a policy on physical hardware. 
-Relevant costs include latency, compute, memory, hardware load, and energy consumption. 
+Deployment efficiency readiness concerns whether the embodied capability produced by \(B\) and \(P\) from \(\mathcal{K}\) can be executed efficiently on physical embodiments under real deployment constraints. Relevant costs include latency, compute, memory, hardware load, and energy consumption. Existing evaluation efforts in this direction can be grouped into three categories: energy decomposition, normalized efficiency comparison, and multi-objective trade-off analysis.
 Existing energy-oriented evaluations usually begin with simplified power models or their proxies before moving to more structured decompositions.
 Another structured view is provided by ECDP~\cite{heredia2023ecdp}, which decomposes total power into electronics, friction, copper loss, and useful mechanical work:
 \begin{equation}
@@ -1368,11 +1392,8 @@ P_{\text{total}}(t) = P_{\text{elec}} + P_{\text{friction}}(t) + P_{\text{copper
 This decomposition is useful because it attributes where energy is spent rather than reporting only a single aggregate number. It also shows that control electronics can dominate total consumption, which implies that trajectory optimization alone may have limited impact on deployment efficiency.
 For comparison across robots, recent work introduces normalized efficiency metrics~\cite{vidussi2021energy,heredia2025evaluating} and measures such as Cost of Transport, while multi-objective analyses make explicit the trade-offs among energy, execution time, and motion quality~\cite{rezali2025lstm}. Even so, deployment cost remains only partially quantified in current embodied manipulation benchmarks, since latency, runtime reliability, compute footprint, and hardware load are still rarely reported in comparable ways.
 
-However, each of these four dimensions still has its own limitations.
-Execution quality metrics have grown more fine-grained, but they still evaluate policies in isolation from the data that produced them and the hardware that runs them. 
-Data-efficiency measures connect collection cost to learning outcomes, yet they do not predict whether the learned capability transfers. 
-Generalization benchmarks and proxy evaluators are improving, but their validity under embodiment shift and contact-rich conditions remains weakly characterized. 
-Deployment cost appears the least developed dimension, since latency, compute, and hardware load still rarely reported in comparable ways. 
+Overall, existing evaluation efforts do not suffice to close the validation loop across the overall pipeline.
+A comprehensive characterization of how $\mathcal{D}$, $\mathcal{K}$, embodiment, and the organization of \(B\) and \(P\) determine behavior under real deployment conditions is lacking.
 
 \section{Open Challenges and Future Directions}\label{sec:challenges}
 
@@ -1431,13 +1452,13 @@ Recent efforts such as ManipArena~\cite{sun2026maniparena} make the problem expl
 
 \subsection{Trustworthiness Under Coupled Constraints}\label{sec:challenge_safety}
 
-Learned embodied paradigms are vulnerable across multiple levels of the stack. 
-Cognitive planning paradigms increasingly rely on large vision-language models, and therefore inherit similar attack surfaces, including backdoor attacks and other forms of semantic manipulation. 
-Lower-level policies and control interfaces, by contrast, often lack robustness to common perturbations, sensor noise, and physical disturbances. 
-As a result, embodied paradigms can be compromised both at the semantic level and at the execution level. 
-This leaves a gap between nominal policy competence and truly trustworthy deployment.
+Even when the tight coupling of embodiment, data, and learning is realized in a deployed embodied system, trustworthiness remains a distinct and unresolved challenge.
+The tight coupling of embodiment, data, and learning introduces distinctive trustworthiness challenges in learned embodied manipulation systems for robotic arms.
+BadVLA indicates that apparent task competence is insufficient to guarantee trustworthy deployment. 
+VLA-style embodied systems can maintain strong clean-task performance while exhibiting backdoor-triggered control deviations~\cite{zhou2025badvla}. 
+More broadly, this implies that trustworthiness in embodied systems must be assessed not only in terms of task completion, but also in terms of whether semantically hidden failures can propagate into untrusty physical execution.
 Policy learning paradigms expose limited visibility into how perception is translated into action. 
-When failures arise, it is often unclear whether the problem lies in observation encoding, reasoning, action representation, or interface mismatch with downstream controllers. 
+When failures arise, it is often unclear whether the problem lies in observation encoding, reasoning, action representation, or interface mismatch with downstream controllers~\cite{liu2024runtime}. 
 Hierarchical and chain-of-thought-style paradigms provide more visible intermediates, but these intermediates are not guaranteed to faithfully reflect the true basis of the final decision. 
 A further challenge concerns how embodied paradigms interact with humans in shared environments. 
 Trustworthiness depends not only on task success, but also on whether people can anticipate system behavior, interpret its intentions, and intervene safely when needed. 
@@ -1465,7 +1486,7 @@ RoboChallenge~\cite{wang2025robochallenge} advances standardized large-scale rea
 
 This survey organizes learned manipulation intelligence for robotic arms into four interdependent stages: hardware embodiment, data ecosystem, learning paradigm, and evaluation. 
 These stages respectively define the physical basis of manipulation, the data conditions for acquiring intelligence, the learning mechanisms that coordinate perception, planning, and control, and the criteria by which progress is measured. 
-Together, they show that embodied manipulation cannot be understood through model families alone. We hope this taxonomy helps clarify these dependencies and provide a clearer basis for future work in embodied manipulation.
+Together, they show that embodied manipulation cannot be understood through model categories alone. We hope this taxonomy helps clarify these dependencies and provide a clearer basis for future work in embodied manipulation.
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{sample-base}

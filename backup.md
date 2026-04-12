@@ -104,7 +104,7 @@ integration chapter: how different forms of \mathcal{K} are coupled into a syste
 | B5 | Latent World Simulation        | **K3 > K2** | latent world model / JEPA / large-scale simulation 更自然对应 foundation-scale pretraining。          |
 | B5 | Physics-Constrained Prediction | **K2 > K1** | 物理一致的 trajectory/dynamics prediction 常服务于 planner/MPC，通常需要 task-level rollout 结构；比纯 skill 稍高一层。 |
 
-B1 methods are unified by their production of executable task specifications, such as code, rewards, or structured control flow, and are therefore organized around task-level structure, with \(\mathcal{K}_2\) providing their primary support.
+B1 methods are unified by their production of executable task specifications, such as code, rewards, or structured control flow, and are therefore organized around task-level structure, and they are therefore primarily supported by \(\mathcal{K}_2\).
 
 B2 methods are unified by task decomposition, symbolic planning, and replanning, and likewise center on task-level structure, making \(\mathcal{K}_2\) their primary source of support.
 
@@ -121,11 +121,23 @@ Within P2, task-scale discrete action generation remains organized around task-l
 Within P3, local generative control is grounded in continuous interaction and therefore relies primarily on \(\mathcal{K}_1\), whereas large-scale generalist generative policies depend more on heterogeneous pretraining and are correspondingly better supported by \(\mathcal{K}_3\).
 
 
-In our view, the object of learning remains the knowledge support encoded in the data ecosystem. 
-The paradigm-level distinctions introduced below are derived from the underlying support structure of \(\mathcal{K}\) and become explicit through different architectural parameterizations. 
-In embodied manipulation, this is especially clear for robotic arms, where most capability is induced from the support already present in the data, except when additional priors are injected through exogenous parameterizations.
+Here, \(\mathcal{K}_1\), \(\mathcal{K}_2\), and \(\mathcal{K}_3\) denote levels of knowledge support that a paradigm primarily requires and organizes, rather than categories to which the paradigm itself belongs.
 
-The data ecosystem discussed in Section~\ref{sec:embodiment_dataset} provides \(\mathcal{D}\), a structured record of embodied execution containing sensory observations, sequences of motion, state transitions, and contact events. The present section examines how different learning paradigms use these records to acquire the knowledge support needed for manipulation.
+B1 methods are unified by their production of executable task specifications, such as code, rewards, or structured control flow. Because these methods must organize task-level structure into executable intermediate forms, they primarily require \(\mathcal{K}_2\) as their knowledge support.
+
+B2 methods are unified by task decomposition, symbolic planning, and replanning. Since they depend on the organization of long-horizon task structure and subtask relations, they likewise primarily require \(\mathcal{K}_2\).
+
+Within B3, explicit grounding remains centered on task-conditioned scene understanding and therefore primarily depends on \(\mathcal{K}_2\). By contrast, implicit grounding more often requires \(\mathcal{K}_3\) when it must organize transferable multimodal structure beyond a single task configuration.
+
+Within B4, local interaction grounding is centered on contact, geometry, and affordance structure, and therefore primarily requires \(\mathcal{K}_1\). Higher-level constraint reasoning, however, depends more strongly on task-level constraint structure and thus more directly requires \(\mathcal{K}_2\).
+
+Within B5, task-conditioned future prediction remains organized around embodied task trajectories and their temporal evolution, and therefore primarily requires \(\mathcal{K}_2\). Broader latent world simulation increasingly requires \(\mathcal{K}_3\) when it is used to organize transferable predictive structure across embodiments or environments.
+
+Within P1, reactive local control is grounded in local interaction and therefore primarily depends on \(\mathcal{K}_1\). Task-conditioned, chunked, and recovery-aware policies, by contrast, rely more on task-level execution structure and accordingly require \(\mathcal{K}_2\) more strongly.
+
+Within P2, task-scale discrete action generation remains organized around task-level action structure and therefore primarily requires \(\mathcal{K}_2\). Multimodal and generalist token policies increasingly require \(\mathcal{K}_3\) when they must organize transferable action structure across heterogeneous embodiments.
+
+Within P3, local generative control is grounded in continuous interaction and therefore primarily requires \(\mathcal{K}_1\). Larger-scale generalist generative policies, however, require \(\mathcal{K}_3\) to the extent that they are used to capture transferable action regularities across embodiments, rather than merely benefiting from larger-scale pretraining.
 
 
 \(\mathcal{K}_1\) is the level of support that makes local interaction learnable, grounding capability in immediate contact, geometry, and short-horizon control.
