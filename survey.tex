@@ -230,7 +230,7 @@ More specifically, intelligent behavior must remain grounded in the continuous c
 Robotic arm manipulation provides an ideal platform for embodied intelligence, as it concentrates the constraints of perception, action, contact dynamics, and high-DoF control within a single physical system~\cite{khatibInertialPropertiesRobot1987}.
 These characteristics have made robotic arms a central platform for embodied intelligence research, and successive advances in deep learning and, more recently, foundation models have progressively reshaped the methodological landscape of robotic manipulation.
 Several recent surveys cover adjacent parts of this landscape, including unified abstractions for robotic manipulation~\cite{baiUnifiedUnderstandingRobot2025}, foundation-model components in real-world robotics~\cite{kawaharazukaVisionLanguageActionModelsRobotics2025}, object-centric embodied learning~\cite{survey2025objectcentric}, and broader embodied AI systems built on LLMs and world models~\cite{liuEmbodiedIntelligenceSynergy2025}. 
-However, current surveys tend to obscure the essentially embodied nature of robotic manipulation for robotic arms.
+However, current surveys tend to obscure the character of robotic manipulation for robotic arms.
 Existing surveys on robotic manipulation are predominantly structured around model paradigms. 
 Consequently, they tend to understate the embodied constraints that operate across these paradigms and condition the design choices made within each of them.
 Local design variations thus tend to be treated as paradigm-level differences, obscuring the shared embodied constraints that underlie them.
@@ -1488,9 +1488,10 @@ RoboChallenge~\cite{wang2025robochallenge} advances standardized large-scale rea
 
 \section{Conclusion}
 
-This survey organizes learned manipulation intelligence for robotic arms into four interdependent stages: hardware embodiment, data ecosystem, learning paradigm, and evaluation. 
-These stages respectively define the physical basis of manipulation, the data conditions for acquiring intelligence, the learning mechanisms that coordinate perception, planning, and control, and the criteria by which progress is measured. 
-Together, they show that embodied manipulation cannot be understood through model categories alone. We hope this taxonomy helps clarify these dependencies and provide a clearer basis for future work in embodied manipulation.
+In this survey, we focus on how manipulation capability emerges under embodied constraints.
+From this perspective, many seemingly distinct paradigms can be viewed as different responses to the same underlying coupled problem. 
+This problem concerns how embodiment shapes the data a system can acquire, the representations it can form, the plans it can produce, and the actions it can robustly execute in the physical world.
+Accordingly, we adopt a different basis for comparison by examining how embodied constraints interact with data, planning, execution, and evaluation across the full manipulation pipeline, and how this interaction ultimately determines capability.
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{sample-base}
