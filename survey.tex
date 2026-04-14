@@ -272,9 +272,9 @@ From this perspective, physical embodiment can be seen as the source of the cons
 
 End effectors shape the contact space of manipulation by determining how contact is formed, maintained, and transformed during interaction.
 Different end-effector designs therefore differ not only in capability, but in the contact regime through which manipulation is organized.
-Jaw grippers, such as the Robotiq 2F/3F series, favor stable and mechanically constrained contact, making grasping, alignment, and release easier to control and predict.
-Dexterous hands, such as the Shadow Hand and Allegro Hand, allow contacts to change more freely during manipulation and support richer in-hand interaction, but they also make behavior harder to reduce to a small set of repeatable contact patterns.
-Soft hands, including the RBO Hand 3, Festo BionicSoftHand, and SpiRobs, address uncertainty differently by using compliance to absorb part of the interaction variability in the hardware itself.
+Jaw grippers, such as the OnRobot RG2/RG6 series, favor stable and mechanically constrained contact, making grasping, alignment, and release easier to control and predict.
+Dexterous hands, such as the SCHUNK SVH and Tesollo DG-5F-M, allow contacts to change more freely during manipulation and support richer in-hand interaction, but they also make behavior harder to reduce to a small set of repeatable contact patterns.
+Soft hands, including the qb SoftHand2 Research, Tesollo DG-5F-M, and INSPIRE RH56 series, address uncertainty differently by using compliance to absorb part of the interaction variability in the hardware itself.
 
 Sensors shape the observation space of manipulation by providing access to task-relevant information during execution.
 The central task of sensors is to ensure the information required at different stages of interaction is observable.
@@ -294,12 +294,12 @@ They organize motor commands into structured sequences of actions.
 Through active motion and contact, these action sequences induce changes in task state and observation during execution.
 Hence, we will focus on how robotic arms transform motor commands into reliable action sequences.
 
-In single-arm settings, such as the Franka Panda, KUKA iiwa, and Kinova Gen3, the action structure is relatively localized. 
+In single-arm settings, such as the UFACTORY xArm, Franka Research, and Doosan A0509, the action structure is relatively localized. 
 It is typically organized around a compact set of objectives through motor commands, including establishing a stable grasp, aligning the object to a desired pose, and completing a local contact transition.
 Since their execution structure is relatively localized and compact, motion sequences and state transitions in single-arm settings are relatively easier to collect, model, and evaluate. 
 Consequently, single-arm systems remain the dominant setting for teleoperation, policy benchmarking, and high-precision manipulation.
 
-In bimanual settings, such as ABB YuMi and ALOHA, manipulation requires coordination across multiple arms.
+In bimanual settings, such as Kawasaki duAro2 and ABB IRB, manipulation requires coordination across multiple arms.
 Once multiple manipulators act on the same object, the task becomes coordinated transformation under shared kinematic and force constraints.
 This coordination enables the system to perform tasks that require coordinated force regulation or the handling of large, heavy, or deformable objects.
 As a result, bimanual systems are increasingly used in assembly, tool use, and human-robot collaboration.
@@ -317,8 +317,8 @@ Action sequences, together with the state transitions they induce, will form an 
 \subsubsection{Mobile Platforms}\label{subsec:mobile_platforms}
 
 Mounting robotic arms on mobile platforms expands the scope of manipulation.
-In wheeled mobile manipulators such as PR2, TIAGo, and Stretch, arm action needs to coordinate with base motion and navigation constraints. 
-In legged platforms and humanoids, including Spot-based systems, Atlas, Figure~02, Optimus, and Unitree G1, manipulation must be executed together with balance, posture regulation, and system-level support conditions. 
+In wheeled mobile manipulators such as Mobile ALOHA, TIAGo Pro, and Toyota HSR, arm action needs to coordinate with base motion and navigation constraints. 
+In legged platforms and humanoids, including Spot-based systems, Unitree H2, Fourier GR-1, Optimus, and Apptronik Apollo, manipulation must be executed together with balance, posture regulation, and system-level support conditions. 
 In conclusion, robotic arms, as a central component of robotic manipulation, are increasingly being integrated into larger support systems, thereby exhibiting greater capability and broader potential.
 
 \subsection{Software Framework}
