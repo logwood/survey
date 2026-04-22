@@ -120,14 +120,22 @@
 %%
 %% The ``title'' command has an optional parameter,
 %% allowing the author to define a ``short title'' to be used in page headers.
-\title{A Survey of Embodied Manipulation for Robotic Arms: Foundations, Data, Learning, and Evaluation}
-%% A Survey of Robotic Arm Manipulation toward Embodied Intelligence
+\title{A Survey of Robotic Arm Manipulation toward Embodied Intelligence: Foundations, Data, Learning, and Evaluation}
 %%
 %% The ``author'' command and its associated commands are used to define
 %% the authors and their affiliations.
 %% Of note is the shared affiliation of the first two authors, and the
 %% ``authornote'' and ``authornotemark'' commands
 %% used to denote shared contribution to the research.
+\author{Wei Jiang}
+\orcid{0000-0001-6181-3900} % chktex 8
+\email{weijiang@uestc.edu.cn}
+\affiliation{%
+  \institution{University of Electronic Science and Technology of China}
+  \city{Chengdu}
+  \state{Sichuan}
+  \country{China}}
+
 \author{Sen Wang}
 \orcid{0009-0006-7901-2689} % chktex 8
 \email{202521090221@std.uestc.edu.cn}
@@ -137,15 +145,6 @@
   \state{Sichuan}
   \country{China}
 }
-
-\author{Wei Jiang}
-\orcid{0000-0001-6181-3900} % chktex 8
-\email{weijiang@uestc.edu.cn}
-\affiliation{%
-  \institution{University of Electronic Science and Technology of China}
-  \city{Chengdu}
-  \state{Sichuan}
-  \country{China}}
 
 \author{Jinyu Zhan}
 \orcid{0000-0002-0214-7124} % chktex 8
@@ -178,9 +177,10 @@
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-Robotic manipulation has advanced rapidly with the emergence of deep learning, foundation models, and large language models, giving rise to a diverse landscape of learning paradigms and system designs. Existing surveys, however, are predominantly organized around model families or methodological categories, which tend to obscure the embodied constraints that cut across these paradigms and shape manipulation capability in a stage-wise manner.
-This survey revisits robotic arm manipulation from an embodied perspective. We introduce an organizational framework centered on a chain of embodiment constraints, through which manipulation capability is understood as a capability formation process spanning data support, knowledge support, cognitive planning, policy learning, integration, evaluation, and deployment. Using this framework, we reorganize the literature beyond model-family labels and show how many seemingly paradigm-level differences are better understood as local responses to shared embodied constraints.
-Based on this view, we further analyze how limitations originating in embodied foundations accumulate in data support, become amplified in architectural design, complicate evaluation as a source of reliable upstream feedback, and open onto broader concerns of safety and trustworthiness in deployed embodied systems. By tracing these coupled pressures across stages, this survey aims to provide a more structured understanding of robotic manipulation and to clarify the central challenges for building scalable, deployable, and trustworthy embodied systems.
+Robotic arm manipulation has advanced rapidly with the emergence of deep learning, foundation models, and large language models, giving rise to a diverse landscape of learning paradigms and system designs. 
+This survey takes embodiment constraints as the starting point, tracing how they shape the development of embodied intelligence across data and knowledge support, learning paradigms, and evaluation.
+Specifically, these constraints first define the conditions of data and knowledge support, then structure learning paradigms, and ultimately condition evaluation throughout the development of embodied arm manipulation.
+By tracing coupled pressures across the full stack, from low-level operating systems to fine-grained evaluation metrics, this survey aims to provide a more structured understanding of robotic arm manipulation within a large, complex, and highly heterogeneous research landscape, and to clarify the central challenges for building scalable, deployable, and trustworthy robotic arm manipulation systems.
 \end{abstract}
 
 %%
@@ -214,7 +214,7 @@ Based on this view, we further analyze how limitations originating in embodied f
 %%
 %% Keywords. The author(s) should pick words that accurately describe
 %% the work being presented. Separate the keywords with commas.
-\keywords{Embodied intelligence, robotic manipulation, perception, control, learning}
+\keywords{Robotic arm manipulation, data, learning, embodiment, evaluation}
 
 \received{XXX}
 \received[revised]{XXXX}
@@ -230,17 +230,20 @@ Based on this view, we further analyze how limitations originating in embodied f
 Embodied intelligence starts from the premise that cognition is shaped by the dynamic coupling of brain, body, and environment~\cite{clarkBeingTherePutting1998}. 
 More specifically, intelligent behavior must be grounded in the continuous coupling of perception, action, and physical interaction in the real world~\cite{brooksIntelligenceWithoutRepresentation1991}.
 Robotic arm manipulation provides an ideal platform for embodied intelligence, as it concentrates the constraints of perception, action, contact dynamics, and high-DoF control within a single physical system~\cite{khatibInertialPropertiesRobot1987}.
-These characteristics have made robotic arms a central platform for embodied intelligence research, and successive advances in deep learning and, more recently, foundation models have progressively reshaped the methodological landscape of robotic manipulation. 
-However, this transformation has not been driven by a single model lineage. 
-Instead, it has emerged from the co-evolution of robot embodiment, scalable data pipelines, learning paradigms, and evaluation benchmarks. 
-As summarized in Figure~\ref{fig:cross_layer_timeline}, the field evolved from early research platforms and middleware to crowdsourced and multi-robot data collection, large-scale policy learning, generative and vision-language-action models, and increasingly structured manipulation benchmarks.
-In recent years, with the emergence of representative works such as RT-2~\cite{brohan2023rt2}, embodied manipulation for robotic arms has attracted rapidly growing attention.
-Several recent surveys cover adjacent parts of this landscape, including unified abstractions for robotic manipulation~\cite{baiUnifiedUnderstandingRobot2025}, review of vision-language-action (VLA) models for real-world robotics~\cite{kawaharazukaVisionLanguageActionModelsRobotics2025}, object-centric embodied learning~\cite{survey2025objectcentric}, and broader embodied AI systems built on LLMs and world models~\cite{liuEmbodiedIntelligenceSynergy2025}. 
-However, existing surveys on robotic manipulation are predominantly structured around model paradigms.
+These characteristics have made robotic arms a central platform for embodied intelligence research, and successive advances in deep learning and, more recently, foundation models have progressively reshaped the methodological landscape of robotic arm manipulation. 
+However, this transformation was not driven by a single model lineage. 
+Rather, it emerged from the co-evolution of robot embodiment, scalable data pipelines, learning paradigms, and evaluation benchmarks. 
+As summarized in Figure~\ref{fig:cross_layer_timeline}, robotic arm manipulation evolved from early middleware and simulation platforms~\cite{macenski2022robot,todorov2012mujoco}, 
+to scalable demonstration and multi-robot datasets~\cite{mandlekar2018roboturk,dasari2020robonet,padalkar2023open}, 
+to data-driven policy learning~\cite{brohan2023rt1,chi2023diffusion}, 
+and more recently to vision-language-action and generalist manipulation models~\cite{brohan2023rt2,kim2024openvla,black2024pi0}. 
+These transitions across embodied foundations, data, learning paradigms, and system evaluation motivate us to provide a unified understanding of robotic arm manipulation through each stage of the research stack.
+Several recent surveys cover adjacent parts of this landscape, including unified abstractions for robotic arm manipulation~\cite{baiUnifiedUnderstandingRobot2025}, review of vision-language-action (VLA) models for real-world robotics~\cite{kawaharazukaVisionLanguageActionModelsRobotics2025}, object-centric embodied learning~\cite{survey2025objectcentric}, and broader embodied AI systems built on LLMs and world models~\cite{liuEmbodiedIntelligenceSynergy2025}. 
+However, existing surveys on robotic arm manipulation are predominantly structured around model paradigms.
 Without a structure more explicitly grounded in embodiment, the resulting taxonomies often become difficult to interpret and more complex than necessary.
 Under such conditions, local methodological variants are easily treated as separate categories rather than as design choices within a shared structure.
 
-\begin{figure*}[t]
+\begin{figure*}[!t]
   \centering
   \resizebox{\textwidth}{!}{%
     \begingroup
@@ -252,13 +255,13 @@ Under such conditions, local methodological variants are easily treated as separ
   \Description{A full-width chronological timeline that marks key milestones across foundation systems, data platforms, learning paradigms, and evaluation benchmarks from 2008 to 2026.}\label{fig:cross_layer_timeline}
 \end{figure*}
 
-This survey is organized around one central idea: robotic arm manipulation should be understood as a process of capability formation under embodiment constraints. 
+Therefore, this survey examines robotic arm manipulation toward embodied intelligence through the lens of embodiment constraints, tracing how they shape data, learning, and evaluation as interdependent stages.
 From this perspective, the survey makes three closely connected contributions.
 First, it provides an explanatory overview of robotic arm manipulation as a process in which capability is progressively formed, supported, and limited under embodiment constraints. 
 This perspective shifts attention from isolated algorithmic categories to the cumulative role of physical, perceptual, and control constraints in shaping manipulation performance. 
 Second, it develops a layered taxonomy that organizes the literature around data, learning, and evaluation as interdependent stages under embodiment constraints. 
-This situates local design variations within a shared analytical structure, enabling meaningful comparison across approaches.
-Third, it uses the resulting organization to reveal a challenge structure that accumulates across the full system stack of robotic manipulation for robotic arms.
+This enables systematic categorization of independently framed solutions according to the underlying constraints they address.
+Third, it uses the resulting organization to reveal a challenge structure that accumulates across the full robotic arm manipulation pipeline.
 
 \textbf{Structure of the Paper:}
 Section~\ref{sec:embodiment_hardware} reviews physical embodiment and software infrastructure. Section~\ref{sec:embodiment_dataset} examines the data ecosystem from datasets through acquisition, synthesis, refinement, and pipelines. Section~\ref{sec:embodiment_method} analyzes cognitive planning, policy learning, integration models, and deployment. Section~\ref{sec:evaluation} synthesizes evaluation methodologies, and Section~\ref{sec:challenges} concludes with open challenges and future directions.
@@ -266,27 +269,28 @@ Section~\ref{sec:embodiment_hardware} reviews physical embodiment and software i
 
 \section{Embodiment Foundations of Robotic Arms}\label{sec:embodiment_hardware}
 
-For robotic arm platforms, the foundations of manipulation lie in two tightly connected aspects of embodiment. 
+For robotic arm platforms, the foundations of manipulation lie in two aspects of embodiment. 
 Physical embodiment defines how interaction is physically structured through contact, sensing, action, and platform constraints. 
-Software framework makes these embodied capabilities operational by supporting data capture, communication, low-level control, and the formalization of robotic experience for downstream learning.
+Software framework makes these physically grounded capabilities operational by supporting data capture, communication, low-level control, and the formalization of robotic experience for downstream learning.
 The rest of this section is organized accordingly. Section~\ref{sec:embodiment_physical} and Section~\ref{sec:embodiment_software} examine these two aspects in turn.
 
 \subsection{Physical Embodiment}\label{sec:embodiment_physical}
 
-Physical embodiment shapes robotic manipulation before learning starts. 
-In robotic arm systems, it governs how contact can be made, and how these conditions can be converted into controllable behavior.  
-We begin with the manipulation interface, through end effectors and sensors, then turn to robotic arms as the platforms that organize multi-DoF motion into executable manipulation, and finally discuss how arms are integrated into larger mobile and whole-body systems.
+Physical embodiment shapes robotic arm manipulation before learning starts. 
+It controls how contact can be made, and how these conditions can be converted into controllable behavior.  
+We begin with end effectors and sensors, then turn to robotic arms as the platforms that organize multi-DoF motion into executable manipulation, and finally discuss how arms are integrated into larger mobile and whole-body systems.
 Figure~\ref{fig:embodiment_taxonomy} summarizes this taxonomy. 
 From this perspective, physical embodiment can be seen as the source of the constraints that define manipulation objectives, data requirements, and methodological choices.
 
-\begin{figure}[t]
+\subsubsection{End Effectors and Sensors}\label{subsec:end_effectors}
+
+\begin{figure}[!t]
     \centering
-    \includegraphics[width=\linewidth,trim=0cm 5.6cm 0cm 5.3cm,clip]{assets/embodiment.pdf}
-    \caption{Overview of physical embodiments for robotic manipulation. The figure covers end effectors, sensors, stationary platforms, and mobile platforms.}
-    \Description{A hierarchical diagram showing the overview of physical embodiments for robotic manipulation. End effectors are classified by contact modality (jaw gripper, dexterous hand, soft hand) and sensing (vision, tactile); platforms are divided into stationary (single-arm, bimanual) and mobile (wheeled, quadrupedal, humanoid).}\label{fig:embodiment_taxonomy}
+    \includegraphics[width=\linewidth,trim=0cm 5.3cm 0cm 5.3cm,clip]{assets/embodiment.pdf}
+    \caption{Overview of physical embodiments for robotic arm manipulation. The figure covers end effectors, sensors, stationary platforms, and mobile platforms.}
+    \Description{A hierarchical diagram showing the overview of physical embodiments for robotic arm manipulation. End effectors are classified by contact modality (jaw gripper, dexterous hand, soft hand) and sensing (vision, tactile); platforms are divided into stationary (single-arm, bimanual) and mobile (wheeled, quadrupedal, humanoid).}\label{fig:embodiment_taxonomy}
 \end{figure}
 
-\subsubsection{End Effectors and Sensors}\label{subsec:end_effectors}
 
 End effectors shape the contact space of manipulation by determining how contact is formed, maintained, and transformed during interaction.
 Different end-effector designs therefore differ not only in capability, but in the contact regime through which manipulation is organized.
@@ -307,7 +311,7 @@ Through contact space and observation space, they bound the otherwise open-ended
 
 \subsubsection{Fixed-base Robotic Arms}\label{subsec:manipulators}
 
-In common robotic manipulation settings, fixed-base robotic arms provide controllable multi-DoF motion and serve as the platform through which end effectors and sensors are brought into execution.
+In common fixed-base arm manipulation settings, controllable multi-DoF motion is used to position end effectors and sensors during task execution.
 They organize motor commands into structured sequences of actions. 
 Through active motion and contact, these action sequences induce changes in task state and observation during execution.
 Hence, we will focus on how robotic arms transform motor commands into reliable action sequences.
@@ -319,7 +323,7 @@ In bimanual settings, such as PR2~\cite{wyrobek2008personal}, manipulation requi
 Once multiple manipulators act on the same object, the task becomes coordinated transformation under shared kinematic and force constraints.
 This coordination enables the system to perform tasks that require coordinated force regulation or the handling of large, heavy, or deformable objects.
 As a result, bimanual systems are increasingly used in assembly, tool use, and human-robot collaboration.
-These manipulation settings arise from practical task demands, and in turn become part of what shapes and constrains the ecosystem of embodied intelligence.
+These manipulation settings arise from practical task demands, and in turn become part of what shapes and constrains the embodied intelligence.
 Action sequences, together with the state transitions they induce, will form an important part of data support discussed in Section~\ref{sec:embodiment_dataset}.
 
 \subsubsection{Mobile Platforms}\label{subsec:mobile_platforms}
@@ -327,18 +331,17 @@ Action sequences, together with the state transitions they induce, will form an 
 Mounting robotic arms on mobile platforms expands the scope of manipulation.
 In wheeled mobile manipulators such as Mobile ALOHA~\cite{fu2024mobile}, Stretch~\cite{chase2025dynamics}, arm action needs to coordinate with base motion and navigation constraints. 
 In legged platforms and humanoids, manipulation needs to be executed together with balance, posture regulation, and system-level support conditions. 
-In conclusion, robotic arms, as a central component of robotic manipulation, are increasingly being integrated into larger support systems, thereby exhibiting greater capability and broader potential.
+In conclusion, robotic arms, as a central component of robotic arm manipulation, are increasingly being integrated into larger support systems, thereby exhibiting greater capability and broader potential.
 
 \subsection{Software Framework}\label{sec:embodiment_software}
 
-The software framework of robotic manipulation provides the infrastructure that makes embodied capabilities operational in practice.
+The software framework of robotic arm manipulation provides the infrastructure that makes physically grounded capabilities operational in practice.
 During runtime, it supports signal capture and transport, coordinates communication across distributed components, and sustains low-level control. 
-Beyond execution, it also provides the data interfaces through which robotic experience is formalized for data and downstream learning.
-
+Beyond execution, it also defines how robotic experience is recorded and structured for downstream use.
 
 \subsubsection{Modern Robotics Middleware and Operating Systems}\label{subsec:control_middleware}
 
-The software stack of embodied manipulation systems exists to make embodiment data accessible: ensuring signals are captured with sufficient temporal fidelity, transported without bottleneck, and organized at scale across heterogeneous hardware and compute.
+The software stack of robotic arm manipulation systems exists to make embodiment data accessible: ensuring signals are captured with sufficient temporal fidelity, transported without bottleneck, and organized at scale across heterogeneous hardware and compute.
 We organize this stack into three tiers, as summarized in Table~\ref{tab:framework_comparison}. 
 The Capture Layer (L0) ensures the temporal determinism required for reliable signal acquisition from sensors and actuators. 
 Industrial stacks rely on real-time operating system (RTOS) kernels such as VxWorks~\cite{xu2014mpi} and QNX~\cite{dan1992architectural} for bounded interrupt latency and fault isolation, while Zephyr extends the same guarantees to edge devices.
@@ -347,9 +350,9 @@ ROS~2 provides the baseline connectivity through decentralized Data Distribution
 The Orchestration Layer (L2) organizes data flows across robots, edge devices, and cloud services at the system level. 
 Zenoh-Flow and FogROS2 are designed with deployment, routing, and compute offloading as core system concerns~\cite{baldoni2023zenohflow, ichnowski2022fogros2}, while RoboOS couples multimodal planning to reusable skill libraries across heterogeneous embodiments~\cite{wang2025roboos}.
 
-\begin{table}[t]
+\begin{table}[!t]
 \centering
-\caption{\textbf{Three-tier software architecture for embodied manipulation intelligence for robotic arms.}
+\caption{\textbf{Three-tier software architecture of robotic arm manipulation for embodied intelligence.}
 The software stack is organized into three layers. L0 is the Capture Layer for hard real-time motor control with microsecond-level determinism. L1 is the Transfer Layer for high-throughput, low-latency inter-process and inter-device communication. L2 is the Orchestration Layer for distributed orchestration across robots, edge devices, cloud resources, and fleets. The Profile column reports interrupt or IPC latency for L0 and L1 systems, and deployment or orchestration characteristics for L2 systems.}\label{tab:framework_comparison}
 \renewcommand{\arraystretch}{1.2}
 \setlength{\tabcolsep}{3pt}
@@ -443,34 +446,35 @@ For end effectors, impedance control enables compliant interaction by regulating
 For fixed-base arms, this layer resolves operational objectives into joint motions and torques through kinematic mapping, rigid-body dynamic compensation, and enforcement of joint and collision constraints.
 For mobile platforms and humanoids, where manipulation needs to be coordinated with locomotion, balance, and whole-body motion, optimization-based approaches such as MPC and WBC extend this control layer by solving tracking, feasibility, and safety objectives within a unified constrained optimization problem online at the control rate~\cite{schulman2014optimizing}.
 
-Beyond execution, software frameworks also define how robotic experience is recorded and structured for learning. 
+Beyond execution, software frameworks also define how robotic experience is recorded and structured for downstream use. 
 Common formats range from runtime logs and telemetry records to trajectory dataset schemas such as RLDS and HDF5-based demonstrations, which organize observations, actions, rewards, and metadata for imitation learning and offline reinforcement learning.
 
 \section{Data Ecosystem of Robotic Arms}\label{sec:embodiment_dataset}
 
-\begin{figure}[t]
+\begin{figure}[!t]
   \centering
-  \includegraphics[width=0.82\textwidth,trim=0cm 1.2cm 1.5cm 0.5cm,clip]{assets/datasupport.pdf}
-  \caption{Overview of the embodied data ecosystem, organized into embodied datasets, data acquisition, data refinement, and data pipelines. The taxonomy shows how data are collected, structured, refined, and incorporated into downstream learning and deployment pipelines.}
+  \includegraphics[width=0.95\linewidth,trim=0cm 0.8cm 1.5cm 0.5cm,clip]{assets/datasupport.pdf}
+  \caption{Overview of the embodied data ecosystem, organized into embodied datasets, data acquisition, data refinement, and data pipelines. The graph shows how data are collected, structured, refined, and incorporated into downstream learning and deployment pipelines.}
   \Description{A hierarchical diagram showing the organization of the survey on embodied AI for robotic arms. The top node branches into four main pillars: system architecture, data ecosystem, architectural paradigms, and evaluation metrics. These pillars further expand into subtopics including embodied systems, dataset categories, data refinement, cognitive planning, policy learning, integration models, deployment lifecycle, and evaluation criteria. Arrows indicate conceptual dependencies across the survey structure.}\label{fig:data_support}
 \end{figure}
 
-Having clarified how embodiment constrains robotic manipulation through contact space, observation space, and execution, we now turn to the data ecosystem through which these constraints become learnable. 
-We denote robotic manipulation data by $\mathcal{D}$, which comprises four components generated as the robot interacts with the world: 
-\textbf{motion sequences} produced by the robotic arms, \textbf{sensory observations} provided by sensors, \textbf{contact events} realized through end effectors, and the resulting \textbf{state transitions} induced during execution.
-Progress in the data ecosystem can also be understood in terms of how \(\mathcal{D}\) is organized, collected, refined, and scaled across tasks, scenes, and embodiments.
-Organized around $\mathcal{D}$, this chapter begins with embodied datasets in Section~\ref{sec:eai_datasets} and then examines the broader data processes associated with them, including data acquisition in Section~\ref{sec:data_acquisition}, data refinement in Section~\ref{sec:data_refinement}, and large-scale dataset pipelines in Section~\ref{sec:data_factories_robotic_arms}.
-Together, these elements provide a structured view of the data ecosystem for robotic arm manipulation, spanning embodied datasets, data acquisition, data refinement, and large-scale data pipelines, as summarized in Figure~\ref{fig:data_support}.
+Having clarified how embodiment constrains robotic arm manipulation through contact, observation, and execution, we now turn to the data ecosystem through which these constraints are captured, formalized, and made learnable. 
+In this sense, data connect embodied foundations to the emergence of embodied intelligence.
+We denote robotic manipulation data by $\mathcal{D}$, which records the structured traces of embodied interaction as the robot engages with the world.
+Concretely, $\mathcal{D}$ comprises four components: \textbf{motion sequences} generated by the robotic arm, \textbf{sensory observations} provided by onboard or external sensors, \textbf{contact events} arising through the end effector, and the resulting \textbf{state transitions} induced during execution.
+From the perspective of embodied intelligence, progress in the data ecosystem can be understood in terms of how $\mathcal{D}$ is organized, collected, refined, and reused across tasks, scenes, and embodiments.
+Organized around $\mathcal{D}$, this chapter first reviews embodied datasets in Section~\ref{sec:eai_datasets}, and then examines the broader processes through which robotic experience is produced and operationalized, including data acquisition in Section~\ref{sec:data_acquisition}, data refinement in Section~\ref{sec:data_refinement}, and large-scale data pipelines in Section~\ref{sec:data_factories_robotic_arms}. 
+Together, these components provide a structured account of how data support is formed under embodied constraints for robotic arm manipulation, as summarized in Figure~\ref{fig:data_support}.
 
 \subsection{Embodied Datasets}\label{sec:eai_datasets}
 
-Through a systematic review of the literature, we observe that embodied manipulation datasets have evolved toward progressively broader forms of support for learning: from preserving local interaction structure, to capturing how robotic manipulation unfolds over temporally extended execution, and ultimately to supporting transfer across heterogeneous embodiments.
+Through a systematic review of the literature, we observe that robotic arm manipulation datasets have evolved toward progressively broader forms of support for learning: from preserving local interaction structure, to capturing how robotic manipulation unfolds over temporally extended execution, and ultimately to supporting transfer across heterogeneous embodiments.
 We abstract this progression into three increasingly broad tiers of embodied datasets: skill-level datasets ($\mathcal{D}_1$), which preserve local interaction structure; task-level datasets ($\mathcal{D}_2$), which preserve these interactions over temporally extended execution; and foundation-level datasets ($\mathcal{D}_3$), which preserve transfer across heterogeneous embodiments at scale.
-In the remainder of this section, we review embodied manipulation datasets according to these three levels,Section~\ref{sec:skill_datasets_narrative} for skill-level datasets, Section~\ref{sec:task_datasets_narrative} for task-level datasets, and Section~\ref{sec:foundation_datasets} for foundation-level datasets.
+In the remainder of this section, we review robotic arm manipulation datasets according to these three levels,Section~\ref{sec:skill_datasets_narrative} for skill-level datasets, Section~\ref{sec:task_datasets_narrative} for task-level datasets, and Section~\ref{sec:foundation_datasets} for foundation-level datasets.
 As the scope of $\mathcal{D}$ expands across these tiers, the implied knowledge support $\mathcal{K}$ expands accordingly.
 We will discuss the role of $\mathcal{K}$, and how it supports different learning paradigms, in greater detail in Chapter~\ref{sec:embodiment_method}.
 
-\begin{table}[t]
+\begin{table}[!t]
 \centering
 \caption{\textbf{Chronological Overview of Skill-level Datasets.} Evolution reflects the shift from planar grasping rectangles to dense 6-DoF poses, dexterous hands, language-grounded reasoning, and diverse motor primitives (pushing, articulation, deformable manipulation, assembly).}\label{tab:skill_datasets}
 \resizebox{\textwidth}{!}{%
@@ -531,7 +535,7 @@ DROID~\cite{khazatsky2024droid} coordinated 18 institutions across 564 scenes wi
 and Dobb-E~\cite{shafiullah2023bringing} accessed 22 domestic environments using only an iPhone mounted on a Stretch robot. 
 FMB~\cite{fu2025fmb} added force-torque calibration across 22k contact-rich assembly trajectories. 
 
-\begin{table}[t] 
+\begin{table}[!t] 
 \centering
 \caption{\textbf{Representative task-level embodied datasets collected from real-world physical trajectories.} 
 Traj.\ denotes the number of recorded demonstrations or episodes; 
@@ -587,7 +591,7 @@ RoboMIND~\cite{wu2025robomind} extends this tier toward standardized multi-robot
 AgiBot World Beta~\cite{agibot2025} pushes this tier toward humanoid and dual-arm manipulation, providing over one million trajectories from 100 robots across 100+ real-world scenarios.
 As robot data demand outpaces collection speed, some pipelines supplement trajectory datasets with egocentric human video such as Ego-Exo4D~\cite{grauman2024egoexo4d}.
 
-\begin{table}[t]
+\begin{table}[!t]
 \centering
 \caption{\textbf{Foundation-level Datasets for Multi-Robot Manipulation.}
 \# Traj.\,=\,trajectory count;
@@ -637,7 +641,7 @@ and AV-ALOHA~\cite{chuang2025avaloha} showed that such data become more useful w
 
 \subsubsection{Simulation Data Ecosystems}\label{sec:simulation_infrastructure}
 
-\begin{table}[t]
+\begin{table}[!t]
 \centering
 \caption{\textbf{Simulation infrastructures for embodied manipulation.} Platforms are grouped into three main ecosystems (MuJoCo, SAPIEN, Isaac) and specialized platforms for specific task categories or physical regimes.}\label{tab:sim_classification}
 \resizebox{\textwidth}{!}{%
@@ -780,9 +784,9 @@ $\mathcal{K}_1$ supports learning local interaction, $\mathcal{K}_2$ supports le
 Section~\ref{sec:embodied_brain} introduces cognitive planning paradigms, Section~\ref{sec:policy_learning_low_level} covers policy learning paradigms, Section~\ref{sec:integration_models} examines how the two pathways are coupled, and Section~\ref{sec:deployment_pipeline} discusses deployment through a three-stage pipeline. 
 Figure~\ref{fig:learning_paradigms} summarizes this learning ecosystem.
 
-\begin{figure}[t]
+\begin{figure}[!t]
   \centering
-  \includegraphics[width=0.85\linewidth,trim=2cm 4.5cm 2.2cm 1cm,clip]{assets/learningparadigms.pdf}
+  \includegraphics[width=0.95\linewidth,trim=2cm 4.5cm 2.2cm 1cm,clip]{assets/learningparadigms.pdf}
   \caption{Overview of learning paradigms for robotic arm manipulation. The figure organizes the pipeline into cognitive planning, policy learning, integration models, and deployment stages, linked by multimodal inputs and downstream control across robotic arm embodiments.}
   \Description{A diagram showing the organization of learning paradigms for robotic manipulation. The top level shows cognitive planning methods ranging from semantic logic to generative dynamics. The middle level shows policy learning approaches covering explicit continuous, discrete action, and iterative generative methods. The bottom level shows integration architectures that couple planning and policy. Arrows indicate connections between data tiers, learning paradigms, and deployment stages.}\label{fig:learning_paradigms}
 \end{figure}
@@ -801,9 +805,9 @@ Among these paradigms, B1, B2, and B5 place greater emphasis on state transition
 Meanwhile, the intermediate artifacts associated with B1--B5 collectively suggest a broader trend toward forms that are increasingly grounded and closer to execution.
 Table~\ref{tab:brain_paradigms} provides an overview of these paradigms, and Figure~\ref{fig:brain_paradigms} illustrates how they differ in the way they represent a specific task.
 
-\begin{figure}[t]
+\begin{figure}[!t]
   \centering
-  \includegraphics[width=0.8\linewidth,trim=1cm 0cm 0cm 0.8cm,clip]{assets/brain.pdf}
+  \includegraphics[width=0.85\linewidth,trim=1cm 0cm 0cm 0.8cm,clip]{assets/brain.pdf}
   \caption{Cognitive planning paradigms for embodied manipulation. The figure summarizes five representative planning modes: semantic logic and code generation, long-horizon task decomposition, grounded multimodal reasoning, geometric grounding and spatial intelligence, and generative dynamics and physical imagination.}
   \Description{A diagram illustrating five cognitive planning paradigms for embodied manipulation. A central brain icon is surrounded by five labeled panels: semantic logic and code generation, long-horizon task decomposition, grounded multimodal reasoning, geometric grounding and spatial intelligence, and generative dynamics and physical imagination. The panels use a broccoli-into-pot task to show how each paradigm represents planning differently, from symbolic code and step decomposition to affordance maps, point clouds, and imagined future states.}\label{fig:brain_paradigms}
 \end{figure}
@@ -932,7 +936,7 @@ Table~\ref{tab:policy_paradigms} summarizes overview of this kind of paradigms,a
 
 \subsubsection{Explicit Continuous Policies}\label{sec:explicit_continuous_policies}
 
-\begin{figure}[t]
+\begin{figure}[!t]
   \centering
   \includegraphics[width=0.85\linewidth,trim=3cm 0.5cm 3.5cm 0.3cm,clip]{assets/celeberrum.pdf}
   \caption{Comparison of policy learning paradigms for robotic manipulation. The figure contrasts explicit continuous policies, discrete-action policies, and iterative generative policies in terms of distributional expressivity and computational complexity.}\label{fig:policy_paradigms}
@@ -959,19 +963,6 @@ Once actions are reliably tokenized, they can be generated within the same autor
 Within P2, task-scale discrete action generation is organized around task-level action structure and therefore primarily requires \(\mathcal{K}_2\). 
 Multimodal and generalist token policies increasingly require \(\mathcal{K}_3\) when they need to organize transferable action structure across heterogeneous embodiments.
 The central challenge in these methods lies in aligning discrete action tokens with the structured, continuous nature of robot actions, while preserving action fidelity and efficient autoregressive generation.
-
-\subsubsection{Iterative Generative Policies}\label{sec:iterative_generative_policies}
-
-P3 policies treat action prediction as conditional generative modeling over continuous action trajectories, using iterative refinement to approximate the full action distribution.
-Early diffusion-based formulations first appeared in planning and structured generation: Diffuser~\cite{janner2022diffuser} casts long-horizon trajectory generation as probabilistic inpainting. 
-Diffusion Policy~\cite{chi2023diffusion} subsequently brings this paradigm into mainstream visuomotor control by learning the score function of the action distribution, thereby avoiding the mode-averaging limitations of direct regression. 
-In 3D embodied manipulation, DP3~\cite{ze2024diffusion} further conditions diffusion on point-cloud observations for spatial grounding, while iDP3~\cite{liang2024idp3} extends this formulation with improved 3D representations for more robust deployment.
-Despite these advances, iterative denoising still imposes substantial inference latency.
-Flow matching addresses this by learning velocity fields that transport noise to data along straighter trajectories with fewer integration steps. 
-Consistency Policy~\cite{prasad2024consistency} distills a teacher diffusion model into few-step generation, Streaming Flow Policy~\cite{jiang2025streaming} streams action trajectories to the robot during generation, and RecFlow~\cite{xue2025recflow} accelerates inference by rectifying the learned flow itself.
-Among generalist robot policies, Octo~\cite{octomodelteam2024} trains a transformer-based diffusion policy on the Open X-Embodiment dataset for cross-embodiment manipulation, RDT-1B~\cite{liu2025rdtb} scales to the 1B-parameter regime on larger multi-robot data, and FLOWER~\cite{reuss2025flower} improves sample efficiency through flow-matching.
-Within P3, local generative control is grounded in continuous interaction and therefore primarily requires \(\mathcal{K}_1\). Larger-scale generalist generative policies, however, require \(\mathcal{K}_3\) to the extent that they are used to capture transferable action regularities across embodiments, rather than merely benefiting from large-scale pretraining.
-Overall, P3 policies offer the strongest distributional modeling capacity, but their practicality depends on making iterative generative control efficient enough for deployment while preserving action quality, control stability, and manageable compute cost.
 
 \begin{table}[t!]
 \centering
@@ -1019,18 +1010,31 @@ Overall, P3 policies offer the strongest distributional modeling capacity, but t
 \end{tabular}
 \end{table}
 
+\subsubsection{Iterative Generative Policies}\label{sec:iterative_generative_policies}
+
+P3 policies treat action prediction as conditional generative modeling over continuous action trajectories, using iterative refinement to approximate the full action distribution.
+Early diffusion-based formulations first appeared in planning and structured generation: Diffuser~\cite{janner2022diffuser} casts long-horizon trajectory generation as probabilistic inpainting. 
+Diffusion Policy~\cite{chi2023diffusion} subsequently brings this paradigm into mainstream visuomotor control by learning the score function of the action distribution, thereby avoiding the mode-averaging limitations of direct regression. 
+In 3D robotic arm manipulation, DP3~\cite{ze2024diffusion} further conditions diffusion on point-cloud observations for spatial grounding, while iDP3~\cite{liang2024idp3} extends this formulation with improved 3D representations for more robust deployment.
+Despite these advances, iterative denoising still imposes substantial inference latency.
+Flow matching addresses this by learning velocity fields that transport noise to data along straighter trajectories with fewer integration steps. 
+Consistency Policy~\cite{prasad2024consistency} distills a teacher diffusion model into few-step generation, Streaming Flow Policy~\cite{jiang2025streaming} streams action trajectories to the robot during generation, and RecFlow~\cite{xue2025recflow} accelerates inference by rectifying the learned flow itself.
+Among generalist robot policies, Octo~\cite{octomodelteam2024} trains a transformer-based diffusion policy on the Open X-Embodiment dataset for cross-embodiment manipulation, RDT-1B~\cite{liu2025rdtb} scales to the 1B-parameter regime on larger multi-robot data, and FLOWER~\cite{reuss2025flower} improves sample efficiency through flow-matching.
+Within P3, local generative control is grounded in continuous interaction and therefore primarily requires \(\mathcal{K}_1\). Larger-scale generalist generative policies, however, require \(\mathcal{K}_3\) to the extent that they are used to capture transferable action regularities across embodiments, rather than merely benefiting from large-scale pretraining.
+Overall, P3 policies offer the strongest distributional modeling capacity, but their practicality depends on making iterative generative control efficient enough for deployment while preserving action quality, control stability, and manageable compute cost.
+
 \subsection{Integration Models}\label{sec:integration_models}
 
-To learn from the full content of \(\mathcal{D}\), embodied manipulation systems often integrate cognitive planning and policy learning rather than relying on either path alone.
+To learn from the full content of \(\mathcal{D}\), robotic arm manipulation systems often integrate cognitive planning and policy learning rather than relying on either path alone.
 RT-2~\cite{brohan2023rt2} provided an early demonstration that semantic understanding, reasoning, and action generation can be unified in this way, and later work has evolved into five recurrent integration patterns, which can be grouped into three coupling types.
 Type~I emphasizes end-to-end unification within a shared backbone, as discussed in Section~\ref{subsec:e2emodels}.
 Type~II covers hierarchical designs that separate slower reasoning from faster execution, as discussed in Section~\ref{subsec:hierarchical_modular_models}.
 Type~III maintains a shared world representation that mediates between planning and policy, as discussed in Section~\ref{subsec:spatial_world_models}.
 Table~\ref{tab:data_learning_map} summarizes these recurrent patterns in terms of architectural type, supporting data regime, coupling principle, shared state, and typical pairings of cognitive planning and policy learning paradigms, and Table~\ref{tab:integration_methods} further lists representative integrated paradigms.
 
-\begin{table}[t]
+\begin{table}[!t]
 \centering
-\caption{\textbf{Integration patterns across data regimes.} The table summarizes recurrent integration patterns for embodied manipulation in terms of architecture type, supporting data regime, coupling principle, shared state, and typical pairings of cognitive planning and policy learning paradigms. Support indicates the data regimes that support each pattern. Paradigm codes follow Tables~\ref{tab:brain_paradigms}--\ref{tab:policy_paradigms}.}\label{tab:data_learning_map}
+\caption{\textbf{Integration patterns across data regimes.} The table summarizes recurrent integration patterns for robotic arm manipulation in terms of architecture type, supporting data regime, coupling principle, shared state, and typical pairings of cognitive planning and policy learning paradigms. Support indicates the data regimes that support each pattern.}\label{tab:data_learning_map}
 \renewcommand{\arraystretch}{1.3}
 \setlength{\tabcolsep}{2pt}
 \scriptsize
@@ -1149,7 +1153,7 @@ The central challenge of this type is whether a single unified architecture can 
 
 \textbf{UniVLA}~\cite{bu2025univla} & B5, P2 & Emu3 (8.5B) & Dirc. & Div. & OXE Real Traj. & Sim: LIBERO (95.5\%) | Real: 10 multi-robot tasks \\
 
-\textbf{ReconVLA}~\cite{song2025reconvla} & B3, P2 & LLaVA-7B (Qwen2--7B) & Low & AgileX PiPer & 2M samples (100K+ traj., BridgeV2/LIBERO) & Sim: CALVIN (ABCD$\rightarrow$D) | Real: 5 manipulation tasks \\
+\textbf{ReconVLA}~\cite{song2025reconvla} & B3, P2 & LLaVA-7B (Qwen2--7B) & Genr. & AgileX PiPer & 2M samples (100K+ traj., BridgeV2/LIBERO) & Sim: CALVIN (ABCD$\rightarrow$D) | Real: 5 manipulation tasks \\
 
 \textbf{X-VLA}~\cite{zheng2026xvla} & B3, P3 & Transformer (0.9B) & Genr. & Div. & 290K episodes & Sim: LIBERO 93\%, Simpler-WidowX | Real: 3 robots \\
 
@@ -1165,13 +1169,13 @@ The central challenge of this type is whether a single unified architecture can 
 
 \textbf{ThinkAct}~\cite{huang2025thinkact} & B1, P2 & Qwen2.5-VL (7B) & Hier. & Franka & OXE + RoboVQA Real Traj. & Sim: CALVIN | Real: 10 long-horizon tasks \\
 
-\textbf{FiS-VLA}~\cite{chen2025fis} & B2, P1 & Llama-2 (7B) & Hier. & Franka & OXE Real Traj. & Real: 6 reactive tasks \\
+\textbf{FiS-VLA}~\cite{chen2025fis} & B2, P1 & Llama-2 (7B) & Hier. & Agilex & 860K real trajectories & Sim: RLBench | Real: 8 manipulation tasks \\
 
 \textbf{HAMSTER}~\cite{li2025hamster} & B5, P1 & VILA-1.5 (13B) & Hier. & Franka & Off-domain Web Vid. & Sim: Colosseum | Real: 74 tasks / 222 evals \\
 
-\textbf{Hi Robot}~\cite{shi2025hirobot} & B2, P3 & PaliGemma (3B) & Hier. & Div. & Syn.\ data & Real: 10 manipulation tasks \\
+\textbf{Hi Robot}~\cite{shi2025hirobot} & B2, P3 & PaliGemma (3B) & Hier. & Div.\ (3 types) & Syn.\ data & Real: 3 open-ended domains \\
 
-\textbf{RoBridge}~\cite{zhang2025robridge} & B2, P1 & VLM Planner & Hier. & Gen3 & Syn.\ + Real Traj. & Real: 12 manipulation tasks \\
+\textbf{RoBridge}~\cite{zhang2025robridge} & B2, P1 & Planner API & Hier. & Gen3 & Syn.\ + Real Traj. & Sim: MetaWorld/Robosuite | Real: 12 manipulation tasks \\
 
 \midrule
 
@@ -1183,15 +1187,15 @@ The central challenge of this type is whether a single unified architecture can 
 
 \textbf{VideoVLA}~\cite{shen2025videovla} & B5, P3 & CogVideoX (5B) & Genr. & Div. & OXE + 5K samples & Sim: SIMPLER | Real: 6 unseen tasks \\
 
-\textbf{SpatialVLA}~\cite{qu2025spatialvla} & B4, P2 & PaLiGemma 2 (4B) & Dirc. & Franka+WidowX & OXE + RH20T Real Traj. & Sim: RLBench | Real: 10+ spatial tasks \\
+\textbf{SpatialVLA}~\cite{qu2025spatialvla} & B4, P2 & PaLiGemma 2 (4B) & Dirc. & Franka+WidowX & OXE + RH20T Real Traj. & Sim: SIMPLER / LIBERO | Real: 24 real-robot tasks \\
 
-\textbf{TraceVLA}~\cite{zheng2025tracevla} & B4, P3 & Llama-2 + SigLIP (7B) & Dirc. & WidowX & OXE + 150K Real Traj. & Sim: SimplerEnv (137 configs) | Real: 4 WidowX tasks \\
+\textbf{TraceVLA}~\cite{zheng2025tracevla} & B4, P3 & Llama-2 + SigLIP (7B) & Dirc. & WidowX & OXE + 150K Real Traj. & Sim: SIMPLER  (137 configs) | Real: 4 WidowX tasks \\
 
 \textbf{DreamVLA}~\cite{zhang2025dreamvla} & B5, P3 & Diffusion WM (7B) & Genr. & Franka & CALVIN Real Traj. & Sim: CALVIN | Real: 10 manipulation tasks \\
 
-\textbf{BridgeVLA}~\cite{li2025bridgevla} & B4, P2 & PaliGemma (3B) & Dirc. & Franka & Bridge / OXE Real Traj. & Real: 10 3D tasks \\
+\textbf{BridgeVLA}~\cite{li2025bridgevla} & B4, P2 & PaliGemma (3B) & Dirc. & Franka & Bridge / OXE Real Traj. & Sim: RLBench/COLOSSEUM | Real: 13 Franka FR3 tasks \\
 
-\textbf{DreamZero}~\cite{ye2026dreamzero} & B5, P3 & Wan2.1 (14B) & Genr. & Div. & Web Vid.\ + Robot Traj. & Real: 2$\times$ generalization \\
+\textbf{DreamZero}~\cite{ye2026dreamzero} & B5, P3 & Wan2.1 (14B) & Genr. & Div. & Web Vid.\ + Robot Traj. & Sim: DROID/PolaRiS/Genie | Real: 60 manipulation tasks \\
 
 \bottomrule
 \end{tabular}
@@ -1202,7 +1206,7 @@ The central challenge of this type is whether a single unified architecture can 
 Type II models decouple slow cognitive planning from fast policy execution. One branch uses explicit hierarchy. 
 RT-H~\cite{belkhale2024rth} introduced language motions as an intermediate layer between high-level instructions and low-level actions, 
 CoT-VLA~\cite{zhao2025cotvla} and ThinkAct~\cite{huang2025thinkact} expose intermediate reasoning steps, 
-RoBridge~\cite{zhang2025robridge} places a symbolic bridge between a high-level planner and an embodied agent, 
+RoBridge~\cite{zhang2025robridge} places a symbolic bridge between a cognitive planner and a learned policy, 
 and HAMSTER~\cite{li2025hamster} predicts a coarse 2D path as an intermediate representation to guide a low-level policy for precise 3D manipulation.
 Another branch uses implicit hierarchy, where the practical split is clear but the interface is latent or only lightly structured. 
 FiS-VLA~\cite{chen2025fis} couples a slower semantic branch with a real-time execution branch, 
@@ -1228,7 +1232,7 @@ In addition, Type III models typically demand large-scale data and resources to 
 
 \subsection{Deployment Pipeline}\label{sec:deployment_pipeline}
 
-\begin{table}[t]
+\begin{table}[!t]
 \centering
 \caption{\textbf{Deployment bottlenecks and representative techniques across the 3-Stage pipeline.}
 \textbf{S1}\,=\,Offline Pre-deployment; \textbf{S2}\,=\,Online Physical Alignment; \textbf{S3}\,=\,Inference-Time Execution.}\label{tab:deployment_lifecycle}
@@ -1308,17 +1312,17 @@ At inference time, compression, quantization, and decoding acceleration improve 
 
 \section{System Evaluation of Robotic Arms}\label{sec:evaluation}
 
-Previous sections have examined how robotic manipulation systems are shaped by embodied foundations, data, learning, and deployment. 
+Previous sections have examined how robotic arm manipulation systems are built by embodied foundations, data ecosystems, and learning paradigms. 
 This chapter reviews current efforts to evaluate the resulting systems from four corresponding perspectives.
-Section~\ref{sec:eval_task_execution} evaluates whether cognitive planning (\(B\)) and policy learning (\(P\)) can organize the knowledge support \(\mathcal{K}\) induced by \(\mathcal{D}\) into successful embodied task execution. 
+Section~\ref{sec:eval_task_execution} evaluates whether cognitive planning (\(B\)) and policy learning (\(P\)) can organize the knowledge support \(\mathcal{K}\) induced by \(\mathcal{D}\) into successful task execution. 
 Section~\ref{sec:eval_data_sample} evaluates whether \(\mathcal{D}\) provides data that is sufficiently efficient and informative to induce useful knowledge support \(\mathcal{K}\). 
 Section~\ref{sec:eval_benchmarking} evaluates whether the knowledge support \(\mathcal{K}\) learned from \(\mathcal{D}\), and organized through \(B\) and \(P\), is robust beyond the training distribution under varying embodiment constraints. 
-Section~\ref{sec:eval_energy} evaluates whether the embodied capability produced by \(B\) and \(P\) from \(\mathcal{K}\) can be executed efficiently on physical embodiments within the deployment pipeline.
+Section~\ref{sec:eval_energy} evaluates whether the physically grounded capabilities produced by \(B\) and \(P\) from \(\mathcal{K}\) can be executed efficiently on physical embodiments within the deployment pipeline.
 Table~\ref{tab:eval_metrics} summarizes representative metrics and protocols.
 
-\begin{table}[t]
+\begin{table}[!t]
 \centering
-\caption{\textbf{Evaluation metrics and representative works for embodied manipulation.}}\label{tab:eval_metrics}
+\caption{\textbf{Evaluation metrics and representative works for robotic arm manipulation.}}\label{tab:eval_metrics}
 \renewcommand{\arraystretch}{1.15}
 \setlength{\tabcolsep}{3pt}
 \scriptsize
@@ -1414,7 +1418,7 @@ Together, these methods define a hierarchy of increasingly scalable but increasi
 
 \subsection{Deployment Efficiency Readiness Evaluation}\label{sec:eval_energy}
 
-Deployment efficiency readiness concerns whether the embodied capability produced by \(B\) and \(P\) from \(\mathcal{K}\) can be executed efficiently on physical embodiments under real deployment constraints. Relevant costs include latency, compute, memory, hardware load, and energy consumption. Existing evaluation efforts in this direction can be grouped into three categories: energy decomposition, normalized efficiency comparison, and multi-objective trade-off analysis.
+Deployment efficiency readiness concerns whether the physically grounded capabilities produced by \(B\) and \(P\) from \(\mathcal{K}\) can be executed efficiently on physical embodiments under real deployment constraints. Relevant costs include latency, compute, memory, hardware load, and energy consumption. Existing evaluation efforts in this direction can be grouped into three categories: energy decomposition, normalized efficiency comparison, and multi-objective trade-off analysis.
 Existing energy evaluations usually begin with simplified power models or their proxies before moving to more structured decompositions.
 Another structured view is provided by ECDP~\cite{heredia2023ecdp}, which decomposes total power into electronics, friction, copper loss, and useful mechanical work:
 \begin{equation}
@@ -1423,16 +1427,16 @@ P_{\text{total}}(t) = P_{\text{elec}} + P_{\text{friction}}(t) + P_{\text{copper
 This decomposition is useful because it attributes where energy is spent rather than reporting only a single aggregate number. It also shows that control motors can dominate total consumption, which implies that trajectory optimization alone may have limited impact on overall energy efficiency.
 For comparison across robots, recent work introduces normalized efficiency metrics~\cite{vidussi2021energy,heredia2025evaluating} and measures such as Cost of Transport, 
 while Rezali et al.~\cite{rezali2025lstm} formulate trajectory planning as a multi-objective optimization problem over several metrics. 
-Current embodied manipulation benchmarks still provide only limited visibility into deployment efficiency, since latency, runtime reliability, compute footprint, and hardware load are rarely reported in comparable ways.
+Current robotic arm manipulation benchmarks still provide only limited visibility into deployment efficiency, since latency, runtime reliability, compute footprint, and hardware load are rarely reported in comparable ways.
 
 Overall, existing evaluation efforts do not suffice to close the validation loop across the overall pipeline.
 A comprehensive characterization of how $\mathcal{D}$, $\mathcal{K}$, embodiment, and the organization of \(B\) and \(P\) determine behavior under real deployment conditions is lacking.
 
 \section{Open Challenges and Future Directions}\label{sec:challenges}
 
-Building on the foregoing organizational framework, we examine the open challenges of embodied manipulation from the perspective developed above.
+Building on the foregoing organizational framework, we examine the open challenges of robotic arm manipulation from the perspective developed above.
 Limitations originating in embodied foundations accumulate in data support, intensify in architectural design, and ultimately make evaluation an unstable source of feedback for upstream stages. 
-We then examine trustworthiness, which emerges as a distinct challenge while embodied manipulation systems are deployed in real-world settings.
+We then examine trustworthiness, which emerges as a distinct challenge while robotic arm manipulation systems are deployed in real-world settings.
 For each challenge, we also identify recent efforts that point toward future directions.
 
 \subsection{Embodiment Foundations with Reduced Constraints}\label{sec:challenge_embodiment}
@@ -1443,20 +1447,21 @@ Moreover, because mechanical parameters, morphology, and control interfaces diff
 
 The open challenge, therefore, is to establish stronger embodied foundations for manipulation, which requires progress on two tightly coupled dimensions:
 \begin{itemize}
-    \item \textbf{Cross-embodiment abstraction.} Shared interfaces and abstractions need to be established across heterogeneous embodiments that are semantically meaningful and operationally valid, isolating downstream processes from the incompatibilities that hardware diversity would otherwise impose.
-    \item \textbf{Embodied coverage.} Support for richer observation and action modalities needs to be broadened under the constraints imposed by heterogeneous embodiments.
+    \item \textbf{Cross-embodiment abstraction.} Shared interfaces and abstractions need to be established across heterogeneous embodiments that can isolate downstream processes from the incompatibilities that hardware diversity would otherwise impose.
+    \item \textbf{Modality coverage.} Support for richer observation and action modalities needs to be broadened under the constraints imposed by heterogeneous embodiments.
+    \item \textbf{Embodiment adaptation.} Shared abstractions also need principled mechanisms for adaptation to specific platforms, so that differences in morphology, sensing, actuation, and control interfaces can be handled systematically.
 \end{itemize}
 
 \subsection{Data Ecosystem with Unified Support}\label{sec:challenge_data}
 
-Current data ecosystem for embodied manipulation is structurally insufficient.
+Current data ecosystem for robotic arm manipulation is structurally insufficient.
 Real collection methods such as teleoperation provide the strongest coverage of all four components of $\mathcal{D}$, but are slow, expensive, and difficult to scale under real embodied interaction. 
 More portable or autonomous alternatives improve efficiency, but at the cost of the contact events and state transitions that can only be captured through direct physical interaction.
 Simulation and synthetic data further improve scalability, but $\mathcal{D}$ they produce is only an incomplete proxy for real-world manipulation, especially where contact, friction, compliance, deformable dynamics, and cross-embodiment adaptation are central. 
 As a result, $\mathcal{D}$ is often limited in scale and uneven in coverage across the components most critical to manipulation.
 Even when such data can be obtained, differences in control interfaces and platform conventions make it difficult to organize under shared schemas across platforms.
 
-The open challenge, therefore, is to build a foundation for $\mathcal{D}$ that can sustain embodied manipulation reliably at scale, which requires progress on three tightly coupled dimensions:
+The open challenge, therefore, is to build a foundation for $\mathcal{D}$ that can sustain robotic arm manipulation reliably at scale, which requires progress on three tightly coupled dimensions:
 \begin{itemize}
   \item \textbf{Data collection.} The collection of $\mathcal{D}$ needs to become more scalable without sacrificing the fidelity of contact events and state transitions required by real-world manipulation.
   \item \textbf{Data standardization.} $\mathcal{D}$ needs to be organized under shared schemas and formats that enable consistent alignment across platforms and embodiments.
@@ -1473,17 +1478,17 @@ As interfaces are specified independently across methods, the functional separat
 This difficulty is further compounded by embodiment constraints and incomplete $\mathcal{K}$.
 Meanwhile, action representations diversify in the absence of a shared constraining basis, which in turn hinders the principled extension and cumulative refinement of existing paradigms.
 
-The open challenge, therefore, is to build a stable architectural foundation for embodied manipulation around a consistent definition of embodied action, which requires progress on three tightly coupled dimensions:
+The open challenge, therefore, is to build a stable architectural foundation for robotic arm manipulation around a consistent definition of embodied action, which requires progress on three tightly coupled dimensions:
 \begin{itemize}
   \item \textbf{Action representation.} Establish a shared executable action basis for robotic manipulation, so that the minimal actionable unit can be defined consistently across embodiments, viewpoints, and control regimes.
-  \item \textbf{Temporal abstraction.} Develop principled mechanisms for composing, extending, and revising such action primitives over time, so that planning and execution are coordinated across different tasks.
-  \item \textbf{Functional decomposition.} Determine a principled division of labor between \(B\) and \(P\) through a stable intermediate action representation that supports consistent coordination between planning and execution.
-  \item \textbf{System interfaces.} Specify reusable interface contracts that cover observation schemas, intermediate representations, action APIs, and embodiment adaptation as shared field conventions.
+  \item \textbf{Temporal abstraction.} Develop principled mechanisms for composing, extending, and revising such action primitives over time, so that planning and execution can be coordinated across different tasks.
+  \item \textbf{Functional decomposition.} Determine a principled division of labor between \(B\) and \(P\) based on a stable intermediate action representation.
+  \item \textbf{System interfaces.} Establish reusable interface conventions that standardize how observations are encoded, how intermediate representations are passed across modules, and how different embodiments are adapted.
 \end{itemize}
 
 \subsection{System Evaluation with Balanced Benchmarking}\label{sec:challenge_evaluation}
 
-Current system evaluation for embodied manipulation is structurally imbalanced.
+Current system evaluation for robotic arm manipulation is structurally imbalanced.
 Simulation supports controlled and reproducible comparison, but most benchmark suites still evaluate systems through task abstractions, observation conventions, and physics approximations that are only partial proxies for deployment.
 Real-world evaluation better reflects deployment conditions, but it is difficult to scale, standardize, and reproduce across embodiments, laboratories, and task setups.
 As a small number of benchmark suites become widely adopted, their task formulations and evaluation protocols begin to shape what the field comes to regard as progress.
@@ -1494,26 +1499,26 @@ Binary task success further obscures where and why failure occurs, making evalua
 
 The open challenge, therefore, is to establish an evaluation foundation that is reproducible in controlled settings while still being informative about real deployment, which requires progress on three tightly coupled dimensions:
 \begin{itemize}
-  \item \textbf{Shared evaluation abstractions.} Task definitions, action interfaces, and success conditions need to be defined in ways that are stable across benchmarks, embodiments, and sim-to-real settings, so that comparisons accurately reflect differences in system capability.
-  \item \textbf{Diagnostic measurement.} Evaluation needs to move beyond binary success toward stagewise progress, recovery behavior, robustness under perturbation and shift, execution efficiency, and safety margins, so that failure can be localized and interpreted.
+  \item \textbf{Shared evaluation abstractions.} Task definitions, action interfaces, and success criteria needs to be aligned so that comparisons can accurately reflect system capability.
+  \item \textbf{Diagnostic measurement.} Evaluation needs to move beyond binary success to capture stagewise progress, recovery behavior, robustness to perturbations and distribution shift, execution efficiency, and safety margins, enabling failures to be localized and interpreted.
   \item \textbf{Scalable real-world protocols.} Real-world evaluation needs infrastructure for standardized resets, automatic logging and scoring, so that the same evaluation protocol can be repeated across embodiments and task setups with directly comparable results.
-  \item \textbf{Failure evaluation.} Evaluation frameworks need to go beyond average task success and expose long-tail failures, recovery behavior, adversarial vulnerability, and other risks that standard benchmark results may leave hidden.
+  \item \textbf{Failure evaluation.} Evaluation frameworks need to expose long-tail failures, recovery behavior, adversarial vulnerability, and other risks hidden by binary success metrics.
 \end{itemize}
 
 \subsection{Trustworthiness Under Coupled Constraints}\label{sec:challenge_safety}
 
-Trustworthiness emerges as an independent challenge once embodied manipulation systems are deployed in real-world settings.
+Trustworthiness emerges as an independent challenge once robotic arm manipulation systems are deployed in real-world settings.
 Strong task performance does not guarantee safety under rare conditions, security against malicious inputs, interpretability when failures occur, or reliable human oversight in shared environments.
 Because perception, reasoning, and action are tightly coupled, serious failure modes can hide until execution, while benchmark competence can coexist with substantial deployment risk.
 The difficulty is not only that failures occur, but that they are hard to expose, attribute, and control.
 Targeted triggers may induce control deviations without noticeably degrading benign-task performance.
 At the same time, end-to-end policies provide limited visibility into how observations and instructions are translated into action, and even explicit intermediate representations may offer only a partial view of the decision process.
 
-The open challenge, therefore, is to treat trustworthiness as a core requirement for embodied manipulation systems, which requires progress on three tightly coupled dimensions:
+The open challenge, therefore, is to treat trustworthiness as a core requirement for robotic arm manipulation systems, which requires progress on three tightly coupled dimensions:
 \begin{itemize}
-  \item \textbf{Safety and security.} Embodied manipulation systems need safeguards against harmful actions, unsafe constraint violations, and malicious or hidden triggers that may not be reflected in standard task performance.
+  \item \textbf{Safety and security.} Systems need safeguards against harmful actions, unsafe constraint violations, and malicious or latent triggers that standard task metrics may fail to capture.
   \item \textbf{Causal interpretability.} Methods are needed to decompose how observations, language, intermediate reasoning, and action representations each contribute to the final decision, so that failures can be attributed to their true source.
-  \item \textbf{Calibrated human oversight.} Interaction paradigms need to make system intent, uncertainty, and control authority legible to people, enabling anticipation, timely intervention, and clear operational boundaries in shared environments.
+  \item \textbf{Calibrated human oversight.} Interaction paradigms need to make system intent, uncertainty, and control authority explicit to human operators, enabling anticipation, timely intervention, and clear operational boundaries in shared environments.
 \end{itemize}
 
 \section{Conclusion}
