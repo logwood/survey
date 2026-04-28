@@ -479,3 +479,32 @@ B/P 不是并列模型种类，而是两种获取和组织 K 的路径
 integration / deployment / evaluation 则是在检查这些路径能否真正拼成并支撑现实系统。
 
 这才是这篇文章最硬的骨架。
+
+
+B1 is closest to the semantic interface of MLLMs, producing executable semantic specifications such as skill rankings, programs, reward functions, and behavior trees.
+A first form is skill-level alignment.
+SayCan~\cite{brohan2023can} grounds abstract language goals by scoring primitive skills according to both semantic relevance and execution feasibility, but its output remains a ranked selection over predefined skills rather than a compositional execution program.
+Program synthesis makes the semantic specification more explicit.
+CaP~\cite{liang2022code} generates executable Python from natural language, while ProgPrompt~\cite{singh2022progprompt} embeds precondition assertions into the prompt structure to enforce logical constraints.
+Demo2Code~\cite{wang2023demo2code} extends this direction beyond language-only input by translating visual demonstrations into symbolic code.
+A parallel form specifies objectives rather than control programs.
+Tan et al.~\cite{tan2023l2r} synthesize programmatic reward functions that decouple semantic task specification from continuous trajectory optimization.
+Text2Touch~\cite{field2025text2touch} extends reward synthesis to tactile dexterous manipulation by using LLMs to design reward functions over tactile and proprioceptive signals.
+Structured control flow provides another executable specification.
+LLM-BT~\cite{zhou2024llmbt} generates behavior trees that can be dynamically updated under environmental changes, while LLM-as-BT~\cite{ao2025llmbt} generates modular behavior trees that support reactive switching and error recovery.
+Overall, B1 methods formulate task structure as executable semantic specifications.
+They mainly require \(\mathcal{K}_2\), because their outputs are organized around task semantics, skill preconditions, objectives, and control logic rather than local sensorimotor dynamics.
+
+
+Type~II models separate slower reasoning from faster execution, and their key distinction lies in how the reasoning--execution interface is represented.
+One paradigm exposes this interface explicitly through intermediate structures such as language motions, reasoning traces, symbolic bridges, or coarse paths.
+RT-H~\cite{belkhale2024rth} introduces language motions as an intermediate layer between high-level instructions and low-level actions.
+CoT-VLA~\cite{zhao2025cotvla} and ThinkAct~\cite{huang2025thinkact} expose intermediate reasoning steps, RoBridge~\cite{zhang2025robridge} places a symbolic bridge between a cognitive planner and a learned policy, and HAMSTER~\cite{li2025hamster} predicts a coarse 2D path to guide low-level 3D manipulation.
+
+The other paradigm keeps the hierarchy more implicit, separating reasoning and execution at the architectural or latent level rather than through a fully exposed symbolic interface.
+FiS-VLA~\cite{chen2025fis} couples a slower semantic branch with a real-time execution branch, while Hi Robot~\cite{shi2025hirobot} adopts a hierarchical 
+design for open-ended instruction following and user feedback during execution.
+
+
+
+Because semantic grounding and action generation are integrated into the same unified backbone, the model needs to process heterogeneous information. This makes it difficult for the shared backbone to learn representations that support both semantic understanding and precise action generation.
