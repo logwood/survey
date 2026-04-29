@@ -508,3 +508,23 @@ design for open-ended instruction following and user feedback during execution.
 
 
 Because semantic grounding and action generation are integrated into the same unified backbone, the model needs to process heterogeneous information. This makes it difficult for the shared backbone to learn representations that support both semantic understanding and precise action generation.
+
+
+Skill selection is the first specification type.
+Program synthesis provides a second form of specification.
+Objective-based specification generates reward functions or task objectives for downstream optimization.
+Structured control flow provides another form of specification through behavior trees.
+
+
+B3 grounds task intent in multimodal embodied context, producing intermediate representations for skill selection, task planning, and downstream policy execution.
+
+The shared limitation of B1 and B2 is that semantic or logical correctness does not guarantee physical executability.
+
+
+Implicit Type~II models still separate reasoning from execution, but the handoff is not preserved as a standalone plan, path, program, trace, or command.
+FiS-VLA~\cite{chen2025fis} couples a slower semantic branch with a real-time execution branch.
+GO-1~\cite{agibot2025} similarly uses a latent planner to bridge multimodal understanding and action generation through latent action tokens.
+Hi Robot~\cite{shi2025hirobot} adopts a hierarchical design for open-ended instruction following and user feedback during execution.
+
+
+\textbf{GO-1}~\cite{agibot2025} & B3, P3 & InternVL(2B) & Hier. & Div. & 1M+ Real Traj. + Web Video & Sim: LIBERO / GenieSim | Real: 5 tasks \\
