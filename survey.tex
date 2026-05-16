@@ -1185,15 +1185,15 @@ Methods are summarized by their coupled \(B/P\) components, integration mode, ha
 
 \textbf{OpenVLA}~\cite{kim2024openvla} & B3, P2 & Llama-2 + SigLIP (7B) & Dir. & Franka+WidowX & 970K OXE Real Traj. & Real: 29 manipulation tasks \\
 
-\textbf{$\pi$0}~\cite{black2024pi0} & B3, P3 & PaliGemma (3B) & Genr. & Div.\ (6 types) & $\sim$10K OXE Real Traj. & Real: 7 dexterous tasks \\
+\textbf{$\pi$0}~\cite{black2024pi0} & B3, P3 & PaliGemma (3B) & Genr. & Div. (8 types) & $\sim$10K OXE Real Traj. & Real: 7 dexterous tasks \\
 
-\textbf{RoboMamba}~\cite{liu2024robomamba} & B3, P3 & Mamba SSM (7B) & Dir. & Franka & OXE Real Traj. & Sim: CALVIN | Real: manipulation tasks \\
+\textbf{RoboMamba}~\cite{liu2024robomamba} & B3, P3 & Mamba SSM (3B) & Dir. & Franka & OXE Real Traj. & Sim: CALVIN | Real: manipulation tasks \\
 
 \textbf{ReconVLA}~\cite{song2025reconvla} & B4, P3 & LLaVA (7B) & Genr. & AgileX PiPer & 2M samples (100K+ Traj. BridgeV2/LIBERO) & Sim: CALVIN (ABCD$\rightarrow$D) | Real: 5 manipulation tasks \\
 
-\textbf{UniVLA}~\cite{wang2026unified} & B5, P2 & Emu3 (8.5B) & Dir. & Div. & OXE Real Traj. & Sim: LIBERO (95.5\%) | Real: 8 ALOHA tasks\\
+\textbf{UniVLA}~\cite{wang2026unified} & B5, P2 & Emu3 (8.5B) & Dir. & AgileX & OXE Real Traj. & Sim: LIBERO (95.5\%) | Real: 8 ALOHA tasks\\
 
-\textbf{X-VLA}~\cite{zheng2026xvla} & B3, P2 & Transformer (0.9B) & Genr. & Div. & 290K episodes & Sim: LIBERO 93\%, Simpler-WidowX | Real: 3 robots \\
+\textbf{X-VLA}~\cite{zheng2026xvla} & B3, P2 & Transformer (0.9B) & Genr. & Div. (3 types) & 290K episodes & Sim: LIBERO 93\%, Simpler-WidowX | Real: 3 robots \\
 
 \midrule
 
@@ -1203,7 +1203,7 @@ Methods are summarized by their coupled \(B/P\) components, integration mode, ha
 
 \textbf{RT-H}~\cite{belkhale2024rth} & B2, P2 & PaLI-X (7B+) & Hier. & Google Robot & Kitchen Real Traj. & Real: 8 manipulation tasks \\
 
-\textbf{CoT-VLA}~\cite{zhao2025cotvla} & B2, P2 & VILA-U (7B) & Reas. & Div. & OXE Real Traj.\ + EPIC & Real: 10 long-horizon tasks \\
+\textbf{CoT-VLA}~\cite{zhao2025cotvla} & B2, P2 & VILA-U (7B) & Reas. & Franka+WidowX & OXE Real Traj.\ + EPIC & Real: 10 long-horizon tasks \\
 
 \textbf{ThinkAct}~\cite{huang2025thinkact} & B1, P2 & Qwen2.5-VL (7B) & Hier. & Franka & OXE + RoboVQA Real Traj. & Sim: CALVIN | Real: 10 long-horizon tasks \\
 
@@ -1223,17 +1223,17 @@ Methods are summarized by their coupled \(B/P\) components, integration mode, ha
 
 \textbf{3D-VLA}~\cite{zhen20243dvla} & B4, P3 & Flan-T5-XL (3B) & Genr. & Franka & 2M samples OXE (3D) & Sim: RLBench | Real: 10 3D tasks \\
 
-\textbf{VideoVLA}~\cite{shen2025videovla} & B5, P3 & CogVideoX (5B) & Genr. & Div. & OXE + 5K samples & Sim: SIMPLER | Real: 6 unseen tasks \\
+\textbf{VideoVLA}~\cite{shen2025videovla} & B5, P3 & CogVideoX (5B) & Genr. & Realman & OXE + 5K samples & Sim: SIMPLER | Real: 6 unseen tasks \\
 
 \textbf{SpatialVLA}~\cite{qu2025spatialvla} & B4, P2 & PaLiGemma 2 (4B) & Dir. & Franka+WidowX & OXE + RH20T Real Traj. & Sim: SIMPLER / LIBERO | Real: 24 real-robot tasks \\
 
-\textbf{TraceVLA}~\cite{zheng2025tracevla} & B4, P3 & Llama-2 + SigLIP (7B) & Dir. & WidowX & OXE + 150K Real Traj. & Sim: SIMPLER  (137 configs) | Real: 4 WidowX tasks \\
+\textbf{TraceVLA}~\cite{zheng2025tracevla} & B4, P3 & Llama-2 + SigLIP (7B) & Dir. & WidowX-250 & OXE + 150K Real Traj. & Sim: SIMPLER  (137 configs) | Real: 4 WidowX tasks \\
 
 \textbf{DreamVLA}~\cite{zhang2025dreamvla} & B5, P3 & Diffusion WM (7B) & Genr. & Franka & CALVIN Real Traj. & Sim: CALVIN | Real: 10 manipulation tasks \\
 
 \textbf{BridgeVLA}~\cite{li2025bridgevla} & B4, P2 & PaliGemma (3B) & Dir. & Franka & Bridge / OXE Real Traj. & Sim: RLBench/COLOSSEUM | Real: 13 Franka FR3 tasks \\
 
-\textbf{DreamZero}~\cite{ye2026dreamzero} & B5, P3 & Wan2.1 (14B) & Genr. & Div. & Web Video + Real Traj. & Sim: DROID/PolaRiS/Genie | Real: 60 manipulation tasks \\
+\textbf{DreamZero}~\cite{ye2026dreamzero} & B5, P3 & Wan2.1 (14B) & Genr. & Div. (3 types) & Web Video + Real Traj. & Sim: DROID/PolaRiS/Genie | Real: 60 manipulation tasks \\
 
 \bottomrule
 \end{tabular}
@@ -1485,7 +1485,7 @@ For each challenge, we also identify recent efforts that point toward future dir
 
 Current embodied foundations are confined to narrow observation and action spaces imposed by their embodiments such as sensor configurations, end-effector design, actuation limits and coordinate conventions.
 As a result, robotic manipulation is largely formulated and benchmarked within these same narrow settings, with only weak support for richer embodied modalities.
-Moreover, because mechanical parameters, morphology, and control interfaces differ across platforms, the spaces they induce are not directly equivalent, making cross-embodiment alignment intrinsically difficult and potentially propagating these incompatibilities into downstream processes.
+Moreover, because mechanical parameters, morphology, and control interfaces differ across platforms, the spaces they induce are not directly equivalent, making cross-embodiment alignment intrinsically difficult and potentially propagating these incompatibilities into downstream processes~\cite{chen2026iail}.
 
 The open challenge, therefore, is to establish stronger embodied foundations for manipulation, which requires progress on three tightly coupled dimensions:
 \begin{itemize}

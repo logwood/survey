@@ -23,10 +23,10 @@ Thumbs.db
 *.synctex.gz
 *.cls
 *.toc
-*.pdf
 *.fls
 *.fdb_latexmk
 *.lof
 *.svg
 .claude
 
+pdf_library/
