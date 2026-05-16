@@ -1,6 +1,6 @@
 # Robotic Arm Manipulation toward Embodied Intelligence: Foundations, Data, Learning, and Evaluation
 
-> A survey submitted to ACM Computing Surveys (CSUR)
+> A survey ready to submit to ACM Computing Surveys (CSUR)
 
 ## Abstract
 
