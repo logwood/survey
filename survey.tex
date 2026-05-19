@@ -804,8 +804,8 @@ Figure~\ref{fig:learning_paradigms} summarizes this learning ecosystem.
 
 \subsection{Cognitive Planning: The Embodied Brain}\label{sec:embodied_brain}
 
-Cognitive planning places greater emphasis on sensory observations and state transitions in \(\mathcal{D}\), from which it acquires the support needed to construct intermediate artifacts.
-The primary differences among these methods lie in the intermediate artifacts through which that support is organized. 
+Cognitive planning uses the sensory observations and state transitions of \(\mathcal{D}\) to construct intermediate artifacts for reasoning, planning, and action specification.
+These artifacts serve as the interface between embodied observations and downstream execution.
 We therefore classify cognitive planning into five paradigms (B1--B5) according to the primary intermediate artifact each paradigm produces.
 B1 specifies what should be executed in semantic form.
 B2 decomposes intent into logical task structure.
@@ -1260,7 +1260,7 @@ and HAMSTER~\cite{li2025hamster} predicts a coarse 2D path as an intermediate re
 Representative implicit Type~II methods include FiS-VLA~\cite{chen2025fis} couples a slower semantic branch with a real-time execution branch, 
 GO-1~\cite{agibot2025} similarly uses a latent planner to bridge multimodal understanding and action generation through latent action tokens,
 and Hi Robot~\cite{shi2025hirobot} adopts a hierarchical paradigm design for open-ended instruction following and user feedback during execution.
-RoboInter~\cite{li2026robointer} broadens Type~II integration by turning intermediate representations into supervision and evaluation targets.
+RoboInter~\cite{li2026robointer} broadens Type~II integration by making intermediate representations explicit and using them as structured supervision for training manipulation models.
 Although explicit and implicit Type~II models offer advantages, their drawbacks are also evident.
 Explicit interfaces are easier to inspect and correct, but they may lose execution-sensitive information when task structure is compressed into fixed intermediate representations.
 Implicit hierarchies, by contrast, preserve a flexible internal interface, but make it harder to localize failures across reasoning, grounding, and execution.
@@ -1364,10 +1364,10 @@ At inference time, compression, quantization, and decoding acceleration improve 
 
 Previous sections have examined how robotic arm systems are built by embodied foundations, data ecosystems, and learning paradigms. 
 This chapter reviews current efforts to evaluate robotic arm systems from four corresponding perspectives.
-Section~\ref{sec:eval_task_execution} evaluates whether cognitive planning (\(B\)) and policy learning (\(P\)) can organize the knowledge support \(\mathcal{K}\) induced by \(\mathcal{D}\) into successful task execution. 
-Section~\ref{sec:eval_data_sample} evaluates whether \(\mathcal{D}\) provides data that is sufficiently efficient and informative to induce useful knowledge support \(\mathcal{K}\). 
-Section~\ref{sec:eval_benchmarking} evaluates whether the knowledge support \(\mathcal{K}\) learned from \(\mathcal{D}\), and organized through \(B\) and \(P\), is robust beyond the training distribution under varying embodiment constraints. 
-Section~\ref{sec:eval_energy} evaluates whether the physically grounded capabilities produced by \(B\) and \(P\) from \(\mathcal{K}\) can be executed efficiently on physical embodiments within the deployment pipeline.
+Section~\ref{sec:eval_task_execution} reviews task execution evaluation, focusing on whether \(B\) and \(P\) can organize \(\mathcal{K}\) induced by \(\mathcal{D}\) into successful task execution.
+Section~\ref{sec:eval_data_sample} reviews data-oriented evaluation, focusing on whether \(\mathcal{D}\) is efficient and informative enough to induce useful \(\mathcal{K}\).
+Section~\ref{sec:eval_benchmarking} reviews benchmarking protocols, focusing on whether \(\mathcal{K}\) learned from \(\mathcal{D}\) and organized through \(B\) and \(P\) remains robust beyond the training distribution under varying embodiment constraints.
+Section~\ref{sec:eval_energy} reviews efficiency evaluation, focusing on whether capabilities produced by \(B\) and \(P\) from \(\mathcal{K}\) can be executed efficiently on physical embodiments within the deployment pipeline.
 Table~\ref{tab:eval_metrics} summarizes representative evaluation protocols for robotic arm systems.
 
 \begin{table}[!t]
@@ -1482,23 +1482,25 @@ For comparison across robots, recent work introduces normalized efficiency metri
 while Rezali et al.~\cite{rezali2025lstm} formulate trajectory planning as a multi-objective optimization problem over several metrics. 
 Current robotic arm manipulation benchmarks still provide only limited visibility into deployment efficiency, since latency, runtime reliability, compute footprint, and hardware load are rarely reported in comparable ways.
 
-Overall, existing evaluation efforts remain insufficient to close the validation loop across the full manipulation pipeline.
+Overall, existing evaluation efforts is insufficient to close the validation loop across the full manipulation pipeline.
 Current evaluations rarely systematically trace task-specific failures back to the underlying bottlenecks in data, representation, embodiment, planning, or control.
 
 \section{Open Challenges}\label{sec:challenges}
 
-Building on the foregoing organizational framework, we examine the open challenges of robotic arm manipulation from the perspective developed above.
-Limitations originating in embodied foundations accumulate in data support, intensify in architectural design, and ultimately make evaluation an unstable source of feedback for robotic arm manipulation. 
-We then examine trustworthiness when robotic arm manipulation systems are deployed in real-world settings.
-For each challenge, we also identify recent efforts that point toward future directions.
+Building on the foregoing organizational framework, we examine the open challenges of robotic arm systems.
+Constraints imposed by embodied infrastructure propagate through the entire system.
+They make data difficult to scale and align, leave action interfaces and abstractions insufficiently stable, and limit the reliability of evaluation feedback.
+When robotic arm systems are deployed in real-world settings, these coupled constraints further affect trustworthiness.
+For each challenge, we further outline possible directions for future research.
 
 \subsection{Embodiment Infrastructure with Reduced Constraints}\label{sec:challenge_embodiment}
 
-Current embodied foundations are confined to narrow observation and action spaces imposed by their embodiments such as sensor configurations, end-effector design, actuation limits and coordinate conventions.
-As a result, robotic manipulation is largely formulated and benchmarked within these same narrow settings, with only weak support for richer embodied modalities.
-Moreover, because mechanical parameters, morphology, and control interfaces differ across platforms, the spaces they induce are not directly equivalent, making cross-embodiment alignment intrinsically difficult and potentially propagating these incompatibilities into downstream processes~\cite{chen2026iail}.
+Current embodied infrastructure is confined to narrow observation and action spaces imposed by their embodiments such as sensor configurations, end-effector design, actuation limits and coordinate conventions.
+As a result, robotic arm systems are largely formulated and benchmarked within these same narrow settings, with only weak support for richer embodied modalities.
+Moreover, differences in physical and software foundations make observation and action spaces difficult to align directly across platforms.
+Downstream stages inherit these limitations, constraining robotic manipulation to platform-specific formulations~\cite{chen2026iail}. 
 
-The open challenge, therefore, is to establish stronger embodied foundations for manipulation, which requires progress on three tightly coupled dimensions:
+Progress therefore requires infrastructure-level abstractions that broaden modality coverage while strengthening cross-embodiment alignment:
 \begin{itemize}
     \item \textbf{Cross-embodiment abstraction.} Shared interfaces and abstractions are needed to isolate downstream processes from hardware-specific incompatibilities.
     \item \textbf{Modality coverage.} Support for richer observation and action modalities needs to be broadened under the constraints imposed by heterogeneous embodiments.
@@ -1510,28 +1512,29 @@ The open challenge, therefore, is to establish stronger embodied foundations for
 Current data ecosystem for robotic arm manipulation is structurally insufficient.
 Real collection methods such as teleoperation provide the strongest coverage of all four components of $\mathcal{D}$, but are slow, expensive, and difficult to scale under real embodied interaction. 
 More portable or autonomous alternatives improve efficiency, but at the cost of the contact events and state transitions that can only be captured through direct physical interaction.
-Simulation and synthetic data further improve scalability, but $\mathcal{D}$ they produce is only an incomplete proxy for real-world manipulation, especially where contact, friction, compliance, deformable dynamics, and cross-embodiment adaptation are central. 
+Synthetic data further improve scalability, but $\mathcal{D}$ they produce is only an incomplete proxy for real-world manipulation, especially where contact, friction, compliance, deformable dynamics, and cross-embodiment adaptation are central. 
 As a result, $\mathcal{D}$ is often limited in scale and uneven in coverage across the components most critical to manipulation.
 Even when such data can be obtained, differences in control interfaces and platform conventions make it difficult to organize under shared schemas across platforms~\cite{chen2025robodm}.
 
-The open challenge, therefore, is to build a foundation for $\mathcal{D}$ that can sustain robotic arm manipulation reliably at scale, which requires progress on four tightly coupled dimensions:
+Building a reliable foundation for $\mathcal{D}$ requires a data ecosystem that supports the full lifecycle of robotic arm manipulation systems, from collection to management to alignment:
 \begin{itemize}
-  \item \textbf{Data collection.} The collection of $\mathcal{D}$ needs to become more scalable without sacrificing the fidelity of contact events and state transitions required by real-world manipulation.
-  \item \textbf{Data standardization.} $\mathcal{D}$ needs to be organized under shared schemas and formats that enable consistent alignment across platforms and embodiments.
-  \item \textbf{Data management.} $\mathcal{D}$ needs to be systematically curated, versioned, and made reusable across pipelines and research efforts.
-  \item \textbf{Data alignment.} Beyond shared schemas and formats, $\mathcal{D}$ needs explicit alignment across embodiments, control interfaces, and task instances to support transfer across platforms.
+  \item \textbf{Efficient acquisition.} The collection of $\mathcal{D}$ needs to become more scalable without sacrificing the fidelity of contact events and state transitions required by real-world manipulation.
+  \item \textbf{Interaction coverage.} $\mathcal{D}$ needs to capture richer embodiment-specific interaction dynamics, rather than only successful trajectories or sparse task outcomes.
+  \item \textbf{Synthetic augmentation.} Synthetic data need to better preserve contact dynamics and state transitions to effectively expand the scale and diversity of $\mathcal{D}$.
+  \item \textbf{Cross-embodiment reuse.} Data collected from different embodiments needs to become reusable across platforms through mappings of state, action, task, and control semantics.
 \end{itemize}
 
 \subsection{Learning Paradigms with Stable Architectural Design}\label{sec:challenge_learning}
 
-Current architectural design of learning paradigms for robotic arm manipulation is fundamentally unstable.
-The root cause lies in the lack of a principled and reusable definition of the action primitive.
+Current architectural design of learning paradigms for robotic arm systems is fundamentally unstable.
+No principled definition of the action primitive exists that can be reused across methods and embodiments.
 Without such a definition, cognitive planning (\(B\)) has no stable basis for determining what intermediate structures to produce, and policy learning (\(P\)) has no stable basis for determining what action granularity to operate on.
-As interfaces are specified independently across methods, the functional separation between \(B\) and \(P\) and the domain of applicability of different paradigms become progressively underdetermined~\cite{li2026robointer}.
-This difficulty is further compounded by embodiment constraints and incomplete $\mathcal{K}$.
+The boundary between \(B\) and \(P\) becomes increasingly ambiguous, undermining the coherence of system integration~\cite{li2026robointer}.
+As a result, interface definitions is method-specific and difficult to reuse across methods.
+Embodiment constraints and incomplete $\mathcal{K}$ compound this underdetermination further, making capabilities developed within such paradigms unreliable across settings.
 Meanwhile, action representations diversify in the absence of a shared constraining basis, which in turn hinders the principled extension and cumulative refinement of existing paradigms.
 
-The open challenge, therefore, is to build a stable architectural foundation for robotic arm manipulation around a consistent definition of embodied action, which requires progress on four tightly coupled dimensions:
+Stabilizing learning paradigms requires anchoring the architecture around a principled and reusable definition of embodied action:
 \begin{itemize}
   \item \textbf{Action representation.} Establish a shared executable action basis that defines minimal actionable units consistently across embodiments, viewpoints, and control regimes.
   \item \textbf{Temporal abstraction.} Develop principled mechanisms for composing, extending, and revising action primitives over time to coordinate planning and execution across tasks.
@@ -1544,13 +1547,13 @@ The open challenge, therefore, is to build a stable architectural foundation for
 Current system evaluation for robotic arm manipulation is structurally imbalanced.
 Simulation supports controlled and reproducible comparison, but most benchmark suites still evaluate systems through task abstractions, observation conventions, and physics approximations that are only partial proxies for deployment.
 Real-world evaluation better reflects deployment conditions, but it is difficult to scale, standardize, and reproduce across embodiments, laboratories, and task setups~\cite{barreiros2026careful}.
-As a small number of benchmark suites become widely adopted, their task definitions and evaluation protocols increasingly influence how progress in robotic arm manipulation is measured and compared.
-This imbalance is amplified by the architectural instability discussed above.
+As a small number of benchmark suites gain broad adoption, their task definitions and evaluation protocols increasingly determine how progress in robotic arm manipulation is measured.
+This imbalance is further amplified by the instability of learning paradigms discussed above.
 When action interfaces, task decompositions, and success criteria are not stably defined, evaluation defaults to internally consistent but local proxies.
 Properties that are critical in deployment might be only weakly measured, including robustness under distribution shift, recovery from intermediate failure, execution efficiency, and long-horizon consistency.
 Binary task success further obscures where and why failure occurs, making evaluation a limited diagnostic signal for upstream design.
 
-The open challenge, therefore, is to establish an evaluation foundation that is reproducible in controlled settings while still being informative about real deployment, which requires progress on four tightly coupled dimensions:
+Closing this gap requires an evaluation framework that is reproducible in controlled settings while providing informative deployment diagnostics:
 \begin{itemize}
   \item \textbf{Shared evaluation abstractions.} Task definitions, action interfaces, and success criteria needs to be aligned so that comparisons can accurately reflect system capability.
   \item \textbf{Diagnostic measurement.} Evaluation needs to move beyond binary success to capture stagewise progress, recovery behavior, robustness to perturbations and distribution shift, execution efficiency, and safety margins, enabling failures to be localized and interpreted.
@@ -1558,30 +1561,30 @@ The open challenge, therefore, is to establish an evaluation foundation that is 
   \item \textbf{Failure evaluation.} Evaluation frameworks need to expose long-tail failures, recovery behavior, adversarial vulnerability, and other risks hidden by binary success metrics.
 \end{itemize}
 
-\subsection{Trustworthiness Under Coupled Constraints}\label{sec:challenge_safety}
-%% Trustworthy Deployment and Oversight
-Trustworthiness emerges as an independent challenge once robotic arm manipulation systems are deployed in real-world settings.
-Strong task performance does not guarantee safety under rare conditions, security against malicious inputs, interpretability when failures occur, or reliable human oversight in shared environments.
-Because perception, reasoning, and action are tightly coupled, serious failure modes can hide until execution, while benchmark competence can coexist with substantial deployment risk.
-The difficulty is not only that failures occur, but that they are hard to expose, attribute, and control.
-Targeted triggers may induce control deviations without noticeably degrading benign-task performance~\cite{zhou2025badvla}.
-At the same time, end-to-end policies provide limited visibility into how observations and instructions are translated into action, and even explicit intermediate representations may offer only a partial view of the decision process.
+\subsection{Trustworthy Deployment and Oversight}\label{sec:challenge_safety}
 
-The open challenge, therefore, is to treat trustworthiness as a core requirement for robotic arm manipulation systems, which requires progress on four tightly coupled dimensions:
+Trustworthy deployment becomes a central requirement once robotic arm manipulation systems operate in real-world settings.
+Strong task performance does not imply trustworthy behavior under deployment conditions.
+Compounded limitations across data, architecture, evaluation, and hardware leave deployment conditions insufficiently covered, producing failure modes that evaluation alone cannot expose.
+When such failures surface, their consequences extend beyond task error, including unsafe physical interaction, loss of operator trust, and degraded operational reliability.
+This gap can coexist with apparent task competence, as systems may maintain strong benign-task performance while exhibiting backdoor-triggered control deviations~\cite{zhou2025badvla}.
+When failures arise, it is often unclear whether the problem lies in observation encoding, reasoning, action representation, or interface mismatch with downstream controllers.
+For systems operating alongside humans, trustworthiness further requires human operators to anticipate system behavior, infer system intent, and intervene safely when needed.
+
+Robotic arm systems therefore require mechanisms that ensure safe, robust, interpretable, and transparent operation under real-world scenarios:
 \begin{itemize}
-  \item \textbf{Operational safety.} Systems need mechanisms to prevent harmful actions, unsafe contact, collisions, force-limit violations, and other failures during real-world physical interaction.
-  \item \textbf{Security robustness.} Manipulation policies need to resist malicious inputs, latent triggers, instruction perturbations, and backdoor vulnerabilities that can trigger unsafe control outputs.
-  \item \textbf{Causal interpretability.} Methods are needed to decompose how observations, language, intermediate reasoning, memory, and action representations contribute to the final decision, so that failures can be attributed to their true source.
-  \item \textbf{Calibrated human oversight.} Interaction paradigms need to make system intent, uncertainty, and control authority explicit to human operators, enabling anticipation, timely intervention, and clear operational boundaries in shared environments.
+  \item \textbf{Operational safety.} Robotic arm systems need to prevent harmful actions, unsafe contact, collisions, force-limit violations, and other failures during real-world physical interaction.
+  \item \textbf{System robustness.} Robotic arm systems need to maintain safe and predictable behavior under adversarial inputs, latent triggers, and out-of-distribution conditions.
+  \item \textbf{Causal interpretability.} Robotic arm systems need to trace how observations, instructions, and intermediate representations contribute to the final decision, so that failures can be attributed and corrected.
+  \item \textbf{Oversight transparency.} Robotic arm systems need to make their intent and uncertainty legible to human operators, enabling anticipation, timely intervention, and safe collaboration in shared environments.
 \end{itemize}
 
 \section{Conclusion}
 
 This article has examined robotic arm systems toward embodied intelligence by tracing the co-evolution of embodiment infrastructure, data ecosystems, learning paradigms, and evaluation practices.
-This perspective shows that recurring bottlenecks in robotic arm systems are rarely confined to a single layer.
-Challenges of robotic arm systems often arise from interactions among infrastructure, data, learning, and evaluation.
-Addressing these challenges therefore requires coordinated progress across the manipulation stack.
-We hope this paper provides a structured reference for future research and supports more systematic progress in robotic arm manipulation toward embodied intelligence.
+A system-level account of this co-evolution shows that recurring bottlenecks are rarely confined to a single layer, but instead emerge from interactions among infrastructure, data, learning, and evaluation.
+Addressing these challenges requires aligning infrastructure, data, learning, and evaluation across the full system stack.
+By organizing these coupled dimensions, this paper provides a structured reference for future research and supports more systematic progress in robotic arm systems toward embodied intelligence.
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{sample-base}
